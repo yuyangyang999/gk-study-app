@@ -269,6 +269,17 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 .hamburger svg{width:20px;height:20px}
 .mask{display:none;position:fixed;inset:0;background:rgba(59,53,45,.35);z-index:25}
 .mask.show{display:block}
+.gear-btn{width:42px;height:42px;border:none;background:rgba(176,125,86,.12);border-radius:12px;font-size:19px;cursor:pointer}
+.gear-btn:active{transform:scale(.94)}
+.voice-mask{display:none;position:fixed;inset:0;background:rgba(40,30,22,.5);z-index:80;align-items:center;justify-content:center;padding:18px}
+.voice-mask.show{display:flex}
+.voice-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;width:min(430px,92vw);box-shadow:0 22px 60px rgba(86,62,38,.25)}
+.voice-card h3{margin:0 0 14px;font-size:17px}
+.voice-row{margin:12px 0}
+.voice-row label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.voice-row select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:15px;color:var(--text)}
+.voice-tip{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.voice-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
 .mobile-nav{display:none}
 
 @media (max-width:820px){
@@ -556,6 +567,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
         <svg viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.2 9.5 4 4 0 0 0 7 17.5"/><path d="M12 12v6M9.5 14.5 12 12l2.5 2.5"/></svg>
         <span class="dot" id="cloudDot"></span>
       </button>
+      <button class="gear-btn" id="voiceGearBtn" title="语音设置（选择你下载的嗓音）">⚙️</button>
     </div>
 
       <!-- 首页 -->
@@ -897,6 +909,23 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
   </main>
 </div>
 <div class="mask" id="mask"></div>
+<div class="voice-mask" id="voiceMask">
+  <div class="voice-card">
+    <h3>🎙 语音设置</h3>
+    <div class="voice-row">
+      <label>起床 / 睡觉打卡 · 韩文念词嗓音</label>
+      <select id="koVoice"></select>
+    </div>
+    <div class="voice-row">
+      <label>单词闯关 · 英文夸奖嗓音</label>
+      <select id="enVoice"></select>
+    </div>
+    <div class="voice-tip">从你手机已下载的嗓音里选。选「默认」则自动挑男声韩文 / 童音英文。改完直接生效，下次打开自动记住。</div>
+    <div class="voice-actions">
+      <button class="gear-btn" id="voiceClose" style="background:rgba(176,125,86,.18)">关闭</button>
+    </div>
+  </div>
+</div>
 
 <div class="crop-modal" id="cropModal">
   <div class="crop-box">
@@ -1456,7 +1485,7 @@ function showPraise(text,emoji,ko,voice,bg){
   clearTimeout(_praiseT);_praiseT=setTimeout(()=>ov.classList.remove('show'),2300);
 }
 let _voicesCache=[];let _voicesReady=false;
-function _refreshVoices(){try{_voicesCache=speechSynthesis.getVoices()||[];}catch(e){_voicesCache=[];}_voicesReady=_voicesCache.length>0;}
+function _refreshVoices(){try{_voicesCache=speechSynthesis.getVoices()||[];}catch(e){_voicesCache=[];}_voicesReady=_voicesCache.length>0;try{populateVoiceSelects();}catch(e){}}
 if('speechSynthesis' in window){_refreshVoices();try{speechSynthesis.onvoiceschanged=_refreshVoices;}catch(e){}}
 // iOS 男声标签可能是 남성 / Male / ♂ 等；先排除明确的女性标识(避免 female 子串命中 male)
 // 童音/可爱模式：用任意可用嗓音 + 抬高音高/略快，逼近年轻可爱的听感（系统 TTS 无法生成指定真人声线）
@@ -1467,10 +1496,15 @@ function speakText(text,lang,voice,opt){if(!text||!('speechSynthesis' in window)
 function _isMale(v){if(!v)return false;const s=((v.name||'')+' '+(v.gender||'')).toLowerCase();if(/female|여성|女/.test(s))return false;return /male|남성|남자|남|men|boy|♂/.test(s);}
 function pickMale(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const m=vs.find(v=>_isMale(v)&&new RegExp('^'+L,'i').test(v.lang||''));if(m)return m;}return null;}
 function speakCnMale(text){if(!text)return;const v=pickMale(['zh-CN','zh','cmn','ko','en']);speakText(text,'zh-CN',v,{pitch:(v&&_isMale(v))?0.9:1.0,rate:1.02});}
-// 作息/打卡：恢复此前行为——韩文男声优先，无则中文男声兜底
-function speakKo(){if(!('speechSynthesis' in window))return;const mKo=pickMale(['ko']);if(mKo&&window.__curKo){speakText(window.__curKo,'ko-KR',mKo,{pitch:1.18,rate:1.0});return;}if(window.__curCn)speakCnMale(window.__curCn);}
-// 单词闯关英文夸奖：童音 + 随连击升调
-function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=1.08+lvl*0.04;u.pitch=1.5+lvl*0.08;const en=pickVoice(['en']);if(en)u.voice=en;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
+// 作息/打卡：优先用你选定的韩文嗓音，否则男声韩文优先，再回退中文男声
+function speakKo(){if(!('speechSynthesis' in window))return;const sel=findVoiceByKey(local.koVoice);if(sel&&window.__curKo){speakText(window.__curKo,'ko-KR',sel,{pitch:1.18,rate:1.0});return;}const mKo=pickMale(['ko']);if(mKo&&window.__curKo){speakText(window.__curKo,'ko-KR',mKo,{pitch:1.18,rate:1.0});return;}if(window.__curCn)speakCnMale(window.__curCn);}
+// 单词闯关英文夸奖：优先用你选定的英文嗓音，否则童音自动选 + 随连击升调
+function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=1.08+lvl*0.04;u.pitch=1.5+lvl*0.08;const sel=findVoiceByKey(local.enVoice);if(sel)u.voice=sel;else{const en=pickVoice(['en']);if(en)u.voice=en;}const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
+// === 语音偏好：让用户从已下载嗓音中自选 ===
+function encURI(s){return encodeURIComponent(s||'');}
+function findVoiceByKey(key){if(!key)return null;try{const uri=decodeURIComponent(key);return _voicesCache.find(v=>v.voiceURI===uri)||null;}catch(e){return null;}}
+function populateVoiceSelects(){const koSel=document.getElementById('koVoice'),enSel=document.getElementById('enVoice');if(!koSel||!enSel)return;const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');const opt=v=>`<option value="${encURI(v.voiceURI)}">${esc(v.name)} · ${esc(v.lang)}</option>`;const kos=_voicesCache.filter(v=>/^ko/i.test(v.lang||''));const ens=_voicesCache.filter(v=>/^en/i.test(v.lang||''));koSel.innerHTML='<option value="">默认（自动男声韩文优先）</option>'+kos.map(opt).join('');enSel.innerHTML='<option value="">默认（童音英文·自动选）</option>'+ens.map(opt).join('');if(local.koVoice&&kos.find(v=>v.voiceURI===decodeURIComponent(local.koVoice)))koSel.value=local.koVoice;else local.koVoice='';if(local.enVoice&&ens.find(v=>v.voiceURI===decodeURIComponent(local.enVoice)))enSel.value=local.enVoice;else local.enVoice='';try{saveLocal();}catch(e){}}
+(function(){const gb=document.getElementById('voiceGearBtn');if(gb)gb.onclick=()=>{populateVoiceSelects();document.getElementById('voiceMask').classList.add('show');};const vc=document.getElementById('voiceClose');if(vc)vc.onclick=()=>document.getElementById('voiceMask').classList.remove('show');const vm=document.getElementById('voiceMask');if(vm)vm.addEventListener('click',e=>{if(e.target===vm)vm.classList.remove('show');});const ko=document.getElementById('koVoice');if(ko)ko.onchange=e=>{local.koVoice=e.target.value||'';try{saveLocal();}catch(x){}};const en=document.getElementById('enVoice');if(en)en.onchange=e=>{local.enVoice=e.target.value||'';try{saveLocal();}catch(x){}};})();
 
 /* ============ 院校库（搜索栏 + 图片 + 资料） ============ */
 const SCHOOLS=[
