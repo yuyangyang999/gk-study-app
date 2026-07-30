@@ -1499,7 +1499,7 @@ function speakCnMale(text){if(!text)return;const v=pickMale(['zh-CN','zh','cmn',
 // 作息/打卡：优先用你选定的韩文嗓音，否则男声韩文优先，再回退中文男声
 function speakKo(){if(!('speechSynthesis' in window))return;const sel=findVoiceByKey(local.koVoice);if(sel&&window.__curKo){speakText(window.__curKo,'ko-KR',sel,{pitch:1.18,rate:1.0});return;}const mKo=pickMale(['ko']);if(mKo&&window.__curKo){speakText(window.__curKo,'ko-KR',mKo,{pitch:1.18,rate:1.0});return;}if(window.__curCn)speakCnMale(window.__curCn);}
 // 单词闯关英文夸奖：优先用你选定的英文嗓音，否则童音自动选 + 随连击升调
-function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=1.08+lvl*0.04;u.pitch=1.5+lvl*0.08;const sel=findVoiceByKey(local.enVoice);if(sel)u.voice=sel;else{const en=pickVoice(['en']);if(en)u.voice=en;}const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
+function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=0.88+lvl*0.03;u.pitch=1.72+lvl*0.08;const sel=findVoiceByKey(local.enVoice);if(sel)u.voice=sel;else{const en=pickVoice(['en']);if(en)u.voice=en;}const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
 // === 语音偏好：让用户从已下载嗓音中自选 ===
 function encURI(s){return encodeURIComponent(s||'');}
 function findVoiceByKey(key){if(!key)return null;try{const uri=decodeURIComponent(key);return _voicesCache.find(v=>v.voiceURI===uri)||null;}catch(e){return null;}}
@@ -1829,8 +1829,11 @@ function chIntensity(combo){
 }
 function chShuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
 let chState={active:false,idx:0,total:30,correct:0,combo:0,best:0,cur:null,answered:false,dir:'en'};
+let chPraiseQueue=[];
+function nextChPraise(){if(!chPraiseQueue.length)chPraiseQueue=chShuffle(CH_PRAISE.slice());return chPraiseQueue.pop();}
 function startChallenge(){
   chState={active:true,idx:0,total:30,correct:0,combo:0,best:0,cur:null,answered:false,dir:'en'};
+  chPraiseQueue=[];
   $('chEnd').style.display='none';$('chPlay').style.display='';
   $('chMask').classList.add('show');
   Sound.ensure();
@@ -1863,14 +1866,13 @@ function chAnswer(choice,el){
   if(choice===correct){
     el.classList.remove('dim');el.classList.add('correct');
     chState.correct++;chState.combo++;if(chState.combo>chState.best)chState.best=chState.combo;
-    const lvl=chIntensity(chState.combo);
-    const word=CH_PRAISE[lvl];
-    const hype=['','','Good','Great','Awesome','Incredible','Unbelievable'][lvl]||'Unbelievable';
-    const phrase=lvl>=2?(hype+'! '+word+'!'):(word+'!');
-    $('chFb').innerHTML='<span class="pz">'+word+'!</span> 🎉';
+    const word=nextChPraise();
+    const phrase='Wow! '+word+'!';
+    $('chFb').innerHTML='<span class="pz">Wow! '+word+'! 🎉</span>';
     $('chFb').style.color='var(--accent)';
     $('chCombo').textContent='🔥 连对 '+chState.combo;
     Sound.cheer(chState.combo);speakEn(phrase,chState.combo);burstConfetti();
+    const cr=$('chFb').getBoundingClientRect();burstSparks(cr.left+cr.width/2,cr.top+cr.height/2);
   }else{
     el.classList.remove('dim');el.classList.add('wrong');
     chState.combo=0;
