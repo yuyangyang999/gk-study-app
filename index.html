@@ -48,6 +48,10 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 .sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#FFFDFA,#FBF5EB);border-right:1px solid var(--line);padding:26px 16px;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:30;box-shadow:3px 0 26px rgba(86,62,38,.05)}
 .brand{display:flex;align-items:center;gap:12px;padding:4px 12px 24px;font-weight:800;font-size:17px;letter-spacing:.3px}
 .brand .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 8px 18px rgba(176,125,86,.38)}
+.brand .logo.avatar{border-radius:50%;overflow:hidden;cursor:pointer;padding:0;position:relative}
+.brand .logo.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.brand .logo.avatar .avatar-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+.nav-ico{width:19px;height:19px;flex:none;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;line-height:1}
 .brand small{display:block;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:2px;margin-top:3px}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;color:var(--muted);font-size:14px;font-weight:600;transition:.18s;margin-bottom:5px;position:relative}
 .nav-item:hover{background:var(--accent-soft);color:var(--text);transform:translateX(3px)}
@@ -277,6 +281,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
   .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40;padding:6px 2px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;box-shadow:0 -4px 20px rgba(86,62,38,.08)}
   .mnav{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9.5px;color:var(--muted);padding:4px 2px;flex:1;transition:.15s}
   .mnav svg{width:21px;height:21px}.mnav.active{color:var(--accent)}
+  .mnav .nav-ico{width:21px;height:21px;font-size:15px}
   .mnav.active svg{filter:drop-shadow(0 2px 4px rgba(176,125,86,.4))}
   .main{padding-bottom:70px}
   .hamburger{display:flex!important}
@@ -516,16 +521,20 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <span class="logo" id="brandLogo"></span>
+      <span class="logo avatar" id="brandLogo" title="点击上传头像照片">
+        <img id="avatarImg" alt="头像" style="display:none">
+        <span class="avatar-ph" id="avatarPh">👤</span>
+        <input type="file" id="avatarInput" accept="image/*" hidden>
+      </span>
       <span>xy的小小世界<small>XY WORLD</small></span>
     </div>
-    <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg><span>首页</span></div>
-    <div class="nav-item" data-view="routine"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg><span>作息</span></div>
-    <div class="nav-item" data-view="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg><span>自习室</span></div>
-    <div class="nav-item" data-view="noon"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 19V9a6 6 0 0 1 12 0v10M9 22v-3M15 22v-3"/></svg><span>午间</span></div>
-    <div class="nav-item" data-view="paths"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 5l7 5 4-3 5 6"/><circle cx="4" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="13" r="1.4" fill="currentColor" stroke="none"/></svg><span>学科路径</span></div>
-    <div class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg><span>数据面板</span></div>
-    <div class="nav-item" data-view="treehole"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>单词</span></div>
+    <div class="nav-item active" data-view="home"><span class="nav-ico">🌼</span><span>首页</span></div>
+    <div class="nav-item" data-view="routine"><span class="nav-ico">G</span><span>作息</span></div>
+    <div class="nav-item" data-view="timer"><span class="nav-ico">D</span><span>自习室</span></div>
+    <div class="nav-item" data-view="noon"><span class="nav-ico">&amp;</span><span>午间</span></div>
+    <div class="nav-item" data-view="paths"><span class="nav-ico">T</span><span>学科路径</span></div>
+    <div class="nav-item" data-view="dashboard"><span class="nav-ico">O</span><span>数据面板</span></div>
+    <div class="nav-item" data-view="treehole"><span class="nav-ico">P</span><span>单词</span></div>
     <div class="side-foot">数据存本机浏览器，可开启云同步多端实时共享。</div>
   </aside>
 
@@ -659,7 +668,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <!-- 作息 -->
     <section class="view" data-view="routine">
       <div class="page-title">作息管理</div>
-      <div class="page-sub">记录起床与睡觉时间，规律作息是高效备考的地基。</div>
+      <div class="page-sub">有人相爱，有人看海，有人七八个⏰醒不来</div>
       <div class="grid cols-2">
         <div class="card compact-check wake-card" style="text-align:center">
           <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M12 3v2M5.6 5.6l1.4 1.4M3 12h2M19 12h2M17 6.9l1.4-1.4"/><circle cx="12" cy="14" r="6"/></svg>起床打卡</h3>
@@ -698,7 +707,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <!-- 自习室计时 -->
     <section class="view" data-view="timer">
       <div class="page-title">自习室计时</div>
-      <div class="page-sub">记录每一次专注学习的时长，自动累计当日总量，沉淀你的努力。</div>
+      <div class="page-sub">本人学习时的专注力，堪比一只成年拖鞋</div>
       <div class="card" style="text-align:center">
         <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>专注计时</h3>
         <div class="timer-display" id="timerDisplay">00:00:00</div>
@@ -729,7 +738,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <!-- 午间记录 -->
     <section class="view" data-view="noon">
       <div class="page-title">午间记录</div>
-      <div class="page-sub">合理午饭与午休，保证下午精力充沛，记录你的恢复状态。</div>
+      <div class="page-sub">该吃吃该喝喝，有事就找你龙哥</div>
       <div class="grid cols-2">
         <div class="card">
           <h3><svg viewBox="0 0 24 24"><path d="M3 11h18M5 11a7 7 0 0 1 14 0M2 19h20M6 15h.01M18 15h.01"/></svg>午饭时段</h3>
@@ -770,7 +779,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <!-- 学科路径 -->
     <section class="view" data-view="paths">
       <div class="page-title">学科路径</div>
-      <div class="page-sub">六大学科各有一条复习路径，先选今天要攻克的学科，再按路径逐步推进。</div>
+      <div class="page-sub">选这条路，就别演给自己看，表面热闹毫无意义</div>
       <div class="card">
         <h3><svg viewBox="0 0 24 24"><path d="M4 19V5M4 5l7 5 4-3 5 6"/><circle cx="4" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="13" r="1.4" fill="currentColor" stroke="none"/></svg>今日学科选择</h3>
         <div class="chips" id="subjChips"></div>
@@ -806,7 +815,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <!-- 数据面板 -->
     <section class="view" data-view="dashboard">
       <div class="page-title">数据面板</div>
-      <div class="page-sub">基于你的打卡、计时、复盘与路径数据，自动诊断并推送方法。</div>
+      <div class="page-sub">不用和别人对比，但别欺骗你自己</div>
       <div class="grid cols-3" style="margin-bottom:16px">
         <div class="card stat"><b id="aStreak">0</b><span>连续早起(天)</span></div>
         <div class="card stat"><b id="aWeek">0h</b><span>近7天自习</span></div>
@@ -859,7 +868,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <!-- 单词闯关 -->
     <section class="view" data-view="treehole">
       <div class="page-title">单词闯关 · 高考 3500</div>
-      <div class="page-sub">把树洞换成单词闯关：看释义选单词 / 看单词选释义。答对清脆音 + 夸你，答错低沉音 + 提示正确答案。每天积累一点点 💪</div>
+      <div class="page-sub">Too fast to live，too young to die</div>
       <div class="grid cols-2">
         <div class="card">
           <h3><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>今日一题</h3>
@@ -881,7 +890,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
           <h3><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 17l-6.5 5 2-7L2 9h7z"/></svg>闯关战绩</h3>
           <div class="grid cols-2" id="vocabStats2"></div>
           <div class="hint" style="margin-top:12px" id="vocabTip"></div>
-          <div class="hint" style="margin-top:8px">💡 选对是清脆上扬音、选错是低沉提示音，配合《Fantastic Baby》节奏，坚持就是胜利～</div>
+          <div class="hint" style="margin-top:8px">💡 选对是欢呼彩带 + 英文夸奖、选错是柔和提示音，配合《Fantastic Baby》节奏，坚持就是胜利～</div>
         </div>
       </div>
     </section>
@@ -983,13 +992,13 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 </div>
 
 <nav class="mobile-nav">
-  <div class="mnav active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>首页</div>
-  <div class="mnav" data-view="routine"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>作息</div>
-  <div class="mnav" data-view="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>自习</div>
-  <div class="mnav" data-view="noon"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 19V9a6 6 0 0 1 12 0v10"/></svg>午间</div>
-  <div class="mnav" data-view="paths"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 5l7 5 4-3 5 6"/></svg>学科</div>
-  <div class="mnav" data-view="dashboard"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>数据</div>
-  <div class="mnav" data-view="treehole"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>单词</div>
+  <div class="mnav active" data-view="home"><span class="nav-ico">🌼</span>首页</div>
+  <div class="mnav" data-view="routine"><span class="nav-ico">G</span>作息</div>
+  <div class="mnav" data-view="timer"><span class="nav-ico">D</span>自习</div>
+  <div class="mnav" data-view="noon"><span class="nav-ico">&amp;</span>午间</div>
+  <div class="mnav" data-view="paths"><span class="nav-ico">T</span>学科</div>
+  <div class="mnav" data-view="dashboard"><span class="nav-ico">O</span>数据</div>
+  <div class="mnav" data-view="treehole"><span class="nav-ico">P</span>单词</div>
 </nav>
 
 <script>
@@ -1201,12 +1210,12 @@ const WAKE_PRAISES=[
  {t:'追我的先排队，你打卡倒是挺快 🐉',e:'🐉',ko:'VIP',v:'gd'},
  {t:'歪着头都帅过你，认了吧 💫',e:'💫',ko:'삐딱',v:'gd'},
  {t:'起床这种事，本少爷 뚝딱 搞定，你磨蹭啥 🐉',e:'🐉',ko:'뚝딱',v:'gd'},
- {t:'画家崔胜铉提醒你：艺术生得起早 🌅',e:'🌅',ko:'탑',v:'top'},
- {t:'我的低音炮都叫不醒你，只能上美术了 💫',e:'💫',ko:'바리톤',v:'top'},
- {t:'4차원 人类表示：凡间该起床了 🌅',e:'🌅',ko:'4차원',v:'top'},
- {t:'再躺会儿，离 my world 又远一天 ✨',e:'✨',ko:'하루하루',v:'top'},
- {t:'沉住气，崔胜铉的咖啡还等你 🔥',e:'🔥',ko:'묵직',v:'top'},
- {t:'见我之前，先把这张脸练精神点 🔥',e:'🔥',ko:'예술',v:'top'}
+ {t:'画家崔胜铉提醒你：艺术生得起早 🌅',e:'🌅',ko:'탑',v:'gd'},
+ {t:'我的低音炮都叫不醒你，只能上美术了 💫',e:'💫',ko:'바리톤',v:'gd'},
+ {t:'4차원 人类表示：凡间该起床了 🌅',e:'🌅',ko:'4차원',v:'gd'},
+ {t:'再躺会儿，离 my world 又远一天 ✨',e:'✨',ko:'하루하루',v:'gd'},
+ {t:'沉住气，崔胜铉的咖啡还等你 🔥',e:'🔥',ko:'묵직',v:'gd'},
+ {t:'见我之前，先把这张脸练精神点 🔥',e:'🔥',ko:'예술',v:'gd'}
 ];
 const SLEEP_PRAISES=[
  {t:'躺平也得带我三分帅，晚安 🌙',e:'🌙',ko:'굿밤',v:'gd'},
@@ -1215,14 +1224,14 @@ const SLEEP_PRAISES=[
  {t:'镜子关了，但帅是关不掉的 💫',e:'💫',ko:'비숑',v:'gd'},
  {t:'早点睡，明天才有精神继续追我 🐉',e:'🐉',ko:'수면',v:'gd'},
  {t:'别熬了，黑眼圈配不上我的审美 💅',e:'💅',ko:'피곤',v:'gd'},
- {t:'画家崔胜铉说：睡饱了才好画画 🎨',e:'🎨',ko:'탑',v:'top'},
- {t:'我的低音炮哄你入睡，别客气 🔥',e:'🔥',ko:'바리톤',v:'top'},
- {t:'4차원 人类已就寝，凡间也该睡了 🌌',e:'🌌',ko:'4차원',v:'top'},
- {t:'别熬了，离 my world 还差好几个时区 ✨',e:'✨',ko:'하루',v:'top'},
- {t:'沉住气，崔胜铉的咖啡明天再约 ☕',e:'☕',ko:'묵직',v:'top'},
- {t:'睡吧，明天又是追我的一天 💫',e:'💫',ko:'굿나잇',v:'top'}
+ {t:'画家崔胜铉说：睡饱了才好画画 🎨',e:'🎨',ko:'탑',v:'gd'},
+ {t:'我的低音炮哄你入睡，别客气 🔥',e:'🔥',ko:'바리톤',v:'gd'},
+ {t:'4차원 人类已就寝，凡间也该睡了 🌌',e:'🌌',ko:'4차원',v:'gd'},
+ {t:'别熬了，离 my world 还差好几个时区 ✨',e:'✨',ko:'하루',v:'gd'},
+ {t:'沉住气，崔胜铉的咖啡明天再约 ☕',e:'☕',ko:'묵직',v:'gd'},
+ {t:'睡吧，明天又是追我的一天 💫',e:'💫',ko:'굿나잇',v:'gd'}
 ];
-$('btnWake').addEventListener('click',()=>{const t=todayKey();const was=db.checkins[t]&&db.checkins[t].done;if(was)delete db.checkins[t];else db.checkins[t]={done:true,time:nowTs()};saveDB();updateRoutine();if(!was){const w=WAKE_PRAISES[Math.floor(Math.random()*WAKE_PRAISES.length)];showPraise(w.t,w.e,w.ko,w.v,local.wakeBg);}});
+$('btnWake').addEventListener('click',()=>{const t=todayKey();const was=db.checkins[t]&&db.checkins[t].done;if(was)delete db.checkins[t];else db.checkins[t]={done:true,time:nowTs()};saveDB();updateRoutine();if(!was){const w=WAKE_PRAISES[Math.floor(Math.random()*WAKE_PRAISES.length)];showPraise(w.t,w.e,w.ko,w.v,local.wakeBg);}const sl=db.sleep[t],c=db.checkins[t];if(sl&&sl.bed&&c&&c.done){const dur=(c.time-sl.bed)/3600000;if(dur>0&&dur<6)showPraise('请手机自我检讨一下，为什么总拉着你熬夜 🌙','😴');}});
 $('btnSleep').addEventListener('click',()=>{const t=todayKey();const had=db.sleep[t]&&db.sleep[t].bed;db.sleep[t]=db.sleep[t]||{};db.sleep[t].bed=nowTs();saveDB();updateRoutine();const p=SLEEP_PRAISES[Math.floor(Math.random()*SLEEP_PRAISES.length)];showPraise(p.t,p.e,p.ko,p.v,local.sleepBg);});
 
 /* ============ 自习室计时 ============ */
@@ -1389,7 +1398,7 @@ const Sound={
   // 《Fantastic Baby》风电子 hook + 鼓点
   fantastic(){if(this.muted)return;this.ensure();if(!this.ctx)return;const seq=[[523,0],[523,0.17],[659,0.30],[784,0.45],[659,0.60],[784,0.76],[988,0.92]];seq.forEach(([f,w])=>this.tone(f,0.22,'square',w,0.11));[0,0.30,0.60,0.90].forEach(w=>this.kick(w));},
   correct(){this.ensure();if(!this.ctx||this.muted)return;[659,784,988,1319].forEach((f,i)=>this.tone(f,0.16,'triangle',i*0.08,0.15));},
-  wrong(){this.ensure();if(!this.ctx||this.muted)return;this.tone(196,0.26,'sawtooth',0,0.15);this.tone(165,0.34,'sawtooth',0.07,0.13);},
+  wrong(){this.ensure();if(!this.ctx||this.muted)return;this.tone(392,0.16,'sine',0,0.11);this.tone(294,0.22,'sine',0.08,0.09);},
   praise(){this.ensure();if(!this.ctx||this.muted)return;const seq=[[523,0],[659,0.1],[784,0.2],[1047,0.32]];seq.forEach(([f,w])=>this.tone(f,0.26,'triangle',w,0.15));this.kick(0);},
   bell(){this.ensure();if(!this.ctx||this.muted)return;const t=this.ctx.currentTime;[1318.5,1760,2637].forEach((f,i)=>this.tone(f,0.8,'sine',i*0.10,0.12));this.tone(880,1.1,'sine',0,0.08);}
 };
@@ -1435,7 +1444,7 @@ function showPraise(text,emoji,ko,voice,bg){
     }else{byEl.innerHTML='';byEl.style.display='none';}
   }
   const koEl=$('praiseKo'),spEl=$('praiseSpeak');
-  if(ko){koEl.textContent=ko;koEl.style.display='none';spEl.style.display='inline-block';window.__curKo=ko;window.__curVoice=voice;speakKo();}
+  if(ko){window.__curKo=ko;window.__curCn=t;window.__curVoice=voice;speakMale(['ko'],ko,'ko-KR',{pitch:1.18,rate:1.0},()=>speakCnMale(t));koEl.textContent=ko;koEl.style.display='none';spEl.style.display='inline-block';}
   else{koEl.style.display='none';spEl.style.display='none';window.__curKo='';}
   const tier=comboText();const cb=$('praiseCombo');
   if(_combo>=2){cb.textContent='连击 x'+_combo+' 🔥';cb.classList.add('on');}else cb.classList.remove('on');
@@ -1446,11 +1455,19 @@ function showPraise(text,emoji,ko,voice,bg){
   if(_combo>=3){setTimeout(()=>burstSparks(r.left+r.width/2,r.top+r.height/2),180);}
   clearTimeout(_praiseT);_praiseT=setTimeout(()=>ov.classList.remove('show'),2300);
 }
-function pickKoVoice(){
-  try{const vs=(speechSynthesis.getVoices&&speechSynthesis.getVoices())||[];const ko=vs.filter(v=>(v.lang||'').toLowerCase().indexOf('ko')===0);if(!ko.length)return null;
-    return ko.find(v=>/male|남|men|boy/i.test(v.name)||(v.gender&&/male/i.test(v.gender)))||ko[0];}catch(e){return null;}
-}
-function speakKo(){if(!window.__curKo||!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(window.__curKo);u.lang='ko-KR';const voice=pickKoVoice();const isMale=voice&&/male|남|men|boy/i.test(voice.name||voice.gender||'');if(voice)u.voice=voice;const v=window.__curVoice;if(v==='top'){u.pitch=isMale?0.95:0.5;u.rate=0.92;}else if(v==='gd'){u.pitch=isMale?1.1:1.3;u.rate=1.06;}else{u.pitch=isMale?1:1;u.rate=1;}speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+let _voicesCache=[];let _voicesReady=false;
+function _refreshVoices(){try{_voicesCache=speechSynthesis.getVoices()||[];}catch(e){_voicesCache=[];}_voicesReady=_voicesCache.length>0;}
+if('speechSynthesis' in window){_refreshVoices();try{speechSynthesis.onvoiceschanged=_refreshVoices;}catch(e){}}
+// iOS 男声标签可能是 남성 / Male / ♂ 等；先排除明确的女性标识(避免 female 子串命中 male)
+function _isMale(v){if(!v)return false;const s=((v.name||'')+' '+(v.gender||'')).toLowerCase();if(/female|여성|女/.test(s))return false;return /male|남성|남자|남|men|boy|♂/.test(s);}
+function pickMale(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const m=vs.find(v=>_isMale(v)&&new RegExp('^'+L,'i').test(v.lang||''));if(m)return m;}return null;}
+// 健壮性：iOS 嗓音异步加载，首调可能为空 → 轮询重试；最终兜底用默认嗓音(降调)保证不静音
+function speakMale(langs,text,lang,opt,fallback){if(!text)return;const v=pickMale(langs);if(v){speakText(text,lang,v,opt);return;}if(!('speechSynthesis' in window)){if(fallback)fallback();return;}if(!_voicesReady){let tries=0;const again=()=>{_refreshVoices();const v2=pickMale(langs);if(v2){speakText(text,lang,v2,opt);}else if(tries++<8){setTimeout(again,180);}else if(fallback){fallback();}else{speakText(text,lang,null,opt);}};setTimeout(again,150);return;}if(fallback)fallback();else speakText(text,lang,null,opt);}
+function speakText(text,lang,voice,opt){if(!text||!('speechSynthesis' in window))return;try{try{speechSynthesis.cancel();}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang=lang;if(opt){if(opt.pitch)u.pitch=opt.pitch;if(opt.rate)u.rate=opt.rate;}if(voice)u.voice=voice;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
+// 优先男声韩文(最接近权志龙)，无则中文男声兜底
+function speakCnMale(text){speakMale(['zh-CN','zh','cmn','ko','en'],text,'zh-CN',{pitch:0.9,rate:1.02});}
+function speakKo(){if(!('speechSynthesis' in window))return;if(window.__curKo)speakMale(['ko'],window.__curKo,'ko-KR',{pitch:1.18,rate:1.0},()=>{if(window.__curCn)speakCnMale(window.__curCn);});}
+function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=1.02+lvl*0.05;u.pitch=1.05+lvl*0.06;const en=_voicesCache.find(v=>/^en/i.test(v.lang))||_voicesCache.find(v=>/en/i.test(v.lang));if(en)u.voice=en;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
 
 /* ============ 院校库（搜索栏 + 图片 + 资料） ============ */
 const SCHOOLS=[
@@ -1740,8 +1757,8 @@ let pomo={mode:'focus',remain:POMO_FOCUS,running:false,timer:null,endTs:0};
 function pomoArc(){const c=2*Math.PI*78;const total=pomo.mode==='focus'?POMO_FOCUS:POMO_BREAK;const frac=Math.max(0,Math.min(1,pomo.remain/total));$('pomoArc').style.strokeDashoffset=(c*(1-frac)).toFixed(1);}
 function pomoRender(){const m=Math.floor(pomo.remain/60),s=pomo.remain%60;$('pomoTime').textContent=pad(m)+':'+pad(s);$('pomoMode').textContent=pomo.mode==='focus'?'专注':'休息';const t=todayKey();$('pomoDone').textContent=(db.pomo&&db.pomo.date===t)?(db.pomo.completed||0):0;$('btnPomoToggle').textContent=pomo.running?'⏸ 暂停':'▶ 开始';$('btnPomoToggle').className=pomo.running?'btn soft sm':'btn primary sm';pomoArc();}
 function pomoPause(){pomo.running=false;if(pomo.timer){clearInterval(pomo.timer);pomo.timer=null;}pomoRender();}
-function pomoStart(){if(pomo.running)return;pomo.running=true;pomo.endTs=nowTs()+pomo.remain*1000;pomo.timer=setInterval(()=>{pomo.remain=Math.max(0,Math.round((pomo.endTs-nowTs())/1000));pomoRender();if(pomo.remain<=0){clearInterval(pomo.timer);pomo.timer=null;pomoComplete();}},250);pomoRender();}
-function pomoComplete(){if(pomo.mode==='focus'){const t=todayKey();db.pomo=db.pomo||{};if(db.pomo.date!==t){db.pomo.date=t;db.pomo.completed=0;}db.pomo.completed=(db.pomo.completed||0)+1;saveDB();showPraise('一个番茄钟完成！专注力+1 🍅','🍅');Sound.bell();pomo.mode='break';pomo.remain=POMO_BREAK;}else{showPraise('休息结束，继续冲 💪','💪');Sound.bell();pomo.mode='focus';pomo.remain=POMO_FOCUS;}pomo.running=false;pomoRender();}
+function pomoStart(){if(pomo.running)return;pomo.running=true;Sound.start();pomo.endTs=nowTs()+pomo.remain*1000;pomo.timer=setInterval(()=>{pomo.remain=Math.max(0,Math.round((pomo.endTs-nowTs())/1000));pomoRender();if(pomo.remain<=0){clearInterval(pomo.timer);pomo.timer=null;pomoComplete();}},250);pomoRender();}
+function pomoComplete(){if(navigator.vibrate)try{navigator.vibrate([180,80,180,80,260]);}catch(e){}if(pomo.mode==='focus'){const t=todayKey();db.pomo=db.pomo||{};if(db.pomo.date!==t){db.pomo.date=t;db.pomo.completed=0;}db.pomo.completed=(db.pomo.completed||0)+1;saveDB();showPraise('一个番茄钟完成！专注力+1 🍅','🍅');Sound.bell();pomo.mode='break';pomo.remain=POMO_BREAK;}else{showPraise('休息结束，继续冲 💪','💪');Sound.bell();pomo.mode='focus';pomo.remain=POMO_FOCUS;}pomo.running=false;pomoRender();}
 $('btnPomoToggle').addEventListener('click',()=>{Sound.ensure();if(pomo.running)pomoPause();else pomoStart();});
 $('btnPomoReset').addEventListener('click',()=>{pomo.mode='focus';pomo.remain=POMO_FOCUS;pomo.running=false;if(pomo.timer){clearInterval(pomo.timer);pomo.timer=null;}pomoRender();});
 
@@ -1809,11 +1826,14 @@ function chAnswer(choice,el){
   if(choice===correct){
     el.classList.remove('dim');el.classList.add('correct');
     chState.correct++;chState.combo++;if(chState.combo>chState.best)chState.best=chState.combo;
-    const word=CH_PRAISE[chIntensity(chState.combo)];
+    const lvl=chIntensity(chState.combo);
+    const word=CH_PRAISE[lvl];
+    const hype=['','','Good','Great','Awesome','Incredible','Unbelievable'][lvl]||'Unbelievable';
+    const phrase=lvl>=2?(hype+'! '+word+'!'):(word+'!');
     $('chFb').innerHTML='<span class="pz">'+word+'!</span> 🎉';
     $('chFb').style.color='var(--accent)';
     $('chCombo').textContent='🔥 连对 '+chState.combo;
-    Sound.correct();
+    Sound.cheer(chState.combo);speakEn(phrase,chState.combo);burstConfetti();
   }else{
     el.classList.remove('dim');el.classList.add('wrong');
     chState.combo=0;
@@ -1834,6 +1854,7 @@ function chFinish(){
   const r=chState.correct/chState.total;
   const pz=r>=1?'Superb!':r>=0.8?'Brilliant!':r>=0.6?'Phenomenal!':r>=0.4?'Remarkable!':r>=0.2?'Amazing!':'Keep Going!';
   $('chPraise').textContent=pz;
+  speakEn(pz.replace('!',''),7);
   if(r>=0.8)Sound.praise();else Sound.sparkle();
 }
 $('btnChallenge').addEventListener('click',startChallenge);
@@ -1846,17 +1867,22 @@ Sound.muted=(localStorage.getItem('gaokao_mute')==='1');
 $('soundBtn').classList.toggle('off',Sound.muted);
 $('soundBtn').addEventListener('click',()=>{const m=!Sound.muted;Sound.setMuted(m);$('soundBtn').classList.toggle('off',m);if(!m)Sound.ensure();});
 
-/* ============ 可爱猫脸图标（Hello Kitty 主题） ============ */
+/* ============ 可爱猫脸图标（Hello Kitty 主题，保留函数备用） ============ */
 function catInner(){return "<path d='M4.5 10 L3 4 L9 7.5 Z' fill='#F9C5D2' stroke='#E98AA0' stroke-width='0.6'/><path d='M19.5 10 L21 4 L15 7.5 Z' fill='#F9C5D2' stroke='#E98AA0' stroke-width='0.6'/><path d='M12 22 C4.5 22 3 16 3 12.5 C3 8.5 7 6.5 12 6.5 C17 6.5 21 8.5 21 12.5 C21 16 19.5 22 12 22 Z' fill='#F9C5D2' stroke='#E98AA0' stroke-width='0.6'/><circle cx='9' cy='12.5' r='1.25' fill='#3B352D'/><circle cx='15' cy='12.5' r='1.25' fill='#3B352D'/><path d='M11 15 L13 15 L12 16.6 Z' fill='#E98AA0'/><path d='M3.4 3.2 L6 5.6 L4.9 6.6 Z' fill='#fff'/><path d='M5.4 4 L7.3 6 L6 6.8 Z' fill='#F48FB1'/>";}
-function injectIcons(){
-  const ci=catInner();
-  const brand=$('brandLogo');if(brand)brand.innerHTML="<svg viewBox='0 0 24 24' style='stroke:none'>"+ci+"</svg>";
-  document.querySelectorAll('.nav-item > svg, .mnav > svg').forEach(s=>{s.setAttribute('style','stroke:none');s.innerHTML=ci;});
+function injectIcons(){ /* 导航图标已改为文字符号，不再注入猫脸 */ }
+function renderAvatar(){
+  const img=$('avatarImg'),ph=$('avatarPh');
+  if(local.avatar){if(img){img.src=local.avatar;img.style.display='block';}if(ph)ph.style.display='none';}
+  else{if(img)img.style.display='none';if(ph)ph.style.display='flex';}
 }
-injectIcons();
+injectIcons();renderAvatar();
+$('brandLogo').addEventListener('click',()=>{$('avatarInput').click();});
+$('avatarInput').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{local.avatar=r.result;saveLocal();renderAvatar();};r.readAsDataURL(f);e.target.value='';});
 
 /* ============ 额外提示音 + 全局点击音 ============ */
-Sound.click=function(){this.ensure();if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=720;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.05,t+0.006);g.gain.exponentialRampToValueAtTime(0.0001,t+0.05);o.start(t);o.stop(t+0.06);};
+Sound.click=function(){this.ensure();if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(1760,t);o.frequency.exponentialRampToValueAtTime(2640,t+0.02);o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.07,t+0.004);g.gain.exponentialRampToValueAtTime(0.0001,t+0.05);o.start(t);o.stop(t+0.06);};
+Sound.start=function(){this.ensure();if(!this.ctx||this.muted)return;[880,1175,1568].forEach((f,i)=>this.tone(f,0.12,'triangle',i*0.07,0.11));};
+Sound.cheer=function(combo){this.ensure();if(!this.ctx||this.muted)return;const base=523.25*Math.pow(2,(Math.min(combo||1,12)-1)/12);[0,4,7,12].forEach((s,i)=>this.tone(base*Math.pow(2,s/12),0.12,'triangle',i*0.05,0.13));};
 Sound.tap=function(){this.ensure();if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(880,t);o.frequency.exponentialRampToValueAtTime(1320,t+0.06);o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.08,t+0.008);g.gain.exponentialRampToValueAtTime(0.0001,t+0.09);o.start(t);o.stop(t+0.1);};
 Sound.sparkle=function(){this.ensure();if(!this.ctx||this.muted)return;[1047,1319,1568].forEach((f,i)=>this.tone(f,0.12,'sine',i*0.05,0.08));};
 Sound.coin=function(){this.ensure();if(!this.ctx||this.muted)return;[988,1319].forEach((f,i)=>this.tone(f,0.16,'square',i*0.07,0.1));};
