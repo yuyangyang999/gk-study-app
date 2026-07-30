@@ -1464,8 +1464,11 @@ function pickVoice(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;f
 const CUTE={pitch:1.55,rate:1.08};
 // 健壮性：iOS 嗓音异步加载，首调可能为空 → 轮询重试，最终兜底用默认嗓音(童音)保证不静音
 function speakText(text,lang,voice,opt){if(!text||!('speechSynthesis' in window))return;try{try{speechSynthesis.cancel();}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang=lang;if(opt){if(opt.pitch)u.pitch=opt.pitch;if(opt.rate)u.rate=opt.rate;}if(voice)u.voice=voice;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
-// 作息/打卡：优先念韩文(主题)，配童音；无韩文嗓音时回退中文童音
-function speakKo(){if(!('speechSynthesis' in window))return;const go=()=>{const v=pickVoice(['ko']);if(v&&window.__curKo){speakText(window.__curKo,'ko-KR',v,CUTE);return;}if(window.__curCn){const c=pickVoice(['zh-CN','zh','cmn']);speakText(window.__curCn,'zh-CN',c,CUTE);}};go();if(!_voicesReady)setTimeout(go,400);}
+function _isMale(v){if(!v)return false;const s=((v.name||'')+' '+(v.gender||'')).toLowerCase();if(/female|여성|女/.test(s))return false;return /male|남성|남자|남|men|boy|♂/.test(s);}
+function pickMale(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const m=vs.find(v=>_isMale(v)&&new RegExp('^'+L,'i').test(v.lang||''));if(m)return m;}return null;}
+function speakCnMale(text){if(!text)return;const v=pickMale(['zh-CN','zh','cmn','ko','en']);speakText(text,'zh-CN',v,{pitch:(v&&_isMale(v))?0.9:1.0,rate:1.02});}
+// 作息/打卡：恢复此前行为——韩文男声优先，无则中文男声兜底
+function speakKo(){if(!('speechSynthesis' in window))return;const mKo=pickMale(['ko']);if(mKo&&window.__curKo){speakText(window.__curKo,'ko-KR',mKo,{pitch:1.18,rate:1.0});return;}if(window.__curCn)speakCnMale(window.__curCn);}
 // 单词闯关英文夸奖：童音 + 随连击升调
 function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=1.08+lvl*0.04;u.pitch=1.5+lvl*0.08;const en=pickVoice(['en']);if(en)u.voice=en;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
 
