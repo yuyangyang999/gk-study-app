@@ -518,7 +518,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
       <div style="display:flex;align-items:center;gap:12px">
         <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
         <div>
-          <div class="hello" id="hello">欣祎，早安</div>
+          <div class="hello" id="hello">昕祎，早安</div>
           <div class="date" id="todayDate"></div>
         </div>
       </div>
@@ -1079,7 +1079,7 @@ $('hamburger').addEventListener('click',()=>{$('sidebar').classList.toggle('open
 $('mask').addEventListener('click',()=>{$('sidebar').classList.remove('open');$('mask').classList.remove('show');});
 
 /* ============ 顶部问候 ============ */
-function initTop(){const d=new Date(),h=d.getHours();const g=h<6?'凌晨好':h<11?'早安':h<14?'中午好':h<18?'下午好':'晚上好';const wk=['日','一','二','三','四','五','六'][d.getDay()];$('hello').textContent='欣祎，'+g;$('todayDate').textContent=fmt(d)+' 星期'+wk;}
+function initTop(){const d=new Date(),h=d.getHours();const g=h<6?'凌晨好':h<11?'早安':h<14?'中午好':h<18?'下午好':'晚上好';const wk=['日','一','二','三','四','五','六'][d.getDay()];$('hello').textContent='昕祎，'+g;$('todayDate').textContent=fmt(d)+' 星期'+wk;}
 function updateTopbar(){}
 
 /* ============ 主页 ============ */
