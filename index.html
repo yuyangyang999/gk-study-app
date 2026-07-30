@@ -65,6 +65,12 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 .topbar{position:sticky;top:0;background:rgba(248,243,236,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:16px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;z-index:20;border-bottom:1px solid var(--line)}
 .topbar .hello{font-size:17px;font-weight:800}
 .topbar .date{font-size:12.5px;color:var(--muted);margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:6px;margin-left:auto;flex:none}
+.top-actions .sound-btn,.top-actions .cloud-btn{width:32px;height:32px;border-radius:10px}
+.top-actions .sound-btn svg,.top-actions .cloud-btn svg{width:16px;height:16px}
+.top-actions .bg-btn{width:32px;height:32px;font-size:14px}
+.top-actions .gear-btn{width:32px;height:32px;font-size:15px;border-radius:10px}
+.top-actions .cloud-btn .dot{top:4px;right:5px;width:8px;height:8px}
 .quick{display:flex;gap:10px}
 .quick .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 15px;min-width:76px;text-align:center;box-shadow:var(--shadow-sm);transition:.18s}
 .quick .q:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(86,62,38,.1)}
@@ -275,6 +281,8 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 .voice-mask.show{display:flex}
 .voice-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;width:min(430px,92vw);box-shadow:0 22px 60px rgba(86,62,38,.25)}
 .voice-card h3{margin:0 0 14px;font-size:17px}
+.voice-try{margin-top:6px;padding:5px 14px;border:1px solid rgba(176,125,86,.35);background:rgba(176,125,86,.1);border-radius:10px;font-size:13px;cursor:pointer;color:var(--accent)}
+.voice-try:active{transform:scale(.95)}
 .voice-row{margin:12px 0}
 .voice-row label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
 .voice-row select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:15px;color:var(--text)}
@@ -558,16 +566,18 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
           <div class="date" id="todayDate"></div>
         </div>
       </div>
-      <button class="sound-btn" id="soundBtn" title="提示音开关">
-        <svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-      </button>
-      <button class="bg-btn" id="bgBtn" title="更换权志龙背景（可用手机相册照片）">🐉</button>
-      <input type="file" id="pageBgInput" accept="image/*" style="display:none">
-      <button class="cloud-btn" id="cloudBtn" title="云同步">
-        <svg viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.2 9.5 4 4 0 0 0 7 17.5"/><path d="M12 12v6M9.5 14.5 12 12l2.5 2.5"/></svg>
-        <span class="dot" id="cloudDot"></span>
-      </button>
-      <button class="gear-btn" id="voiceGearBtn" title="语音设置（选择你下载的嗓音）">⚙️</button>
+      <div class="top-actions">
+        <button class="sound-btn" id="soundBtn" title="提示音开关">
+          <svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        </button>
+        <button class="bg-btn" id="bgBtn" title="更换权志龙背景（可用手机相册照片）">🐉</button>
+        <input type="file" id="pageBgInput" accept="image/*" style="display:none">
+        <button class="cloud-btn" id="cloudBtn" title="云同步">
+          <svg viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.2 9.5 4 4 0 0 0 7 17.5"/><path d="M12 12v6M9.5 14.5 12 12l2.5 2.5"/></svg>
+          <span class="dot" id="cloudDot"></span>
+        </button>
+        <button class="gear-btn" id="voiceGearBtn" title="语音设置（选择你下载的嗓音）">⚙️</button>
+      </div>
     </div>
 
       <!-- 首页 -->
@@ -915,12 +925,14 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <div class="voice-row">
       <label>起床 / 睡觉打卡 · 韩文念词嗓音</label>
       <select id="koVoice"></select>
+      <button class="voice-try" id="koTry" type="button">▶ 试听</button>
     </div>
     <div class="voice-row">
       <label>单词闯关 · 英文夸奖嗓音</label>
       <select id="enVoice"></select>
+      <button class="voice-try" id="enTry" type="button">▶ 试听</button>
     </div>
-    <div class="voice-tip">从你手机已下载的嗓音里选。选「默认」则自动挑男声韩文 / 童音英文。改完直接生效，下次打开自动记住。</div>
+    <div class="voice-tip">📌 你下载的男声如果不在「韩语嗓音」分组里，去「其他全部嗓音」里找它的名字。选完点「试听」立即听效果，下次打开自动记住。</div>
     <div class="voice-actions">
       <button class="gear-btn" id="voiceClose" style="background:rgba(176,125,86,.18)">关闭</button>
     </div>
@@ -1239,12 +1251,12 @@ const WAKE_PRAISES=[
  {t:'追我的先排队，你打卡倒是挺快 🐉',e:'🐉',ko:'VIP',v:'gd'},
  {t:'歪着头都帅过你，认了吧 💫',e:'💫',ko:'삐딱',v:'gd'},
  {t:'起床这种事，本少爷 뚝딱 搞定，你磨蹭啥 🐉',e:'🐉',ko:'뚝딱',v:'gd'},
- {t:'画家崔胜铉提醒你：艺术生得起早 🌅',e:'🌅',ko:'탑',v:'gd'},
- {t:'我的低音炮都叫不醒你，只能上美术了 💫',e:'💫',ko:'바리톤',v:'gd'},
- {t:'4차원 人类表示：凡间该起床了 🌅',e:'🌅',ko:'4차원',v:'gd'},
+ {t:'画家崔胜铉提醒你：艺术生得起早 🌅',e:'🌅',ko:'탑',v:'top'},
+ {t:'我的低音炮都叫不醒你，只能上美术了 💫',e:'💫',ko:'바리톤',v:'top'},
+ {t:'4차원 人类表示：凡间该起床了 🌅',e:'🌅',ko:'4차원',v:'top'},
  {t:'再躺会儿，离 my world 又远一天 ✨',e:'✨',ko:'하루하루',v:'gd'},
- {t:'沉住气，崔胜铉的咖啡还等你 🔥',e:'🔥',ko:'묵직',v:'gd'},
- {t:'见我之前，先把这张脸练精神点 🔥',e:'🔥',ko:'예술',v:'gd'}
+ {t:'沉住气，崔胜铉的咖啡还等你 🔥',e:'🔥',ko:'묵직',v:'top'},
+ {t:'见我之前，先把这张脸练精神点 🔥',e:'🔥',ko:'예술',v:'top'}
 ];
 const SLEEP_PRAISES=[
  {t:'躺平也得带我三分帅，晚安 🌙',e:'🌙',ko:'굿밤',v:'gd'},
@@ -1253,11 +1265,11 @@ const SLEEP_PRAISES=[
  {t:'镜子关了，但帅是关不掉的 💫',e:'💫',ko:'비숑',v:'gd'},
  {t:'早点睡，明天才有精神继续追我 🐉',e:'🐉',ko:'수면',v:'gd'},
  {t:'别熬了，黑眼圈配不上我的审美 💅',e:'💅',ko:'피곤',v:'gd'},
- {t:'画家崔胜铉说：睡饱了才好画画 🎨',e:'🎨',ko:'탑',v:'gd'},
- {t:'我的低音炮哄你入睡，别客气 🔥',e:'🔥',ko:'바리톤',v:'gd'},
- {t:'4차원 人类已就寝，凡间也该睡了 🌌',e:'🌌',ko:'4차원',v:'gd'},
+ {t:'画家崔胜铉说：睡饱了才好画画 🎨',e:'🎨',ko:'탑',v:'top'},
+ {t:'我的低音炮哄你入睡，别客气 🔥',e:'🔥',ko:'바리톤',v:'top'},
+ {t:'4차원 人类已就寝，凡间也该睡了 🌌',e:'🌌',ko:'4차원',v:'top'},
  {t:'别熬了，离 my world 还差好几个时区 ✨',e:'✨',ko:'하루',v:'gd'},
- {t:'沉住气，崔胜铉的咖啡明天再约 ☕',e:'☕',ko:'묵직',v:'gd'},
+ {t:'沉住气，崔胜铉的咖啡明天再约 ☕',e:'☕',ko:'묵직',v:'top'},
  {t:'睡吧，明天又是追我的一天 💫',e:'💫',ko:'굿나잇',v:'gd'}
 ];
 $('btnWake').addEventListener('click',()=>{const t=todayKey();const was=db.checkins[t]&&db.checkins[t].done;if(was)delete db.checkins[t];else db.checkins[t]={done:true,time:nowTs()};saveDB();updateRoutine();if(!was){const w=WAKE_PRAISES[Math.floor(Math.random()*WAKE_PRAISES.length)];showPraise(w.t,w.e,w.ko,w.v,local.wakeBg);}const sl=db.sleep[t],c=db.checkins[t];if(sl&&sl.bed&&c&&c.done){const dur=(c.time-sl.bed)/3600000;if(dur>0&&dur<6)showPraise('请手机自我检讨一下，为什么总拉着你熬夜 🌙','😴');}});
@@ -1473,7 +1485,7 @@ function showPraise(text,emoji,ko,voice,bg){
     }else{byEl.innerHTML='';byEl.style.display='none';}
   }
   const koEl=$('praiseKo'),spEl=$('praiseSpeak');
-  if(ko){window.__curKo=ko;window.__curCn=t;window.__curVoice=voice;speakKo();koEl.textContent=ko;koEl.style.display='none';spEl.style.display='inline-block';}
+  if(ko){window.__curKo=ko;window.__curCn=t;window.__curVoice=voice;speakKo();koEl.textContent='「 '+ko+' 」';koEl.style.display='block';spEl.style.display='inline-block';}
   else{koEl.style.display='none';spEl.style.display='none';window.__curKo='';}
   const tier=comboText();const cb=$('praiseCombo');
   if(_combo>=2){cb.textContent='连击 x'+_combo+' 🔥';cb.classList.add('on');}else cb.classList.remove('on');
@@ -1497,14 +1509,17 @@ function _isMale(v){if(!v)return false;const s=((v.name||'')+' '+(v.gender||''))
 function pickMale(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const m=vs.find(v=>_isMale(v)&&new RegExp('^'+L,'i').test(v.lang||''));if(m)return m;}return null;}
 function speakCnMale(text){if(!text)return;const v=pickMale(['zh-CN','zh','cmn','ko','en']);speakText(text,'zh-CN',v,{pitch:(v&&_isMale(v))?0.9:1.0,rate:1.02});}
 // 作息/打卡：优先用你选定的韩文嗓音，否则男声韩文优先，再回退中文男声
-function speakKo(){if(!('speechSynthesis' in window))return;const sel=findVoiceByKey(local.koVoice);if(sel&&window.__curKo){speakText(window.__curKo,'ko-KR',sel,{pitch:1.18,rate:1.0});return;}const mKo=pickMale(['ko']);if(mKo&&window.__curKo){speakText(window.__curKo,'ko-KR',mKo,{pitch:1.18,rate:1.0});return;}if(window.__curCn)speakCnMale(window.__curCn);}
+function _pickKoFallback(){const kos=_voicesCache.filter(v=>/^ko/i.test(v.lang||''));if(!kos.length)return null;return kos.find(_isMale)||kos[0];}
+function speakKo(){if(!('speechSynthesis' in window))return;if(!window.__curKo){if(window.__curCn)speakCnMale(window.__curCn);return;}const sel=findVoiceByKey(local.koVoice);if(sel){speakText(window.__curKo,'ko-KR',sel,{pitch:1.0,rate:0.98});return;}const ko=_pickKoFallback();if(ko){speakText(window.__curKo,'ko-KR',ko,{pitch:_isMale(ko)?1.0:0.62,rate:0.98});return;}const mCn=pickMale(['zh-CN','zh','cmn']);if(window.__curCn)speakText(window.__curCn,'zh-CN',mCn,{pitch:mCn?0.9:0.62,rate:1.0});}
 // 单词闯关英文夸奖：优先用你选定的英文嗓音，否则童音自动选 + 随连击升调
-function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));u.rate=0.88+lvl*0.03;u.pitch=1.72+lvl*0.08;const sel=findVoiceByKey(local.enVoice);if(sel)u.voice=sel;else{const en=pickVoice(['en']);if(en)u.voice=en;}const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
+const EN_FUN=/good news|superstar|bubbles|jester|organ|cellos|bells|bad news|zarvox|trinoids|boing|junior|kathy|flo\b|grandma|grandpa|eddy|reed|rocko|sandy|shelley|wobble/i;
+function _pickEnVoice(){const sel=findVoiceByKey(local.enVoice);if(sel)return sel;const ens=_voicesCache.filter(v=>/^en/i.test(v.lang||''));if(!ens.length)return null;return ens.find(v=>EN_FUN.test(v.name||''))||ens.find(v=>/en[-_]?US/i.test(v.lang||''))||ens[0];}
+function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));const v=_pickEnVoice();const mk=(p,wow)=>{const u=new SpeechSynthesisUtterance(p);u.lang='en-US';if(v)u.voice=v;if(wow){u.rate=1.15;u.pitch=2.0;}else{u.rate=1.02+lvl*0.02;u.pitch=1.4+lvl*0.1;}u.volume=1;return u;};const us=[];const m=/^wow!?\s*(.*)$/i.exec(text);if(m&&m[1]){us.push(mk('Wow!',true));us.push(mk(m[1],false));}else us.push(mk(text,false));setTimeout(()=>{us.forEach(u=>{try{speechSynthesis.speak(u);}catch(e){}});},60);}catch(e){}}
 // === 语音偏好：让用户从已下载嗓音中自选 ===
 function encURI(s){return encodeURIComponent(s||'');}
 function findVoiceByKey(key){if(!key)return null;try{const uri=decodeURIComponent(key);return _voicesCache.find(v=>v.voiceURI===uri)||null;}catch(e){return null;}}
-function populateVoiceSelects(){const koSel=document.getElementById('koVoice'),enSel=document.getElementById('enVoice');if(!koSel||!enSel)return;const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');const opt=v=>`<option value="${encURI(v.voiceURI)}">${esc(v.name)} · ${esc(v.lang)}</option>`;const kos=_voicesCache.filter(v=>/^ko/i.test(v.lang||''));const ens=_voicesCache.filter(v=>/^en/i.test(v.lang||''));koSel.innerHTML='<option value="">默认（自动男声韩文优先）</option>'+kos.map(opt).join('');enSel.innerHTML='<option value="">默认（童音英文·自动选）</option>'+ens.map(opt).join('');if(local.koVoice&&kos.find(v=>v.voiceURI===decodeURIComponent(local.koVoice)))koSel.value=local.koVoice;else local.koVoice='';if(local.enVoice&&ens.find(v=>v.voiceURI===decodeURIComponent(local.enVoice)))enSel.value=local.enVoice;else local.enVoice='';try{saveLocal();}catch(e){}}
-(function(){const gb=document.getElementById('voiceGearBtn');if(gb)gb.onclick=()=>{populateVoiceSelects();document.getElementById('voiceMask').classList.add('show');};const vc=document.getElementById('voiceClose');if(vc)vc.onclick=()=>document.getElementById('voiceMask').classList.remove('show');const vm=document.getElementById('voiceMask');if(vm)vm.addEventListener('click',e=>{if(e.target===vm)vm.classList.remove('show');});const ko=document.getElementById('koVoice');if(ko)ko.onchange=e=>{local.koVoice=e.target.value||'';try{saveLocal();}catch(x){}};const en=document.getElementById('enVoice');if(en)en.onchange=e=>{local.enVoice=e.target.value||'';try{saveLocal();}catch(x){}};})();
+function populateVoiceSelects(){const koSel=document.getElementById('koVoice'),enSel=document.getElementById('enVoice');if(!koSel||!enSel)return;const esc=x=>String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');const opt=v=>`<option value="${encURI(v.voiceURI)}">${esc(v.name)} · ${esc(v.lang)}</option>`;const vs=_voicesCache.slice();if(!vs.length)return;const group=(sel,pri,priLabel,defLabel)=>{const p=vs.filter(pri);const rest=vs.filter(v=>!pri(v));let h='<option value="">'+defLabel+'</option>';if(p.length)h+='<optgroup label="'+priLabel+'">'+p.map(opt).join('')+'</optgroup>';if(rest.length)h+='<optgroup label="其他全部嗓音（下载的男声可能在这里）">'+rest.map(opt).join('')+'</optgroup>';sel.innerHTML=h;};group(koSel,v=>/^ko/i.test(v.lang||''),'韩语嗓音','默认（自动挑韩语·女声压低音模拟男声）');group(enSel,v=>/^en/i.test(v.lang||''),'英语嗓音','默认（自动挑活泼角色音）');const setIf=(sel,key)=>{if(!local[key])return;try{const uri=decodeURIComponent(local[key]);if(vs.find(v=>v.voiceURI===uri))sel.value=local[key];}catch(e){}};setIf(koSel,'koVoice');setIf(enSel,'enVoice');}
+(function(){const gb=document.getElementById('voiceGearBtn');if(gb)gb.onclick=()=>{populateVoiceSelects();document.getElementById('voiceMask').classList.add('show');};const vc=document.getElementById('voiceClose');if(vc)vc.onclick=()=>document.getElementById('voiceMask').classList.remove('show');const vm=document.getElementById('voiceMask');if(vm)vm.addEventListener('click',e=>{if(e.target===vm)vm.classList.remove('show');});const ko=document.getElementById('koVoice');if(ko)ko.onchange=e=>{local.koVoice=e.target.value||'';try{saveLocal();}catch(x){}window.__curKo='개강!';window.__curCn='就你这起床速度，也只配追我了';speakKo();};const en=document.getElementById('enVoice');if(en)en.onchange=e=>{local.enVoice=e.target.value||'';try{saveLocal();}catch(x){}speakEn('Wow! Amazing!',4);};const kt=document.getElementById('koTry');if(kt)kt.onclick=()=>{window.__curKo='개강!';window.__curCn='就你这起床速度，也只配追我了';speakKo();};const et=document.getElementById('enTry');if(et)et.onclick=()=>speakEn('Wow! Fascinating!',6);})();
 
 /* ============ 院校库（搜索栏 + 图片 + 资料） ============ */
 const SCHOOLS=[
