@@ -1,0 +1,18 @@
+{
+  "name": "高三暑假备战 · 学习工作台",
+  "short_name": "高三备考台",
+  "description": "高三暑期备考一体化工作台：作息打卡、专注计时、院校库与权志龙×崔胜铉应援站。",
+  "lang": "zh-CN",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
+  "orientation": "portrait",
+  "background_color": "#F3EDE5",
+  "theme_color": "#B07D56",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

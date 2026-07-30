@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>高三暑假备战 · 学习工作台</title>
+<meta name="theme-color" content="#B07D56">
+<meta name="description" content="高三暑期备考一体化工作台：作息打卡、专注计时、院校库与权志龙×崔胜铉应援站。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="高三备考台">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{
+  --bg:#F3EDE5;
+  --bg-grad:radial-gradient(1200px 620px at 10% -10%,#FBF7F1 0%,#F1E9DE 50%,#ECE2D3 100%);
+  --card:#FFFCF8;
+  --text:#3B352D;--ink:#3B352D;
+  --muted:#9C9081;
+  --line:#ECE3D5;
+  --accent:#B07D56;            /* 陶土棕 clay */
+  --accent-2:#8FA57E;         /* 鼠尾草绿 sage */
+  --accent-soft:#F2E7D8;      /* 浅陶土 */
+  --green:#88A878;            /* 柔和草绿 */
+  --green-soft:#EAF1E2;
+  --amber:#D7A95B;            /* 暖金 */
+  --amber-soft:#F8EFD9;
+  --rose:#CC8C86;             /* 灰玫瑰 */
+  --rose-soft:#F6E4E1;
+  --radius:22px;
+  --shadow:0 10px 30px rgba(86,62,38,.08),0 2px 6px rgba(86,62,38,.05);
+  --shadow-sm:0 4px 14px rgba(86,62,38,.07);
+  --sidebar-w:252px;
+  --serif:"Songti SC","STSong","Noto Serif KR",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-grad);background-attachment:fixed;color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.55;font-size:14px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:14px;color:var(--text)}
+svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#FFFDFA,#FBF5EB);border-right:1px solid var(--line);padding:26px 16px;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:30;box-shadow:3px 0 26px rgba(86,62,38,.05)}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 12px 24px;font-weight:800;font-size:17px;letter-spacing:.3px}
+.brand .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 8px 18px rgba(176,125,86,.38)}
+.brand small{display:block;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:2px;margin-top:3px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;color:var(--muted);font-size:14px;font-weight:600;transition:.18s;margin-bottom:5px;position:relative}
+.nav-item:hover{background:var(--accent-soft);color:var(--text);transform:translateX(3px)}
+.nav-item.active{background:linear-gradient(135deg,var(--accent-soft),#F6ECDC);color:var(--accent);font-weight:700;box-shadow:inset 0 0 0 1px rgba(176,125,86,.16)}
+.nav-item.active::before{content:'';position:absolute;left:-16px;top:50%;transform:translateY(-50%);width:4px;height:22px;border-radius:0 5px 5px 0;background:linear-gradient(180deg,var(--accent),var(--accent-2))}
+.nav-item svg{width:19px;height:19px;flex:none}
+.side-foot{margin-top:auto;padding:14px 12px;font-size:11.5px;color:var(--muted);line-height:1.7;border-top:1px dashed var(--line)}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;padding-bottom:44px}
+.topbar{position:sticky;top:0;background:rgba(248,243,236,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:16px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;z-index:20;border-bottom:1px solid var(--line)}
+.topbar .hello{font-size:17px;font-weight:800}
+.topbar .date{font-size:12.5px;color:var(--muted);margin-top:2px}
+.quick{display:flex;gap:10px}
+.quick .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 15px;min-width:76px;text-align:center;box-shadow:var(--shadow-sm);transition:.18s}
+.quick .q:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(86,62,38,.1)}
+.quick .q b{display:block;font-size:16px;font-weight:800;color:var(--accent)}
+.quick .q span{font-size:11px;color:var(--muted)}
+
+.view{padding:24px 28px;display:none;animation:fade .28s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page-title{font-size:21px;font-weight:800;margin-bottom:6px;position:relative;display:inline-block}
+.page-title::after{content:'';position:absolute;left:0;bottom:-5px;width:38px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:20px;margin-top:8px}
+
+.grid{display:grid;gap:18px}
+.cols-2{grid-template-columns:repeat(2,1fr)}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);transition:.2s}
+.compact-check{padding:11px 12px 9px}
+.compact-check h3{font-size:14px}
+.compact-check .big-clock{font-size:30px}
+.compact-check .check-state{font-size:12px;padding:5px 12px}
+.compact-check .btn{padding-top:8px;padding-bottom:8px}
+.card:hover{box-shadow:0 14px 36px rgba(86,62,38,.1)}
+.card h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.album-name{border:none;background:transparent;font:inherit;font-weight:800;color:var(--text);outline:none;flex:1;min-width:0;padding:0}
+.album-name::placeholder{color:var(--muted);font-weight:600}
+.card h3 svg{width:18px;height:18px;color:var(--accent)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 18px;border-radius:13px;font-size:14px;font-weight:700;transition:.16s;background:var(--card);color:var(--text);border:1px solid var(--line)}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#C08E66);color:#fff;border:none;box-shadow:0 8px 18px rgba(176,125,86,.32)}
+.btn.green{background:var(--green);color:#fff;border:none}.btn.ghost{background:var(--card)}
+.btn.soft{background:var(--accent-soft);color:var(--accent);border:none}.btn.sm{padding:8px 13px;font-size:13px;border-radius:10px}
+.btn[disabled]{opacity:.5;pointer-events:none;transform:none;box-shadow:none}
+
+/* signature + countdown hero */
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#C79A72,#B07D56 58%,#9E8A6C);color:#fff;border-radius:calc(var(--radius) + 4px);padding:26px 28px;box-shadow:0 20px 44px rgba(176,125,86,.28);margin-bottom:18px}
+.hero::before{content:'';position:absolute;right:-46px;top:-54px;width:210px;height:210px;border-radius:50%;border:18px solid rgba(255,255,255,.12)}
+.hero::after{content:'';position:absolute;right:34px;bottom:-66px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)}
+.hero .sig-label{font-size:12px;opacity:.82;letter-spacing:1.5px}
+.sig{font-family:var(--serif);font-size:18px;font-weight:600;font-style:italic;min-height:28px;outline:none;border-bottom:1px dashed var(--line);position:relative;z-index:1}
+.sig:empty:before{content:'写下一句属于你的座右铭 ✍️';opacity:.78;font-weight:400;font-style:normal;font-size:15px;color:var(--muted)}
+.cd-edit-center{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:10px;font-size:12px;opacity:.9;position:relative;z-index:1}
+.cd-edit-center input{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:9px;padding:5px 9px;width:142px}
+.cd-edit-center input::-webkit-calendar-picker-indicator{filter:invert(1)}
+.sig-bottom{display:block;text-align:center;margin-top:14px;font-size:14px;font-weight:600;min-height:22px;color:#fff;border-bottom:1px dashed rgba(255,255,255,.4);padding-bottom:2px}
+.sig-bottom:empty:before{content:'写下一句属于你的座右铭 ✍️';color:rgba(255,255,255,.8);font-style:normal;font-weight:400;font-size:13px}
+.hero-bg-btn{position:absolute;top:42px;right:16px;z-index:4;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.5);border-radius:16px;padding:4px 10px;cursor:pointer;white-space:nowrap;transition:.15s}
+.hero-bg-btn:hover{background:rgba(0,0,0,.45)}
+.hero-bg-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:60}
+.hero-bg-panel{width:min(330px,88vw);background:#fff;color:#333;border-radius:16px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,.4);text-align:left}
+.hbp-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.hbp-sub{font-size:12px;color:#999;margin-bottom:12px}
+.hbp-album{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;min-height:8px}
+.hba-thumb{width:66px;height:66px;border-radius:10px;object-fit:cover;border:2px solid #e4ddd2;cursor:pointer;transition:.12s}
+.hba-thumb:hover{border-color:#B07D56}
+.hbp-empty{font-size:12px;color:#aaa;margin-bottom:14px}
+.hbp-actions{display:flex;gap:10px;margin-bottom:8px}
+.hbp-actions button{flex:1;font-size:13px;font-weight:700;color:#fff;background:#B07D56;border:none;border-radius:10px;padding:10px;cursor:pointer;transition:.12s}
+.hbp-actions button:hover{background:#9E6E48}
+.hbp-close{width:100%;font-size:13px;color:#888;background:#f1efea;border:none;border-radius:10px;padding:9px;cursor:pointer}
+.sig-row{display:flex;align-items:flex-end;gap:8px;margin-top:8px}
+.sig-row .sig{flex:1;min-width:0}
+.hero .cd{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:12px;position:relative;z-index:1}
+.hero .cd .num{font-family:var(--serif);font-size:72px;font-weight:700;line-height:1}
+.hero .cd .unit{font-size:14px;opacity:.92}
+.hero .cd-edit{margin-left:auto;font-size:12px;opacity:.9;display:flex;align-items:center;gap:6px}
+.hero .cd-edit input{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:9px;padding:5px 9px;width:142px}
+.hero .cd-edit input::-webkit-calendar-picker-indicator{filter:invert(1)}
+
+/* stars */
+.stars{display:inline-flex;gap:3px;vertical-align:middle}
+.star{position:relative;width:27px;height:27px;display:inline-block;font-size:25px;line-height:27px;color:#C8BAA4;transition:.12s;cursor:pointer}
+.star:before{content:'★';position:absolute;left:0;top:0}
+.star:hover{color:#D7C7AC;transform:scale(1.14)}
+.star.full{color:#E3B23C;text-shadow:0 1px 4px rgba(227,178,60,.35)}
+.star.halfon:after{content:'★';position:absolute;left:0;top:0;width:50%;overflow:hidden;color:#E3B23C;text-shadow:0 1px 4px rgba(227,178,60,.35)}
+.star .half{position:absolute;top:0;height:100%;width:50%;z-index:2}
+.star .half.left{left:0}.star .half.right{right:0}
+
+.rate-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.rate-row:last-of-type{border-bottom:none}
+.rate-row .rl{width:84px;font-size:14px;font-weight:600}
+.rate-row .rv{width:52px;text-align:right;font-size:13px;color:var(--accent);font-weight:700}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.field label{font-size:12.5px;font-weight:600;color:var(--muted)}
+.field input,.field textarea,.field select{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#FBF8F3;outline:none;transition:.15s;width:100%}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
+.field textarea{resize:vertical;min-height:60px}
+
+.hint{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* list / rows */
+.list{display:flex;flex-direction:column;gap:11px}
+.row{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:14px;padding:13px 15px;border:1px solid transparent;transition:.15s}
+.row:hover{background:var(--accent-soft)}
+.row .ico{width:36px;height:36px;border-radius:11px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none;box-shadow:var(--shadow-sm)}
+.row .ico svg{width:18px;height:18px}
+.row .body{flex:1;min-width:0}.row .body b{display:block;font-size:14px;font-weight:700}
+.row .body span{font-size:12px;color:var(--muted)}
+.row .x{color:var(--muted);padding:6px;border-radius:9px;transition:.15s}.row .x:hover{background:var(--rose-soft);color:var(--rose)}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:28px 0}
+
+/* task */
+.task{display:flex;align-items:flex-start;gap:12px;background:var(--bg);border-radius:14px;padding:13px 15px;transition:.15s;border:1px solid transparent}
+.task:hover{background:var(--accent-soft)}
+.task .chk{width:23px;height:23px;border-radius:8px;border:2px solid var(--line);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.15s;cursor:pointer}
+.task .chk svg{width:14px;height:14px;stroke-width:3;color:#fff;opacity:0}
+.task.done .chk{background:var(--green);border-color:var(--green)}.task.done .chk svg{opacity:1}
+.task .meta{flex:1;min-width:0}.task .meta .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
+.task.done .meta .txt{text-decoration:line-through;color:var(--muted)}
+.task .meta .txt{font-size:14px;font-weight:500;word-break:break-word}
+
+/* timer */
+.timer-display{font-size:58px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:2px;color:var(--text);text-align:center;margin:8px 0}
+.timer-display.run{color:var(--accent)}
+.timer-ctrl{display:flex;gap:12px;justify-content:center;margin:16px 0}
+.big-clock{font-size:42px;font-weight:800;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.check-state{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px}
+.check-state.done{background:var(--green-soft);color:var(--green)}.check-state.no{background:var(--amber-soft);color:var(--amber)}
+.streak-num{font-size:42px;font-weight:800;color:var(--accent);font-family:var(--serif)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.chip{padding:9px 17px;border-radius:22px;background:var(--card);border:1px solid var(--line);font-size:13.5px;font-weight:700;color:var(--muted);transition:.16s;cursor:pointer}
+.chip:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent)}
+.chip.on{background:linear-gradient(135deg,var(--accent),#C08E66);color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(176,125,86,.3)}
+
+/* path */
+.path-subj{margin-bottom:18px}
+.path-subj .ps-name{font-weight:800;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.path-stage{margin:10px 0 5px;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.3px}
+.path-topic{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg);border-radius:11px;margin-bottom:7px;font-size:13.5px;transition:.15s;border:1px solid transparent}
+.path-topic:hover{background:var(--accent-soft)}
+.path-topic .pc{width:19px;height:19px;border-radius:6px;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;transition:.15s}
+.path-topic.done .pc{background:var(--green);border-color:var(--green)}.path-topic.done .pc svg{width:11px;height:11px;stroke-width:3;color:#fff}
+.path-topic.done .pt{color:var(--muted);text-decoration:line-through}
+.pbar{height:9px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:8px}
+.pbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:20px;transition:width .5s}
+
+/* progress bars */
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.bar-row .name{width:64px;font-size:13px;font-weight:700;flex:none}
+.bar{flex:1;height:10px;background:var(--line);border-radius:20px;overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:20px;transition:width .5s}
+.bar-row .val{width:48px;text-align:right;font-size:12.5px;color:var(--muted);font-weight:700;flex:none}
+
+/* chart */
+.chart{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:10px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.chart .col .bar2{width:100%;max-width:36px;background:linear-gradient(180deg,var(--accent),#D8B38C);border-radius:9px 9px 5px 5px;transition:height .5s;min-height:4px}
+.chart .col.today .bar2{background:linear-gradient(180deg,var(--accent-2),#B7CCA6)}
+.chart .col .lab{font-size:11px;color:var(--muted)}.chart .col .v{font-size:11px;font-weight:800;color:var(--accent)}
+
+/* recommendation */
+.rec{display:flex;gap:14px;padding:16px;border:1px solid var(--line);border-radius:15px;background:var(--bg);margin-bottom:12px;transition:.15s}
+.rec:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.rec .ric{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none;box-shadow:var(--shadow-sm)}
+.rec .ric svg{width:20px;height:20px}
+.rec .rbody b{font-size:14px;font-weight:800;display:block;margin-bottom:4px}
+.rec .rbody p{font-size:13px;color:#615a4f;line-height:1.6}
+.rec .rbody .k{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:20px;margin-top:8px}
+
+/* stat tiles */
+.stat{text-align:center;padding:14px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:108px}
+.stat b{font-size:26px;font-weight:800;color:var(--accent);display:block;font-family:var(--serif)}
+.stat span{font-size:12px;color:var(--muted);font-weight:600}
+
+/* path progress donut */
+.ring-stat{position:relative;isolation:isolate}
+.ring-stat::before{content:'';position:absolute;left:50%;top:14px;transform:translateX(-50%);width:60px;height:60px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p,0)*1%), var(--accent-soft) 0);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%);z-index:-1}
+.ring-stat b{position:relative;font-size:19px;line-height:60px;height:60px}
+
+/* treehole */
+.th-item{background:var(--bg);border-radius:14px;padding:14px 16px;margin-bottom:11px;position:relative;border-left:4px solid var(--accent-soft)}
+.th-head{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.th-mood{font-size:18px}.th-date{font-size:12px;color:var(--muted)}
+.th-text{font-size:14px;white-space:pre-wrap;word-break:break-word;line-height:1.65}
+.th-del{position:absolute;top:13px;right:14px;font-size:12px;color:var(--muted);transition:.15s}
+.th-del:hover{color:var(--rose)}
+.mood-pick{display:flex;gap:9px;margin-bottom:12px}
+.mood-pick span{font-size:22px;cursor:pointer;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg);border:1px solid var(--line);transition:.15s}
+.mood-pick span:hover{transform:translateY(-2px)}
+.mood-pick span.on{background:var(--accent-soft);border-color:var(--accent);box-shadow:0 4px 12px rgba(176,125,86,.2)}
+
+/* cloud */
+.cloud-btn{position:relative;width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none;transition:.15s}
+.cloud-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.cloud-btn svg{width:20px;height:20px;color:var(--muted)}
+.cloud-btn .dot{position:absolute;top:6px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--line);border:2px solid var(--card)}
+.cloud-btn .dot.ok{background:var(--green)}.cloud-btn .dot.sync{background:var(--accent);animation:cpulse 1s infinite}.cloud-btn .dot.offline{background:var(--rose)}
+@keyframes cpulse{0%,100%{opacity:1}50%{opacity:.25}}
+.popover{position:fixed;top:64px;right:18px;width:312px;max-width:calc(100vw - 28px);background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px rgba(86,62,38,.18);padding:18px;z-index:60;display:none}
+.popover.show{display:block;animation:fade .18s ease}
+.pop-title{font-weight:800;font-size:15px;margin-bottom:5px}
+.pop-desc{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.pop-stat{font-size:12px;font-weight:700;padding:5px 11px;border-radius:9px;background:var(--bg);display:inline-block;margin-bottom:14px}
+.pop-stat.ok{color:var(--green);background:var(--green-soft)}.pop-stat.sync{color:var(--accent);background:var(--accent-soft)}.pop-stat.offline{color:var(--rose);background:var(--rose-soft)}
+
+.hamburger{display:none;width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);align-items:center;justify-content:center}
+.hamburger svg{width:20px;height:20px}
+.mask{display:none;position:fixed;inset:0;background:rgba(59,53,45,.35);z-index:25}
+.mask.show{display:block}
+.mobile-nav{display:none}
+
+@media (max-width:820px){
+  .sidebar{transform:translateX(-100%);transition:transform .25s;box-shadow:0 0 40px rgba(0,0,0,.15)}
+  .sidebar.open{transform:none}
+  .main{margin-left:0}.topbar{padding:13px 16px;flex-wrap:wrap}
+  .quick{order:3;width:100%;overflow-x:auto}
+  .view{padding:16px 14px}
+  .cols-2,.cols-3{grid-template-columns:1fr}
+  .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40;padding:6px 2px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;box-shadow:0 -4px 20px rgba(86,62,38,.08)}
+  .mnav{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9.5px;color:var(--muted);padding:4px 2px;flex:1;transition:.15s}
+  .mnav svg{width:21px;height:21px}.mnav.active{color:var(--accent)}
+  .mnav.active svg{filter:drop-shadow(0 2px 4px rgba(176,125,86,.4))}
+  .main{padding-bottom:70px}
+  .hamburger{display:flex!important}
+}
+
+/* ===== 声音开关 ===== */
+.sound-btn{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:.15s;flex:none}
+.sound-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.sound-btn svg{width:20px;height:20px;color:var(--accent)}
+.sound-btn.off svg{color:var(--muted)}
+
+/* ===== G-DRAGON 周边点缀 ===== */
+.gd-word{position:absolute;right:26px;top:20px;font-family:var(--serif);font-size:14px;letter-spacing:4px;color:rgba(255,255,255,.55);font-style:italic;z-index:1}
+.gd-mark{font-weight:900;letter-spacing:3px;background:linear-gradient(90deg,#1d1d1d,#4a4a4a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gd-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:11px;font-weight:800;letter-spacing:1px;position:absolute;left:22px;top:18px;z-index:1}
+.gd-badge .peace{font-size:14px}
+.gd-ribbon{display:inline-block;font-size:11px;font-weight:800;color:var(--accent);background:linear-gradient(90deg,#FFE9B8,#FFD66B);padding:3px 12px;border-radius:20px;letter-spacing:1px;box-shadow:0 4px 12px rgba(214,169,91,.28)}
+
+/* ===== 打卡夸奖弹层（开心消消乐风） ===== */
+.praise-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:95;pointer-events:none;opacity:0;transition:.18s}
+.praise-overlay.show{opacity:1}
+.praise-card{transform:scale(.4) rotate(-8deg);transition:.4s cubic-bezier(.18,1.7,.4,1);background:linear-gradient(135deg,#fffefb,#FFF2DA);border:3px solid var(--amber);border-radius:30px;padding:34px 50px 30px;text-align:center;box-shadow:0 0 0 7px rgba(231,178,60,.18),0 34px 80px rgba(176,125,86,.45);max-width:88vw;position:relative;overflow:visible}
+.praise-overlay.show .praise-card{transform:scale(1) rotate(0)}
+.praise-card:before{content:'✦';position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:30px;color:#E3B23C;text-shadow:0 0 10px rgba(231,178,60,.6)}
+.praise-emoji{font-size:68px;line-height:1;display:inline-block;animation:pop .6s cubic-bezier(.2,1.8,.4,1) both}
+.praise-text{font-size:23px;font-weight:900;margin-top:10px;color:var(--text);font-family:var(--serif);letter-spacing:.5px}
+.praise-sub{font-size:13px;color:var(--muted);margin-top:8px}
+.praise-combo{position:absolute;top:-18px;right:-14px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;font-weight:900;font-size:15px;padding:6px 14px;border-radius:20px;box-shadow:0 8px 18px rgba(255,107,107,.45);transform:rotate(8deg);animation:combopop .5s cubic-bezier(.2,1.8,.4,1) both;display:none}
+.praise-combo.on{display:block}
+.spark{position:fixed;font-size:20px;z-index:94;pointer-events:none;will-change:transform,opacity}
+.confetti{position:fixed;top:-12vh;font-size:24px;z-index:94;pointer-events:none;animation:fall linear forwards}
+@keyframes pop{0%{transform:scale(0) rotate(-30deg)}55%{transform:scale(1.35) rotate(12deg)}75%{transform:scale(.92) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes combopop{0%{transform:scale(0) rotate(8deg)}60%{transform:scale(1.3) rotate(8deg)}100%{transform:scale(1) rotate(8deg)}}
+@keyframes fall{to{transform:translateY(118vh) rotate(420deg);opacity:.1}}
+@keyframes sparkfly{to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+
+/* ===== 目标院校 ===== */
+.school-list{display:flex;flex-direction:column;gap:9px}
+.school-item{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 13px;transition:.15s}
+.school-item:hover{background:var(--accent-soft)}
+.school-item .badge{font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
+.school-item .badge.star{background:#FFE9B8;color:#B8860B}
+.school-item b{flex:1;font-size:14px;font-weight:700}
+.school-item .x{color:var(--muted);padding:4px 6px;border-radius:8px;transition:.15s}
+.school-item .x:hover{background:var(--rose-soft);color:var(--rose)}
+
+/* ===== 照片墙 ===== */
+.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.photo-frame{position:relative;background:#fff;border:6px solid #fff;border-radius:9px;box-shadow:var(--shadow-sm);overflow:hidden;aspect-ratio:1/1}
+.photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-frame .cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-size:10px;padding:12px 6px 4px;text-align:center}
+.photo-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:var(--bg);border:2px dashed var(--line);border-radius:9px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:700;transition:.15s;aspect-ratio:1/1}
+.photo-add:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.photo-add svg{width:26px;height:26px}
+.photo-del{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;z-index:2;line-height:1}
+.lunch-photo{margin-top:10px;border-radius:12px;overflow:hidden;position:relative;border:3px solid #fff;box-shadow:var(--shadow-sm)}
+.lunch-photo img{width:100%;max-height:170px;object-fit:cover;display:block}
+.lunch-photo .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:2}
+
+/* ===== 背景层（权志龙） ===== */
+#bgGD{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:.24;pointer-events:none;transition:opacity .3s}
+.bg-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid rgba(176,125,86,.25);background:rgba(255,255,255,.7);color:var(--accent);cursor:pointer;backdrop-filter:blur(4px);font-size:16px}
+.bg-btn:hover{background:#fff}
+.sig-label{display:flex;align-items:center;gap:8px}
+.sig-label .bg-btn{width:auto;height:auto;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;margin-left:auto}
+/* 签名背景功能已移除 */
+/* ===== 目标院校（搜索栏 + 资料） ===== */
+.school-results{display:none;flex-direction:column;gap:4px;margin:2px 0 10px;max-height:236px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px;background:var(--bg)}
+.school-results.on{display:flex}
+.school-result{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:9px;cursor:pointer;transition:.12s}
+.school-result:hover{background:var(--accent-soft)}
+.school-result img{width:34px;height:34px;border-radius:8px;flex:none;object-fit:cover}
+.school-result b{font-size:14px}
+.school-result span{font-size:12px;color:var(--muted)}
+.school-card{display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--bg);border:1px solid var(--line);border-radius:13px;margin-bottom:10px;position:relative}
+.school-card img.school-thumb{width:60px;height:60px;border-radius:11px;flex:none;object-fit:cover;box-shadow:var(--shadow-sm)}
+.school-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.school-info b{font-size:15px}
+.school-info .meta{font-size:12px;color:var(--muted)}
+.school-info .school-tag{font-size:12.5px;color:var(--accent);font-weight:700}
+.school-info .school-fact{font-size:11.5px;color:var(--muted)}
+.school-card .x{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.06);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer}
+.school-card .x:hover{background:var(--rose-soft);color:var(--rose)}
+
+/* ===== 番茄钟 ===== */
+.pomo-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.pomo-ring{position:relative;width:170px;height:170px}
+.pomo-ring svg{transform:rotate(-90deg)}
+.pomo-ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pomo-ring .t{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;font-family:var(--serif);line-height:1}
+.pomo-ring .m{font-size:12px;color:var(--muted);font-weight:700;margin-top:4px}
+.pomo-stat{font-size:12.5px;color:var(--muted)}
+.pomo-stat b{color:var(--accent)}
+
+/* ===== 单词闯关 ===== */
+.vocab-card{}
+.vocab-stats{display:flex;justify-content:center;gap:16px;font-size:13px;color:var(--muted);margin-bottom:6px;flex-wrap:wrap}
+.vocab-stats b{color:var(--accent);font-size:15px}
+.vocab-q{font-size:27px;font-weight:800;text-align:center;font-family:var(--serif);margin:6px 0 2px;word-break:break-word}
+.vocab-hint{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.vocab-opts{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.vocab-opt{padding:15px 10px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);font-size:14px;font-weight:600;text-align:center;cursor:pointer;transition:.15s;line-height:1.4}
+.vocab-opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.vocab-opt.correct{background:var(--green-soft);border-color:var(--green);color:var(--green);box-shadow:0 6px 14px rgba(136,168,120,.25)}
+.vocab-opt.wrong{background:var(--rose-soft);border-color:var(--rose);color:var(--rose)}
+.vocab-opt.dim{opacity:.4;pointer-events:none}
+.vocab-fb{margin-top:14px;text-align:center;font-size:15px;font-weight:800;min-height:22px}
+.vocab-fb.ok{color:var(--green)}.vocab-fb.no{color:var(--rose)}
+@media (max-width:560px){.vocab-opts{grid-template-columns:1fr}}
+
+/* ===== 可爱 / Hello Kitty 主题点缀 ===== */
+:root{--kitty:#F7A8B8;--kitty-soft:#FCE7EC;--kitty-deep:#E98AA0;--kitty-line:#F3C6D2}
+.nav-item.active{background:linear-gradient(135deg,var(--kitty-soft),#FFF0F4);color:var(--kitty-deep)}
+.nav-item.active::before{background:linear-gradient(180deg,var(--kitty),var(--kitty-deep))}
+.chip.on{background:linear-gradient(135deg,var(--kitty),var(--kitty-deep));box-shadow:0 6px 14px rgba(233,138,160,.32)}
+.gd-ribbon{background:linear-gradient(90deg,#FFE0EC,#FFC2D6);color:#D6336C}
+.sound-btn svg{color:var(--kitty-deep)}
+.page-title::after{background:linear-gradient(90deg,var(--kitty),var(--kitty-deep))}
+.brand .logo{background:linear-gradient(135deg,var(--kitty),var(--kitty-deep));box-shadow:0 8px 18px rgba(233,138,160,.4)}
+.kitty-ico{width:19px;height:19px;flex:none}
+
+/* 个性签名背景更大更可爱 */
+/* 签名背景功能已移除 */
+.sig-label .bg-btn{background:rgba(255,255,255,.9);color:var(--kitty-deep);border-color:var(--kitty-line)}
+
+/* ===== 裁剪弹层 ===== */
+.crop-modal{position:fixed;inset:0;background:rgba(48,34,38,.55);z-index:120;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+.crop-modal.show{display:flex;animation:fade .2s ease}
+.crop-box{background:var(--card);border-radius:24px;padding:20px;max-width:430px;width:100%;box-shadow:0 26px 64px rgba(0,0,0,.32)}
+.crop-title{font-weight:800;font-size:16px;margin-bottom:4px;display:flex;align-items:center;gap:8px;color:var(--kitty-deep)}
+.crop-sub{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.crop-stage{position:relative;width:100%;max-height:56vh;overflow:hidden;border-radius:16px;background:#1d1714;touch-action:none;user-select:none;display:flex;align-items:center;justify-content:center}
+.crop-stage img{display:block;max-width:100%;max-height:56vh;pointer-events:none;-webkit-user-drag:none}
+.crop-win{position:absolute;left:50%;top:50%;width:64%;aspect-ratio:1/1;transform:translate(-50%,-50%);border:2px solid #fff;border-radius:10px;cursor:move;background:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+.crop-win::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:33.33% 33.33%;opacity:.45}
+.crop-controls{display:flex;align-items:center;gap:10px;margin:14px 0 6px}
+.crop-controls label{font-size:12px;color:var(--muted);white-space:nowrap}
+.crop-controls input[type=range]{flex:1;accent-color:var(--kitty-deep);height:4px}
+.crop-actions{display:flex;gap:10px;margin-top:8px}
+.crop-actions .btn{flex:1}
+
+/* ===== 院校地区快捷 ===== */
+.region-chips{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 4px}
+#regionChips{display:none}
+#regionChips.show{display:flex}
+.region-chip{font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--kitty-soft);color:var(--kitty-deep);cursor:pointer;transition:.15s}
+.region-chip:hover{transform:translateY(-1px)}
+.region-chip.on{background:linear-gradient(135deg,var(--kitty),var(--kitty-deep));color:#fff}
+
+/* ===== 权志龙 × 崔胜铉 应援站 ===== */
+.fandom{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.fan-portraits{display:flex;gap:12px;flex:none}
+.fan-portrait{position:relative;width:86px;height:86px;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-sm);border:3px solid #fff;background:#1d1714;flex:none}
+.fan-portrait img{width:100%;height:100%;object-fit:cover;display:block}
+.fan-portrait .cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.62));color:#fff;font-size:10px;text-align:center;padding:9px 2px 3px;font-weight:700}
+.fan-portrait .cam{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--kitty-deep);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
+.player{display:flex;flex-direction:column;gap:11px;flex:1;min-width:210px}
+.player-row{display:flex;align-items:center;gap:13px}
+.player-btn{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--kitty),var(--kitty-deep));color:#fff;border:none;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(233,138,160,.42);flex:none;transition:.15s}
+.player-btn:active{transform:scale(.94)}
+.player-info b{display:block;font-size:14px;font-weight:800}
+.player-info span{font-size:12px;color:var(--muted)}
+.track-chips{display:flex;gap:8px;flex-wrap:wrap}
+.track-chip{font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px;background:var(--kitty-soft);color:var(--kitty-deep);cursor:pointer;transition:.15s}
+.track-chip:hover{transform:translateY(-1px)}
+.track-chip.on{background:linear-gradient(135deg,var(--kitty),var(--kitty-deep));color:#fff}
+.player-upload{font-size:12px;color:var(--kitty-deep);font-weight:700;cursor:pointer;text-decoration:underline;align-self:flex-start}
+
+  /* ===== 新增：天气 / 运势 / 网易云 / 韩语 ===== */
+  .wh-box{background:var(--accent-soft);border-radius:14px;padding:8px 10px}
+  .wh-t{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.5px;margin-bottom:4px}
+  .wh-big{font-size:20px;font-weight:800;color:var(--text);margin-top:1px}
+  .wh-sm{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .wh-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:1px}
+  .wh-tip{font-size:11.5px;color:var(--accent);margin-top:6px;line-height:1.4;padding-top:6px;border-top:1px dashed var(--line)}
+  .wh-card{padding-top:12px;padding-bottom:12px}
+  .horo-body{margin-top:6px;overflow-x:auto}
+  .horo-line{font-size:11px;color:var(--muted);line-height:1.5;margin-top:5px;padding-left:9px;border-left:2px solid var(--accent-soft);white-space:nowrap}
+  .horo-line:first-child{margin-top:0}
+  .horo-ji{color:var(--amber);border-left-color:var(--amber)}
+  .horo-ico{margin-right:6px}
+  .wh-refresh{margin-left:auto;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+  .wh-refresh:active{transform:scale(.96)}
+  .ne-box{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+  .ne-label{font-size:12.5px;font-weight:600;color:var(--accent);margin-bottom:8px}
+  .ne-row{display:flex;gap:8px}
+  .ne-row input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#FBF8F3;outline:none;width:100%}
+  .ne-row input:focus{border-color:var(--accent);background:#fff}
+  .ne-iframe{width:100%;border:0;border-radius:12px;overflow:hidden;height:80px;margin-top:10px;background:var(--accent-soft)}
+  .ne-loading{font-size:12px;color:var(--muted);padding:8px 0}
+  .ne-fallback{margin-top:8px;font-size:12px}
+  .ne-fallback a{color:var(--accent);text-decoration:none;font-weight:700}
+  .ne-fallback a:hover{text-decoration:underline}
+  .ne-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .ne-item{display:flex;align-items:center;gap:8px;background:var(--accent-soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text);transition:.15s}
+  .ne-item:hover{transform:translateY(-1px);border-color:var(--accent)}
+  .ne-item .ne-ico{font-size:15px}
+  .ne-item .ne-meta{display:flex;flex-direction:column;line-height:1.35;min-width:0}
+  .ne-item .ne-meta b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ne-item .ne-meta span{font-size:11px;color:var(--muted);font-weight:600}
+  .ne-item .ne-x{margin-left:auto;flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.05);color:var(--muted);font-size:13px}
+  .ne-item .ne-x:hover{background:var(--rose-soft);color:var(--rose)}
+  .ne-empty{font-size:12.5px;color:var(--muted);margin-top:10px}
+  .praise-ko{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--accent);margin:12px 0 4px}
+  .praise-by{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:800;color:#fff;padding:6px 20px 6px 6px;border-radius:999px;margin-top:12px;letter-spacing:.5px}
+  .praise-by .by-ava{width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;background:rgba(255,255,255,.25)}
+  .praise-by.by-gd{background:linear-gradient(135deg,#C9772E,#9E5A2E)}
+  .praise-by.by-top{background:linear-gradient(135deg,#6E5B8A,#473A63)}
+  .praise-speak{font-size:12px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin:2px auto 0;cursor:pointer;display:inline-block}
+/* ===== 壁纸 ===== */
+.wall-sw{display:flex;flex-wrap:wrap;gap:10px}
+.wall-sw .sw{width:42px;height:42px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:.15s;box-shadow:var(--shadow-sm)}
+.wall-sw .sw:hover{transform:translateY(-2px)}
+.wall-sw .sw.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(176,125,86,.3)}
+.wall-actions{display:flex;gap:10px;margin-top:12px}
+
+</style>
+</head>
+<body>
+<div id="bgGD"></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="logo" id="brandLogo"></span>
+      <span>暑假备战台<small>GAOKAO · 高三</small></span>
+    </div>
+    <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg><span>首页</span></div>
+    <div class="nav-item" data-view="routine"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg><span>作息</span></div>
+    <div class="nav-item" data-view="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg><span>自习室</span></div>
+    <div class="nav-item" data-view="noon"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 19V9a6 6 0 0 1 12 0v10M9 22v-3M15 22v-3"/></svg><span>午间</span></div>
+    <div class="nav-item" data-view="paths"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 5l7 5 4-3 5 6"/><circle cx="4" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="13" r="1.4" fill="currentColor" stroke="none"/></svg><span>学科路径</span></div>
+    <div class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg><span>数据面板</span></div>
+    <div class="nav-item" data-view="treehole"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>单词</span></div>
+    <div class="side-foot">数据存本机浏览器，可开启云同步多端实时共享。</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+        <div>
+          <div class="hello" id="hello">欣祎，早安</div>
+          <div class="date" id="todayDate"></div>
+        </div>
+      </div>
+      <button class="sound-btn" id="soundBtn" title="提示音开关">
+        <svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+      </button>
+      <button class="bg-btn" id="bgBtn" title="更换权志龙背景（可用手机相册照片）">🐉</button>
+      <input type="file" id="pageBgInput" accept="image/*" style="display:none">
+      <button class="cloud-btn" id="cloudBtn" title="云同步">
+        <svg viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.2 9.5 4 4 0 0 0 7 17.5"/><path d="M12 12v6M9.5 14.5 12 12l2.5 2.5"/></svg>
+        <span class="dot" id="cloudDot"></span>
+      </button>
+    </div>
+
+      <!-- 首页 -->
+      <section class="view active" data-view="home">
+      <div class="hero" id="hero" style="margin-top:0;padding:22px 24px;text-align:center">
+        <div class="gd-word gd-mark">G-DRAGON</div>
+        <button class="hero-bg-btn" id="heroBgBtn" type="button">🖼 换背景</button>
+        <div class="gd-badge"><span class="peace">🕊</span> 权志龙 · Fantastic Mode</div>
+        <div class="cd">
+          <span class="num" id="countdown">--</span>
+          <span class="unit">天后高考</span>
+        </div>
+        <div class="cd-edit-center">目标日 <input type="date" id="gkDate"></div>
+        <div class="sig sig-bottom" id="sigInput" contenteditable="true"></div>
+      </div>
+
+      <!-- 天气 + 天秤座运势 -->
+      <div class="card wh-card" style="margin-top:28px">
+        <h3><svg viewBox="0 0 24 24"><path d="M3 15a4 4 0 0 1 1-7.9 5 5 0 0 1 9.6-1.5A4.5 4.5 0 0 1 17 15H3z"/><path d="M16 18l1.5 1.5M20 18l1.5 1.5M18 21v-1"/></svg>今日 · 天气 & 天秤座运势<button class="wh-refresh" id="wxRefresh" onclick="renderWeather()">🔄 刷新</button></h3>
+        <div class="grid cols-2" style="gap:6px;grid-template-columns:1fr">
+          <div class="wh-box wh-weather">
+            <div class="wh-t">🌤 天气预报</div>
+            <div class="wh-line"><span class="wh-big" id="wxTemp">--</span><span class="wh-sm" id="wxDesc">正在获取…</span></div>
+            <div class="wh-tip" id="wxTip"></div>
+          </div>
+          <div class="wh-box wh-horo">
+            <div class="wh-t">♎ 天秤座运势</div>
+            <div class="wh-big" id="horoLuck">--</div>
+            <div class="horo-body" id="horoText"><div class="horo-line"><span class="horo-ico">🌟</span>今日宜稳扎稳打。</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid cols-2" style="margin-top:28px">
+        <!-- 目标院校（搜索栏） -->
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg>目标院校 <span class="gd-ribbon" style="margin-left:auto">冲 !</span></h3>
+          <div class="field" style="margin:0 0 10px">
+            <input id="schoolSearch" placeholder="搜索梦校，如：清华 / 北京 / 东北 / 哈尔滨">
+          </div>
+          <div class="region-chips" id="regionChips"></div>
+          <div class="school-results" id="schoolResults"></div>
+          <div class="school-list" id="schoolList"></div>
+        </div>
+        <!-- 番茄钟 -->
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>番茄钟 <span class="gd-ribbon" style="margin-left:auto">FOCUS</span></h3>
+          <div class="pomo-wrap">
+            <div class="pomo-ring">
+              <svg width="170" height="170" viewBox="0 0 170 170">
+                <circle cx="85" cy="85" r="78" stroke="var(--line)" stroke-width="12" fill="none"/>
+                <circle id="pomoArc" cx="85" cy="85" r="78" stroke="var(--accent)" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="490" stroke-dashoffset="0"/>
+              </svg>
+              <div class="ctr"><div class="t" id="pomoTime">25:00</div><div class="m" id="pomoMode">专注</div></div>
+            </div>
+            <div class="pomo-stat">今日完成 <b id="pomoDone">0</b> 个番茄 🍅</div>
+            <div class="timer-ctrl" style="margin:4px 0 0;gap:10px;display:flex;justify-content:center">
+              <button class="btn primary sm" id="btnPomoToggle">▶ 开始</button>
+              <button class="btn ghost sm" id="btnPomoReset">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 权志龙 × 崔胜铉 应援站 -->
+      <div class="card" style="margin-top:28px">
+        <h3><svg class="kitty-ico" viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.2-9C1.3 8.7 3 5.5 6.2 5.5c2 0 3.3 1.2 4 2.3.7-1.1 2-2.3 4-2.3 3.2 0 4.9 3.2 3.4 6.5C19 16.4 12 21 12 21z"/></svg>应援站 · 权志龙 × 崔胜铉 <span class="gd-ribbon" style="margin-left:auto">VIP</span></h3>
+        <div class="fandom">
+          <div class="fan-portraits">
+            <div class="fan-portrait" id="gdFrame"><span class="cam" id="gdCam" title="换上真实照片">换</span><span class="cap">权志龙</span></div>
+            <div class="fan-portrait" id="topFrame"><span class="cam" id="topCam" title="换上真实照片">换</span><span class="cap">崔胜铉</span></div>
+          </div>
+          <div class="player">
+            <div class="player-row">
+              <button class="player-btn" id="gdPlay">▶</button>
+              <div class="player-info"><b id="gdTrackName">轻快 · Fantastic</b><span>点播放听氛围曲，或上传你喜欢的歌</span></div>
+            </div>
+            <div class="track-chips" id="trackChips">
+              <span class="track-chip on" data-track="fantastic">轻快</span>
+              <span class="track-chip" data-track="mellow">舒缓</span>
+            </div>
+            <span class="player-upload" id="gdUploadBtn">上传我的音频 ▸</span>
+          </div>
+        </div>
+        <div class="ne-box">
+          <div class="ne-label">🎵 网易云导入（粘贴歌曲链接或 ID）</div>
+          <div class="ne-row">
+            <input id="neId" placeholder="如 https://music.163.com/song?id=123456 或 123456">
+            <button class="btn soft sm" id="btnNe">导入</button>
+          </div>
+          <div id="neFrame"></div>
+          <div id="neList" class="ne-list"></div>
+          <div class="hint" style="margin-top:6px">导入后会出现在下方记录里，点一下即可在网易云续播；账号级导入需登录授权，客户端暂做不到。</div>
+        </div>
+        <input type="file" id="gdPhotoInput" accept="image/*" style="display:none">
+        <input type="file" id="topPhotoInput" accept="image/*" style="display:none">
+        <input type="file" id="gdAudioInput" accept="audio/*" style="display:none">
+      </div>
+
+      <!-- 壁纸 -->
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>壁纸 <span style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:600">点色块快速换 · 🐉 可上传照片</span></h3>
+        <div class="wall-sw" id="wallSwatches"></div>
+        <div class="wall-actions">
+          <button class="btn ghost sm" id="wallUpload">📷 上传图片</button>
+          <button class="btn ghost sm" id="wallClear">恢复默认</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 作息 -->
+    <section class="view" data-view="routine">
+      <div class="page-title">作息管理</div>
+      <div class="page-sub">记录起床与睡觉时间，规律作息是高效备考的地基。</div>
+      <div class="grid cols-2">
+        <div class="card compact-check wake-card" style="text-align:center">
+          <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M12 3v2M5.6 5.6l1.4 1.4M3 12h2M19 12h2M17 6.9l1.4-1.4"/><circle cx="12" cy="14" r="6"/></svg>起床打卡</h3>
+          <div class="check-state no" id="wakeState">尚未打卡</div>
+          <div class="big-clock" id="wakeTime" style="margin-top:10px;color:var(--muted)">--:--</div>
+          <button class="btn primary" id="btnWake" style="margin-top:12px;width:100%">☀️ 我要早起打卡</button>
+          <button class="btn ghost sm praise-bg-btn" id="btnPraiseBg" data-bg="wake" style="margin-top:8px;width:100%">🎴 打卡背景</button>
+        </div>
+        <div class="card compact-check sleep-card" style="text-align:center">
+          <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>睡觉打卡</h3>
+          <div class="check-state no" id="sleepState">尚未记录</div>
+          <div class="big-clock" id="sleepTime" style="margin-top:10px;color:var(--muted)">--:--</div>
+          <button class="btn primary" id="btnSleep" style="margin-top:12px;width:100%">🌙 记录睡觉时间</button>
+          <button class="btn ghost sm praise-bg-btn" id="btnPraiseBg2" data-bg="sleep" style="margin-top:8px;width:100%">🎴 打卡背景</button>
+          <div class="hint" id="sleepDur" style="margin-top:8px"></div>
+        </div>
+      </div>
+      <div class="grid cols-2" style="margin-top:26px">
+        <div class="card" style="text-align:center">
+          <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>连续早起</h3>
+          <div class="streak-num" id="streakNum">0</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px">天连续早起</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>平均睡眠</h3>
+          <div class="streak-num" id="avgSleep">--</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px">近 7 天均长</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>作息历史</h3>
+        <div class="list" id="routineHistory"></div>
+      </div>
+    </section>
+
+    <!-- 自习室计时 -->
+    <section class="view" data-view="timer">
+      <div class="page-title">自习室计时</div>
+      <div class="page-sub">记录每一次专注学习的时长，自动累计当日总量，沉淀你的努力。</div>
+      <div class="card" style="text-align:center">
+        <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>专注计时</h3>
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+        <div style="font-size:13px;color:var(--muted)" id="timerState">准备开始今天的专注学习</div>
+        <div class="timer-ctrl">
+          <button class="btn primary" id="btnTimerToggle">▶ 开始计时</button>
+          <button class="btn ghost" id="btnTimerEnd">结束并保存</button>
+        </div>
+      </div>
+      <div class="grid cols-2" style="margin-top:26px">
+        <div class="card" style="text-align:center">
+          <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>今日累计</h3>
+          <div class="big-clock" id="todayTotal" style="font-size:38px">0h 0m</div>
+          <div class="hint">含进行中的本次计时</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <h3 style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 19V9a6 6 0 0 1 12 0v10"/></svg>今日段数</h3>
+          <div class="big-clock" id="todaySeg" style="font-size:38px">0</div>
+          <div class="hint">今天已完成的学习段落</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>今日学习记录</h3>
+        <div class="list" id="sessionList"></div>
+      </div>
+    </section>
+
+    <!-- 午间记录 -->
+    <section class="view" data-view="noon">
+      <div class="page-title">午间记录</div>
+      <div class="page-sub">合理午饭与午休，保证下午精力充沛，记录你的恢复状态。</div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M3 11h18M5 11a7 7 0 0 1 14 0M2 19h20M6 15h.01M18 15h.01"/></svg>午饭时段</h3>
+          <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+            <button class="btn soft sm" id="btnLunchStart">午饭开始</button>
+            <button class="btn ghost sm" id="btnLunchEnd">午饭结束</button>
+            <button class="btn sm" id="btnLunchPhoto" style="margin-left:auto">📸 拍张午饭</button>
+          </div>
+          <div style="font-size:13px;color:var(--muted)" id="lunchInfo">尚未记录</div>
+          <div class="big-clock" id="lunchDur" style="font-size:30px;margin-top:8px">0m</div>
+          <div id="lunchPhotoBox" style="margin-top:10px"></div>
+          <input type="file" id="lunchPhotoInput" accept="image/*" capture="environment" style="display:none">
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6c0 2 .5 3 1 4v4h10v-4c.5-1 1-2 1-4a6 6 0 0 0-6-6zM9 21h6"/></svg>午休时段</h3>
+          <div style="display:flex;gap:10px;margin-bottom:12px">
+            <button class="btn soft sm" id="btnNapStart">午休开始</button>
+            <button class="btn ghost sm" id="btnNapEnd">午休结束</button>
+          </div>
+          <div style="font-size:13px;color:var(--muted)" id="napInfo">尚未记录</div>
+          <div class="big-clock" id="napDur" style="font-size:30px;margin-top:8px">0m</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>午间备注</h3>
+        <div class="field" style="margin:0">
+          <label>今天午间状态（例如：精神饱满 / 有点困 / 午睡质量好）</label>
+          <textarea id="noonNote" placeholder="简单记录一下午间的休息状态…"></textarea>
+        </div>
+        <button class="btn primary sm" id="btnNoonSave">保存备注</button>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>午间历史</h3>
+        <div class="list" id="noonHistory"></div>
+      </div>
+    </section>
+
+    <!-- 学科路径 -->
+    <section class="view" data-view="paths">
+      <div class="page-title">学科路径</div>
+      <div class="page-sub">六大学科各有一条复习路径，先选今天要攻克的学科，再按路径逐步推进。</div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24"><path d="M4 19V5M4 5l7 5 4-3 5 6"/><circle cx="4" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="13" r="1.4" fill="currentColor" stroke="none"/></svg>今日学科选择</h3>
+        <div class="chips" id="subjChips"></div>
+        <div class="hint">点击选择今天要学习的学科，下方会展开对应的学习路径。</div>
+      </div>
+      <div id="pathArea"></div>
+      <div class="card" style="margin-top:26px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h3 style="margin:0"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>今日学习内容打卡</h3>
+        </div>
+        <div class="field" style="margin:0 0 12px">
+          <label>科目（点选）</label>
+          <div class="chips" id="taskSubjectChips"></div>
+          <input type="hidden" id="taskSubject" value="通用">
+        </div>
+        <div class="inline" style="display:flex;gap:10px">
+          <div class="field" style="margin:0;flex:1">
+            <label>任务内容</label>
+            <input id="taskContent" placeholder="例如：完成函数专题 20 道真题">
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn primary" id="btnAddTask" style="white-space:nowrap">+ 添加</button>
+          </div>
+        </div>
+        <div class="list" id="taskList" style="margin-top:14px"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">
+          <span style="font-size:13px;color:var(--muted)" id="taskProgressTxt">0 / 0 完成</span>
+          <span style="font-size:14px;font-weight:700;color:var(--green)" id="taskProgressPct">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 数据面板 -->
+    <section class="view" data-view="dashboard">
+      <div class="page-title">数据面板</div>
+      <div class="page-sub">基于你的打卡、计时、复盘与路径数据，自动诊断并推送方法。</div>
+      <div class="grid cols-3" style="margin-bottom:16px">
+        <div class="card stat"><b id="aStreak">0</b><span>连续早起(天)</span></div>
+        <div class="card stat"><b id="aWeek">0h</b><span>近7天自习</span></div>
+        <div class="card stat"><b id="aRate">0%</b><span>任务完成率</span></div>
+        <div class="card stat"><b id="aSleep">--</b><span>平均睡眠(h)</span></div>
+        <div class="card stat"><b id="aReview">--</b><span>复盘均分</span></div>
+        <div class="card stat ring-stat"><b id="aPath">0%</b><span>路径总进度</span></div>
+      </div>
+      <div class="grid cols-2" style="margin-top:26px">
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 17l-6.5 5 2-7L2 9h7z"/></svg>今日学习复盘<span style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:600">点击星星评分</span></h3>
+          <div class="rate-row"><span class="rl">学习认真度</span><span class="stars" id="stars_serious"></span><span class="rv" id="rv_serious">未评</span></div>
+          <div class="rate-row"><span class="rl">学习效率</span><span class="stars" id="stars_efficiency"></span><span class="rv" id="rv_efficiency">未评</span></div>
+          <div class="rate-row"><span class="rl">今日心情</span><span class="stars" id="stars_mood"></span><span class="rv" id="rv_mood">未评</span></div>
+          <div class="rate-row"><span class="rl">今日执行力</span><span class="stars" id="stars_exec"></span><span class="rv" id="rv_exec">未评</span></div>
+          <div class="field" style="margin-top:10px;margin-bottom:0">
+            <textarea id="reviewNote" placeholder="今日复盘小结（可选）：今天哪里做得好？明天怎么调整？"></textarea>
+          </div>
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-5 3 3 5-7"/></svg>今日概览</h3>
+          <div class="grid cols-2" id="homeStats"></div>
+          <div class="hint" style="font-size:12.5px;color:var(--muted);margin-top:12px" id="homeTip"></div>
+        </div>
+      </div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-5 3 3 5-7"/></svg>近 7 天自习时长</h3>
+          <div class="chart" id="weekChart"></div>
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 17l-6.5 5 2-7L2 9h7z"/></svg>近 7 天复盘均分</h3>
+          <div class="chart" id="reviewChart"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 17l-6.5 5 2-7L2 9h7z"/></svg>各学科路径完成度</h3>
+        <div id="pathBars"></div>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>薄弱点诊断</h3>
+        <div id="weakPoints"></div>
+      </div>
+      <div class="card" style="margin-top:26px">
+        <h3><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>为你推荐的高三暑假方法</h3>
+        <div id="recList"></div>
+      </div>
+    </section>
+
+    <!-- 单词闯关 -->
+    <section class="view" data-view="treehole">
+      <div class="page-title">单词闯关 · 高考 3500</div>
+      <div class="page-sub">把树洞换成单词闯关：看释义选单词 / 看单词选释义。答对清脆音 + 夸你，答错低沉音 + 提示正确答案。每天积累一点点 💪</div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>今日一题</h3>
+          <div class="vocab-stats">
+            <span>答对 <b id="vocabCorrect">0</b></span>
+            <span>连续 <b id="vocabStreak">0</b> 🔥</span>
+            <span>正确率 <b id="vocabRate">--</b></span>
+          </div>
+          <div class="vocab-q" id="vocabQ">—</div>
+          <div class="vocab-hint" id="vocabHint">点击下方选项作答</div>
+          <div class="vocab-opts" id="vocabOpts"></div>
+          <div class="vocab-fb" id="vocabFb"></div>
+          <div style="text-align:center;margin-top:14px">
+            <button class="btn soft sm" id="btnVocabNext">换一题 ↻</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 17l-6.5 5 2-7L2 9h7z"/></svg>闯关战绩</h3>
+          <div class="grid cols-2" id="vocabStats2"></div>
+          <div class="hint" style="margin-top:12px" id="vocabTip"></div>
+          <div class="hint" style="margin-top:8px">💡 选对是清脆上扬音、选错是低沉提示音，配合《Fantastic Baby》节奏，坚持就是胜利～</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="mask" id="mask"></div>
+
+<div class="crop-modal" id="cropModal">
+  <div class="crop-box">
+    <div class="crop-title"><svg class="kitty-ico" viewBox="0 0 24 24" style="stroke:none"><path d="M4.5 10 L3 4 L9 7.5 Z" fill="#F9C5D2" stroke="#E98AA0"/><path d="M19.5 10 L21 4 L15 7.5 Z" fill="#F9C5D2" stroke="#E98AA0"/><path d="M12 22 C4.5 22 3 16 3 12.5 C3 8.5 7 6.5 12 6.5 C17 6.5 21 8.5 21 12.5 C21 16 19.5 22 12 22 Z" fill="#F9C5D2" stroke="#E98AA0"/><circle cx="9" cy="12.5" r="1.2" fill="#3B352D"/><circle cx="15" cy="12.5" r="1.2" fill="#3B352D"/><path d="M11 15 L13 15 L12 16.6 Z" fill="#E98AA0"/></svg> 截取照片</div>
+    <div class="crop-sub">拖动方框选区域，拖动滑块缩放，取你最喜欢的部分</div>
+    <div class="crop-stage" id="cropStage"><img id="cropImg" alt=""><div class="crop-win" id="cropWin"></div></div>
+    <div class="crop-controls"><label>缩放</label><input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1"></div>
+    <div class="crop-actions">
+      <button class="btn ghost" id="cropCancel">取消</button>
+      <button class="btn primary" id="cropOk">用这张</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero-bg-mask" id="heroBgMask" style="display:none">
+  <div class="hero-bg-panel" id="heroBgPanel">
+    <div class="hbp-title">倒计时背景</div>
+    <div class="hbp-sub">从相册选一张，或上传新照片（都可裁剪）</div>
+    <div class="hbp-album" id="heroBgAlbum"></div>
+    <div class="hbp-actions">
+      <button type="button" id="heroBgUpload">上传新照片</button>
+      <button type="button" id="heroBgClear">清除背景</button>
+    </div>
+    <button type="button" class="hbp-close" id="heroBgClose">关闭</button>
+  </div>
+</div>
+<input type="file" id="heroBgFile" accept="image/*" style="display:none">
+
+<div class="hero-bg-mask" id="praiseBgMask" style="display:none">
+  <div class="hero-bg-panel" id="praiseBgPanel">
+    <div class="hbp-title">🎴 打卡背景</div>
+    <div class="hbp-sub">从相册选一张，或上传新照片（都可裁剪）</div>
+    <div class="hbp-album" id="praiseBgAlbum"></div>
+    <div class="hbp-actions">
+      <button type="button" id="praiseBgUpload">上传新照片</button>
+      <button type="button" id="praiseBgClear">清除背景</button>
+    </div>
+    <button type="button" class="hbp-close" id="praiseBgClose">关闭</button>
+  </div>
+</div>
+<input type="file" id="praiseBgFile" accept="image/*" style="display:none">
+
+<div class="praise-overlay" id="praiseOverlay">
+  <div class="praise-card">
+    <div class="praise-combo" id="praiseCombo">连击 x1 🔥</div>
+    <div class="praise-by" id="praiseBy" style="display:none"></div>
+    <div class="praise-text" id="praiseText">太棒了！</div>
+    <div class="praise-sub" id="praiseSub">坚持，就是最好的天赋 ✨</div>
+    <div class="praise-ko" id="praiseKo" style="display:none"></div>
+    <button class="praise-speak" id="praiseSpeak" style="display:none" onclick="speakKo()">🔊 再念一次韩语</button>
+  </div>
+</div>
+
+<div class="popover" id="cloudPop">
+  <div class="pop-title">☁️ 云同步</div>
+  <div class="pop-stat" id="cloudStat">未开启</div>
+  <p class="pop-desc">开启后，手机和电脑填<strong>同一个同步码</strong>即可实时共享数据。</p>
+  <div class="field" style="margin-bottom:12px">
+    <label>同步码（多设备保持一致）</label>
+    <input id="cloudCode" placeholder="例如 gk2026" autocomplete="off">
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn primary sm" id="cloudEnable" style="flex:1">开启同步</button>
+    <button class="btn ghost sm" id="cloudCopy">复制</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button class="btn soft sm" id="cloudNow" style="flex:1">立即同步</button>
+    <button class="btn ghost sm" id="cloudDisable">退出</button>
+  </div>
+</div>
+
+<nav class="mobile-nav">
+  <div class="mnav active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>首页</div>
+  <div class="mnav" data-view="routine"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>作息</div>
+  <div class="mnav" data-view="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>自习</div>
+  <div class="mnav" data-view="noon"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 19V9a6 6 0 0 1 12 0v10"/></svg>午间</div>
+  <div class="mnav" data-view="paths"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 5l7 5 4-3 5 6"/></svg>学科</div>
+  <div class="mnav" data-view="dashboard"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>数据</div>
+  <div class="mnav" data-view="treehole"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>单词</div>
+</nav>
+
+<script>
+/* ============ 基础工具（必须最先定义） ============ */
+const $=id=>document.getElementById(id);
+const DB_KEY='gaokao_summer_db_v1';
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(DB_KEY));if(d)return d;}catch(e){}return{signature:'',gaokaoDate:'2027-06-07',checkins:{},sessions:{},current:null,noon:{},tasks:{},review:{},sleep:{},subjectSel:{},pathProgress:{},treehole:[],targetSchools:[],vocab:{correct:0,total:0,streak:0,best:0,date:''},pomo:{date:'',completed:0}};}
+const LOCAL_KEY='gaokao_local_v1';
+function loadLocal(){const def={lunchPhoto:{},pageBg:'',gdPhoto:'',topPhoto:'',photos:[],albumName:'',heroBg:'',wakeBg:'',sleepBg:'',neList:[]};let d;try{d=JSON.parse(localStorage.getItem(LOCAL_KEY));}catch(e){d=null;}if(!d||typeof d!=='object')return JSON.parse(JSON.stringify(def));if(d.praiseBg&&!d.wakeBg)d.wakeBg=d.praiseBg;delete d.praiseBg;if(d.neId&&(!d.neList||!d.neList.length)){const mm=(''+d.neId).match(/(\d{4,})/);d.neList=[{kind:/playlist|album|toplist|artist/.test(d.neId)?'playlist':'song',id:mm?mm[1]:d.neId,raw:d.neId}];}delete d.neId;for(const k in def)if(!(k in d))d[k]=def[k];return d;}
+let local=loadLocal();
+function saveLocal(){try{localStorage.setItem(LOCAL_KEY,JSON.stringify(local));}catch(e){console.warn('local save',e);}}
+let db=loadDB();
+function _persist(){localStorage.setItem(DB_KEY,JSON.stringify(db));}
+function saveDB(){_persist();if(window.__cloud)window.__cloud.push();}
+function pad(n){return String(n).padStart(2,'0');}
+function fmt(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function todayKey(){return fmt(new Date());}
+function nowTs(){return Date.now();}
+function HHMM(ts){const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes());}
+function fmtDur(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return pad(h)+':'+pad(m)+':'+pad(s);}
+function humanDur(sec){sec=Math.floor(sec);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60);if(h>0)return h+'h '+m+'m';if(m>0)return m+'m';return sec+'s';}
+function escapeHtml(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+/* ============ 学科路径定义 ============ */
+const SUBJECT_PATHS={
+  '数学':[{stage:'一轮·基础巩固',topics:['函数与导数','三角函数','数列','立体几何','解析几何','概率统计','不等式']},
+          {stage:'二轮·专题突破',topics:['中档大题拆解','压轴题建模','选填提速']},
+          {stage:'三轮·真题模拟',topics:['近5年真题卷','错题回炉','限时模拟']}],
+  '语文':[{stage:'积累运用',topics:['古诗文默写','文言实词','成语病句']},
+          {stage:'阅读鉴赏',topics:['论述类文本','文学类文本','古诗鉴赏']},
+          {stage:'写作表达',topics:['素材积累','议论文结构','审题立意']}],
+  '英语':[{stage:'词汇语法',topics:['3500词过关','高频短语','熟词生义']},
+          {stage:'输入理解',topics:['阅读理解','七选五','完形填空']},
+          {stage:'输出表达',topics:['读后续写','应用文','听力训练']}],
+  '物理':[{stage:'一轮·概念网络',topics:['运动学','力学','电磁学','热光原','实验']},
+          {stage:'二轮·模型归纳',topics:['典型模型','综合大题','真题限时']}],
+  '化学':[{stage:'一轮·知识体系',topics:['基本概念','元素化合物','反应速率','电化学','有机基础']},
+          {stage:'二轮·综合突破',topics:['工业流程','实验探究','有机合成']}],
+  '生物':[{stage:'一轮·主干知识',topics:['细胞代谢','遗传定律','调节免疫','生态']},
+          {stage:'二轮·能力进阶',topics:['长句表述','真题精练','热点情境']}]
+};
+const SUBJECTS=Object.keys(SUBJECT_PATHS);
+const PATH_FLAT={};SUBJECTS.forEach(s=>{PATH_FLAT[s]=[];SUBJECT_PATHS[s].forEach(st=>st.topics.forEach(t=>PATH_FLAT[s].push({stage:st.stage,topic:t})));});
+
+/* ============ 云同步合并（多端融合） ============ */
+function mergeObjDate(base,inc,keys){
+  const out={};
+  keys.forEach(k=>{out[k]={};const dk=new Set([...Object.keys(base[k]||{}),...Object.keys(inc[k]||{})]);
+    dk.forEach(d=>{const o={};[base[k][d],inc[k][d]].filter(Boolean).forEach(s=>Object.keys(s).forEach(f=>{if(s[f]!=null)o[f]=s[f];}));out[k][d]=o;});});
+  return out;
+}
+function mergeDb(base,inc){
+  base=base||{};inc=inc||{};
+  const out={signature:(inc.signature!=null&&inc.signature!=='')?inc.signature:(base.signature||''),gaokaoDate:inc.gaokaoDate||base.gaokaoDate||'2027-06-07',checkins:{},sessions:{},current:null,noon:{},tasks:{},review:{},sleep:{},subjectSel:{},pathProgress:{},treehole:[]};
+  const od=mergeObjDate(base,inc,['checkins','noon','review','sleep']);
+  Object.assign(out,od);
+  // subjectSel: object-by-date 数组(学科名)，按值去重
+  const selKeys=new Set([...Object.keys(base.subjectSel||{}),...Object.keys(inc.subjectSel||{})]);
+  selKeys.forEach(k=>{const arr=[];const seen=new Set();[...(base.subjectSel?.[k]||[]),...(inc.subjectSel?.[k]||[])].forEach(v=>{if(!seen.has(v)){seen.add(v);arr.push(v);}});out.subjectSel[k]=arr;});
+  // pathProgress: object by subject -> booleans(true wins)
+  const ppk=new Set([...Object.keys(base.pathProgress||{}),...Object.keys(inc.pathProgress||{})]);
+  ppk.forEach(s=>{const o={};[...Object.keys(base.pathProgress?.[s]||{}),...Object.keys(inc.pathProgress?.[s]||{})].forEach(t=>{o[t]=((base.pathProgress[s]&&base.pathProgress[s][t])||(inc.pathProgress[s]&&inc.pathProgress[s][t]))?true:false;});out.pathProgress[s]=o;});
+  // sessions/tasks: object-by-date arrays, dedupe
+  ['sessions','tasks'].forEach(k=>{out[k]={};const dk=new Set([...Object.keys(base[k]||{}),...Object.keys(inc[k]||{})]);
+    dk.forEach(d=>{const arr=[];const seen=new Set();[...(base[k]?.[d]||[]),...(inc[k]?.[d]||[])].forEach(x=>{const id=k==='sessions'?x.start:x.id;if(!seen.has(id)){seen.add(id);arr.push(x);}});out[k][d]=arr;});});
+  // treehole: array dedupe by id
+  const th=[];const ths=new Set();[...(base.treehole||[]),...(inc.treehole||[])].forEach(x=>{if(!ths.has(x.id)){ths.add(x.id);th.push(x);}});out.treehole=th;
+  // targetSchools: array dedupe by name
+  const tsch=[];const ts=new Set();[...(base.targetSchools||[]),...(inc.targetSchools||[])].forEach(x=>{const v=(x&&x.name)||x;if(v&&!ts.has(v)){ts.add(v);tsch.push(typeof x==='string'?{name:x}:x);}});out.targetSchools=tsch;
+  // vocab: merge counts (max streak/best, sum correct/total)
+  const bv=base.vocab||{},iv=inc.vocab||{};
+  out.vocab={correct:(bv.correct||0)+(iv.correct||0),total:(bv.total||0)+(iv.total||0),streak:Math.max(bv.streak||0,iv.streak||0),best:Math.max(bv.best||0,iv.best||0),date:bv.date||iv.date||''};
+  // current
+  const a=base.current,b=inc.current,sc=x=>(x&&x.running?1e15:0)+(x&&x.startTs||0);
+  out.current=a&&b?(sc(b)>sc(a)?b:a):(a||b||null);
+  return out;
+}
+function refreshAll(){try{renderHome();updateRoutine();updateTimer();updateNoon();renderPaths();updateDashboard();renderVocabStats();renderSchools();pomoRender();renderLunchPhoto();renderWall();updateTopbar();}catch(e){console.warn(e);}}
+function randCode(){return Math.random().toString(36).slice(2,8).toUpperCase();}
+
+/* ============ 云同步层 ============ */
+const Cloud={
+  enabled:false,code:'',base:'/',es:null,timer:null,pushT:null,applying:false,status:'off',
+  reqURL(mode){return (this.base&&this.base!=='/')?this.base+'/'+mode+'?code='+encodeURIComponent(this.code):'/?apimode='+mode+'&code='+encodeURIComponent(this.code);},
+  init(){
+    const params=new URLSearchParams(location.search);const api=params.get('api');if(api)this.base=api;
+    try{const cfg=JSON.parse(localStorage.getItem('cloud_cfg')||'null');if(cfg&&cfg.enabled){this.enabled=true;this.code=cfg.code;this.base=cfg.base||this.base;}}catch(e){}
+    this.updateUI();if(this.enabled)this.connect();
+  },
+  saveCfg(){localStorage.setItem('cloud_cfg',JSON.stringify({enabled:this.enabled,code:this.code,base:this.base}));},
+  setStatus(s){this.status=s;this.updateUI();},
+  updateUI(){
+    const stat=$('cloudStat'),dot=$('cloudDot'),code=$('cloudCode');
+    dot.className='dot'+(this.status==='off'?'':' '+this.status);
+    if(code&&document.activeElement!==code)code.value=this.code;
+    if(!this.enabled){stat.textContent='未开启';stat.className='pop-stat';}
+    else if(this.status==='sync'){stat.textContent='同步中…';stat.className='pop-stat sync';}
+    else if(this.status==='offline'){stat.textContent='离线（本地可用）';stat.className='pop-stat offline';}
+    else{stat.textContent='已同步 ✓';stat.className='pop-stat ok';}
+  },
+  async connect(){this.saveCfg();this.updateUI();await this.pull();this.subscribe();this.timer=setInterval(()=>this.pull(),10000);},
+  async pull(){if(!this.enabled)return;try{const r=await fetch(this.reqURL('state'));const j=await r.json();this.applying=true;db=mergeDb(db,j.db||{});this.applying=false;_persist();refreshAll();this.setStatus('ok');}catch(e){this.setStatus('offline');}},
+  subscribe(){try{this.es=new EventSource(this.reqURL('stream'));this.es.onmessage=()=>this.pull();this.es.onerror=()=>{};}catch(e){}},
+  push(){if(!this.enabled||this.applying)return;clearTimeout(this.pushT);this.pushT=setTimeout(()=>{if(!this.enabled)return;this.setStatus('sync');fetch(this.reqURL('state'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:this.code,db,ts:Date.now()})}).then(()=>this.setStatus('ok')).catch(()=>this.setStatus('offline'));},400);},
+  enable(code){this.enabled=true;this.code=(code||'').trim()||randCode();this.connect();},
+  disable(){this.enabled=false;if(this.es){try{this.es.close();}catch(e){}}clearInterval(this.timer);this.saveCfg();this.updateUI();this.setStatus('off');}
+};
+window.__cloud=Cloud;
+$('cloudBtn').addEventListener('click',e=>{e.stopPropagation();$('cloudPop').classList.toggle('show');});
+document.addEventListener('click',e=>{const pop=$('cloudPop');if(pop.classList.contains('show')&&!pop.contains(e.target)&&e.target!==$('cloudBtn')&&!$('cloudBtn').contains(e.target))pop.classList.remove('show');});
+$('cloudEnable').addEventListener('click',()=>{const c=$('cloudCode').value.trim();Cloud.enable(c);$('cloudPop').classList.remove('show');});
+$('cloudCopy').addEventListener('click',()=>{const c=$('cloudCode').value.trim()||Cloud.code;if(navigator.clipboard)navigator.clipboard.writeText(c).catch(()=>{});const b=$('cloudCopy');b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200);});
+$('cloudNow').addEventListener('click',()=>Cloud.pull());
+$('cloudDisable').addEventListener('click',()=>{Cloud.disable();$('cloudPop').classList.remove('show');});
+
+/* ============ 通用导航 ============ */
+function switchView(v){
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.dataset.view===v));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===v));
+  document.querySelectorAll('.mnav').forEach(n=>n.classList.toggle('active',n.dataset.view===v));
+  if(v==='home')renderHome();if(v==='routine')updateRoutine();if(v==='timer')updateTimer();
+  if(v==='noon')updateNoon();if(v==='paths')renderPaths();if(v==='dashboard')updateDashboard();if(v==='treehole'){renderVocabStats();nextVocab();}
+  $('sidebar').classList.remove('open');$('mask').classList.remove('show');
+}
+document.querySelectorAll('[data-view]').forEach(el=>{if(el.classList.contains('nav-item')||el.classList.contains('mnav'))el.addEventListener('click',()=>switchView(el.dataset.view));});
+$('hamburger').addEventListener('click',()=>{$('sidebar').classList.toggle('open');$('mask').classList.toggle('show');});
+$('mask').addEventListener('click',()=>{$('sidebar').classList.remove('open');$('mask').classList.remove('show');});
+
+/* ============ 顶部问候 ============ */
+function initTop(){const d=new Date(),h=d.getHours();const g=h<6?'凌晨好':h<11?'早安':h<14?'中午好':h<18?'下午好':'晚上好';const wk=['日','一','二','三','四','五','六'][d.getDay()];$('hello').textContent='欣祎，'+g;$('todayDate').textContent=fmt(d)+' 星期'+wk;}
+function updateTopbar(){}
+
+/* ============ 主页 ============ */
+function renderStars(elId,value,onChange){
+  const el=$(elId);el.innerHTML='';
+  for(let i=0;i<5;i++){
+    const s=document.createElement('span');s.className='star';
+    const l=document.createElement('span');l.className='half left';l.addEventListener('click',()=>onChange(Math.min(5,i+0.5)));
+    const r=document.createElement('span');r.className='half right';r.addEventListener('click',()=>onChange(Math.min(5,i+1)));
+    s.appendChild(l);s.appendChild(r);el.appendChild(s);
+  }
+  el.querySelectorAll('.star').forEach((s,i)=>{s.classList.toggle('full',value>=i+1);s.classList.toggle('halfon',value>=i+0.5&&value<i+1);});
+}
+const RATE_FIELDS=[['serious','认真度'],['efficiency','效率'],['mood','心情'],['exec','执行力']];
+function setReview(field,val){
+  const t=todayKey();db.review[t]=db.review[t]||{};db.review[t][field]=val;saveDB();
+  renderStars('stars_'+field,val,v=>setReview(field,v));
+  const v=$('rv_'+field);if(v)v.textContent=val?val.toFixed(1)+'★':'未评';
+}
+function renderHome(){
+  // 签名
+  const sig=$('sigInput');if(document.activeElement!==sig)sig.textContent=db.signature||'';
+  // 倒计时
+  const gk=db.gaokaoDate||'2027-06-07';$('gkDate').value=gk;
+  const days=Math.ceil((new Date(gk+'T00:00:00')-new Date())/86400000);
+  $('countdown').textContent=days>0?days:(days===0?'今天':'已结束');
+  // 复盘星级
+  const rv=db.review[todayKey()]||{};
+  RATE_FIELDS.forEach(([f])=>{renderStars('stars_'+f,rv[f]||0,v=>setReview(f,v));$('rv_'+f).textContent=(rv[f]?rv[f].toFixed(1)+'★':'未评');});
+  if(document.activeElement!==$('reviewNote'))$('reviewNote').value=rv.note||'';
+  // 概览
+  const t=todayKey();
+  const tasks=db.tasks[t]||[];const td=tasks.filter(x=>x.done).length;
+  const sess=(db.sessions[t]||[]).reduce((s,x)=>s+x.dur,0)+(db.current&&db.current.running?curElapsed():0);
+  $('homeStats').innerHTML=
+    stat('今日自习',humanDur(sess))+stat('任务完成',tasks.length?td+'/'+tasks.length:'0/0')+
+    stat('连续早起',checkinStreak()+'天')+stat('睡眠',avgSleep7()+'h');
+  const rvAvg=reviewAvg7();
+  const rvToday=db.review[todayKey()];const vals=rvToday?Object.values(rvToday).filter(v=>typeof v==='number'):[];const todayAvg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;let tip;
+  if(rvToday&&vals.length>=4){if(todayAvg>=4.5)tip='🔥 满分状态！认真度、效率、心情、执行力全在线——你今天就是 985 预备役，保持这个节奏，梦校已经在路上了！';else if(todayAvg>=3.5)tip='💪 稳！今天整体在线。想再上一层，把最难的数学/物理放上午精力峰值，晚间留给复盘。';else if(todayAvg>=2.5)tip='🌱 普通但不差。分析一下：认真度不够往往是任务太散，用番茄钟锁住大块时间；执行力低就先完成 1 件最小任务破局。';else tip='🫶 今天状态一般很正常，备考是马拉松。允许自己喘口气，明天早起喝杯温水重来，你已经比昨天勇敢了。';}
+  else if(rvAvg)tip='近7天复盘均分 '+rvAvg.toFixed(1)+'★，'+(rvAvg>=4?'状态很稳，保持住！':rvAvg>=3?'稳中有进，注意调节节奏。':'状态偏低，今天早点休息、给自己打气。');
+  else tip='完成今日复盘，记录你的学习状态吧。';
+  $('homeTip').textContent=tip;
+}
+function stat(b,v){return '<div class="stat"><b>'+v+'</b><span>'+b+'</span></div>';}
+function avgSleep7(){let s=0,n=0;for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=fmt(d);const sl=db.sleep[k],wk=db.checkins[k];if(sl&&sl.bed&&wk&&wk.done){const dur=(wk.time-sl.bed)/3600000;if(dur>0&&dur<24){s+=dur;n++;}}}return n?+(s/n).toFixed(1):0;}
+function reviewAvg7(){let s=0,n=0;for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const r=db.review[fmt(d)];if(r&&(r.serious||r.efficiency||r.mood||r.exec)){s+=((r.serious||0)+(r.efficiency||0)+(r.mood||0)+(r.exec||0))/4;n++;}}return n?+(s/n).toFixed(1):0;}
+
+/* 主页事件 */
+$('sigInput').addEventListener('blur',()=>{db.signature=$('sigInput').textContent.trim();saveDB();});
+$('gkDate').addEventListener('change',()=>{db.gaokaoDate=$('gkDate').value;$('gkDate').blur();saveDB();renderHome();});
+$('reviewNote').addEventListener('blur',()=>{const t=todayKey();db.review[t]=db.review[t]||{};db.review[t].note=$('reviewNote').value.trim();saveDB();});
+
+/* ============ 作息（起床+睡觉） ============ */
+function checkinStreak(){let s=0,d=new Date();if(!(db.checkins[fmt(d)]&&db.checkins[fmt(d)].done))d.setDate(d.getDate()-1);while(db.checkins[fmt(d)]&&db.checkins[fmt(d)].done){s++;d.setDate(d.getDate()-1);}return s;}
+function updateRoutine(){
+  const t=todayKey(),c=db.checkins[t],sl=db.sleep[t];
+  const ws=$('wakeState'),wt=$('wakeTime'),wb=$('btnWake');
+  if(c&&c.done){ws.className='check-state done';ws.textContent='今日已打卡 ✓';wt.style.color='var(--text)';wt.textContent=HHMM(c.time);wb.textContent='↺ 取消早起';wb.className='btn ghost';}
+  else{ws.className='check-state no';ws.textContent='尚未打卡';wt.style.color='var(--muted)';wt.textContent='--:--';wb.textContent='☀️ 我要早起打卡';wb.className='btn primary';}
+  const ss=$('sleepState'),stt=$('sleepTime'),sb=$('btnSleep');
+  if(sl&&sl.bed){ss.className='check-state done';ss.textContent='已记录 ✓';stt.style.color='var(--text)';stt.textContent=HHMM(sl.bed);sb.textContent='↺ 重新记录';sb.className='btn ghost';}
+  else{ss.className='check-state no';ss.textContent='尚未记录';stt.style.color='var(--muted)';stt.textContent='--:--';sb.textContent='🌙 记录睡觉时间';sb.className='btn primary';}
+  let durTxt='';if(sl&&sl.bed&&c&&c.done){const dur=(c.time-sl.bed)/3600000;if(dur>0&&dur<24)durTxt='本次睡眠约 '+dur.toFixed(1)+' 小时';}
+  $('sleepDur').textContent=durTxt;
+  $('streakNum').textContent=checkinStreak();
+  $('avgSleep').textContent=avgSleep7()+'h';
+  const keys=Object.keys(db.checkins).filter(k=>(db.checkins[k].done)||(db.sleep[k]&&db.sleep[k].bed)).sort().reverse().slice(0,14);
+  const box=$('routineHistory');
+  if(!keys.length)box.innerHTML='<div class="empty">还没有作息记录。</div>';
+  else box.innerHTML=keys.map(k=>{const c=db.checkins[k],sl=db.sleep[k];const isT=k===t;let dur='';if(sl&&sl.bed&&c&&c.done){const d=(c.time-sl.bed)/3600000;if(d>0&&d<24)dur=' · 睡眠'+d.toFixed(1)+'h';}
+    return '<div class="row"><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></div><div class="body"><b>'+k+(isT?' · 今天':'')+'</b><span>起床 '+(c&&c.done?HHMM(c.time):'—')+' · 睡觉 '+(sl&&sl.bed?HHMM(sl.bed):'—')+dur+'</span></div></div>';}).join('');
+  updateTopbar();
+}
+const WAKE_PRAISES=[
+ {t:'就你这起床速度，也只配追我了 🐉',e:'🐉',ko:'개강!',v:'gd'},
+ {t:'镜子照了？今天也没我帅 💫',e:'💫',ko:'버스~',v:'gd'},
+ {t:'想拿第一？我早就是唯一了 ✨',e:'✨',ko:'찢었어',v:'gd'},
+ {t:'追我的先排队，你打卡倒是挺快 🐉',e:'🐉',ko:'VIP',v:'gd'},
+ {t:'歪着头都帅过你，认了吧 💫',e:'💫',ko:'삐딱',v:'gd'},
+ {t:'起床这种事，本少爷 뚝딱 搞定，你磨蹭啥 🐉',e:'🐉',ko:'뚝딱',v:'gd'},
+ {t:'画家崔胜铉提醒你：艺术生得起早 🌅',e:'🌅',ko:'탑',v:'top'},
+ {t:'我的低音炮都叫不醒你，只能上美术了 💫',e:'💫',ko:'바리톤',v:'top'},
+ {t:'4차원 人类表示：凡间该起床了 🌅',e:'🌅',ko:'4차원',v:'top'},
+ {t:'再躺会儿，离 my world 又远一天 ✨',e:'✨',ko:'하루하루',v:'top'},
+ {t:'沉住气，崔胜铉的咖啡还等你 🔥',e:'🔥',ko:'묵직',v:'top'},
+ {t:'见我之前，先把这张脸练精神点 🔥',e:'🔥',ko:'예술',v:'top'}
+];
+const SLEEP_PRAISES=[
+ {t:'躺平也得带我三分帅，晚安 🌙',e:'🌙',ko:'굿밤',v:'gd'},
+ {t:'今天辛苦了，本少爷批准你睡 💤',e:'💤',ko:'잘자',v:'gd'},
+ {t:'追我的人太多，你先去梦里排号 😴',e:'😴',ko:'꿈',v:'gd'},
+ {t:'镜子关了，但帅是关不掉的 💫',e:'💫',ko:'비숑',v:'gd'},
+ {t:'早点睡，明天才有精神继续追我 🐉',e:'🐉',ko:'수면',v:'gd'},
+ {t:'别熬了，黑眼圈配不上我的审美 💅',e:'💅',ko:'피곤',v:'gd'},
+ {t:'画家崔胜铉说：睡饱了才好画画 🎨',e:'🎨',ko:'탑',v:'top'},
+ {t:'我的低音炮哄你入睡，别客气 🔥',e:'🔥',ko:'바리톤',v:'top'},
+ {t:'4차원 人类已就寝，凡间也该睡了 🌌',e:'🌌',ko:'4차원',v:'top'},
+ {t:'别熬了，离 my world 还差好几个时区 ✨',e:'✨',ko:'하루',v:'top'},
+ {t:'沉住气，崔胜铉的咖啡明天再约 ☕',e:'☕',ko:'묵직',v:'top'},
+ {t:'睡吧，明天又是追我的一天 💫',e:'💫',ko:'굿나잇',v:'top'}
+];
+$('btnWake').addEventListener('click',()=>{const t=todayKey();const was=db.checkins[t]&&db.checkins[t].done;if(was)delete db.checkins[t];else db.checkins[t]={done:true,time:nowTs()};saveDB();updateRoutine();if(!was){const w=WAKE_PRAISES[Math.floor(Math.random()*WAKE_PRAISES.length)];showPraise(w.t,w.e,w.ko,w.v,local.wakeBg);}});
+$('btnSleep').addEventListener('click',()=>{const t=todayKey();const had=db.sleep[t]&&db.sleep[t].bed;db.sleep[t]=db.sleep[t]||{};db.sleep[t].bed=nowTs();saveDB();updateRoutine();const p=SLEEP_PRAISES[Math.floor(Math.random()*SLEEP_PRAISES.length)];showPraise(p.t,p.e,p.ko,p.v,local.sleepBg);});
+
+/* ============ 自习室计时 ============ */
+function curElapsed(){const c=db.current;if(!c)return 0;return c.acc+(c.running?Math.floor((nowTs()-c.startTs)/1000):0);}
+function todayStudySec(){const t=todayKey();let s=0;(db.sessions[t]||[]).forEach(x=>s+=x.dur);if(db.current&&db.current.running)s+=curElapsed();return s;}
+function updateTimer(){
+  const disp=$('timerDisplay'),state=$('timerState'),toggle=$('btnTimerToggle'),end=$('btnTimerEnd'),badge=(window.__cloud&&Cloud.enabled)?document.getElementById('badgeTimer'):null;
+  const c=db.current,el=curElapsed();
+  disp.textContent=fmtDur(el);disp.classList.toggle('run',!!(c&&c.running));
+  if(!c){state.textContent='准备开始今天的专注学习';toggle.textContent='▶ 开始计时';toggle.className='btn primary';end.disabled=true;}
+  else if(c.running){state.textContent='专注中… 保持节奏 💪';toggle.textContent='⏸ 暂停';toggle.className='btn soft';end.disabled=false;}
+  else{state.textContent='已暂停，可继续或结束';toggle.textContent='▶ 继续计时';toggle.className='btn primary';end.disabled=false;}
+  const t=todayKey(),segs=db.sessions[t]||[];
+  $('todayTotal').textContent=humanDur(todayStudySec());
+  $('todaySeg').textContent=segs.length+(c&&c.running?1:0);
+  const box=$('sessionList');const all=[...segs];if(c&&c.running)all.push({start:c.startTs,end:nowTs(),dur:el,live:true});
+  all.sort((a,b)=>b.start-a.start);
+  if(!all.length)box.innerHTML='<div class="empty">今天还没有学习记录，点击上方开始计时。</div>';
+  else box.innerHTML=all.map((x,i)=>'<div class="row"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg></div><div class="body"><b>'+(x.live?'进行中':'第 '+(all.length-i)+' 段')+'</b><span>'+HHMM(x.start)+' – '+HHMM(x.end)+'</span></div><span class="check-state '+(x.live?'no':'done')+'">'+humanDur(x.dur)+'</span></div>').join('');
+  updateTopbar();
+}
+$('btnTimerToggle').addEventListener('click',()=>{let c=db.current;if(!c)db.current={startTs:nowTs(),acc:0,running:true};else if(c.running){c.acc+=Math.floor((nowTs()-c.startTs)/1000);c.running=false;}else{c.startTs=nowTs();c.running=true;}saveDB();updateTimer();});
+$('btnTimerEnd').addEventListener('click',()=>{const c=db.current;if(!c)return;const dur=curElapsed();if(dur>=5){const t=todayKey();(db.sessions[t]=db.sessions[t]||[]).push({start:c.startTs,end:nowTs(),dur});}db.current=null;saveDB();updateTimer();});
+setInterval(()=>{if(db.current)updateTimer();},1000);
+
+/* ============ 午间 ============ */
+function updateNoon(){
+  const t=todayKey(),n=db.noon[t]||{};
+  $('lunchInfo').textContent=(n.lunchStart?('开始 '+HHMM(n.lunchStart)):'尚未开始')+(n.lunchEnd?('  结束 '+HHMM(n.lunchEnd)):'');
+  $('napInfo').textContent=(n.napStart?('开始 '+HHMM(n.napStart)):'尚未开始')+(n.napEnd?('  结束 '+HHMM(n.napEnd)):'');
+  $('lunchDur').textContent=n.lunchStart&&n.lunchEnd?humanDur((n.lunchEnd-n.lunchStart)/1000):'0m';
+  $('napDur').textContent=n.napStart&&n.napEnd?humanDur((n.napEnd-n.napStart)/1000):'0m';
+  $('btnLunchStart').disabled=!!n.lunchStart;$('btnLunchEnd').disabled=!(n.lunchStart&&!n.lunchEnd);
+  $('btnNapStart').disabled=!!n.napStart;$('btnNapEnd').disabled=!(n.napStart&&!n.napEnd);
+  if($('noonNote')!==document.activeElement)$('noonNote').value=n.note||'';
+  const keys=Object.keys(db.noon).filter(k=>(db.noon[k].lunchStart||db.noon[k].napStart)).sort().reverse().slice(0,10);
+  const box=$('noonHistory');
+  if(!keys.length)box.innerHTML='<div class="empty">还没有午间记录。</div>';
+  else box.innerHTML=keys.map(k=>{const m=db.noon[k];const ld=(m.lunchStart&&m.lunchEnd)?humanDur((m.lunchEnd-m.lunchStart)/1000):'—';const nd=(m.napStart&&m.napEnd)?humanDur((m.napEnd-m.napStart)/1000):'—';return '<div class="row"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 19V9a6 6 0 0 1 12 0v10"/></svg></div><div class="body"><b>'+k+(k===t?' · 今天':'')+'</b><span>午饭 '+ld+' · 午休 '+nd+(m.note?' · '+m.note:'')+'</span></div></div>';}).join('');
+}
+function noonTap(field){const t=todayKey();const was=db.noon[t]&&db.noon[t][field];db.noon[t]=db.noon[t]||{};db.noon[t][field]=nowTs();saveDB();updateNoon();if(!was&&field==='lunchStart')showPraise('午饭打卡，干饭人冲 🍱','🍱');if(!was&&field==='napStart')showPraise('午休开始，闭眼充个电 😴','😴');}
+$('btnLunchStart').addEventListener('click',()=>noonTap('lunchStart'));
+$('btnLunchEnd').addEventListener('click',()=>noonTap('lunchEnd'));
+$('btnNapStart').addEventListener('click',()=>noonTap('napStart'));
+$('btnNapEnd').addEventListener('click',()=>noonTap('napEnd'));
+$('btnNoonSave').addEventListener('click',()=>{const t=todayKey();db.noon[t]=db.noon[t]||{};db.noon[t].note=$('noonNote').value.trim();saveDB();updateNoon();$('btnNoonSave').textContent='已保存 ✓';setTimeout(()=>$('btnNoonSave').textContent='保存备注',1200);});
+
+/* ============ 学科路径 ============ */
+let taskDate=todayKey();
+let taskSubjectSel='通用';
+function renderTaskSubjects(){
+  const box=$('taskSubjectChips');
+  const opts=['通用',...SUBJECTS];
+  box.innerHTML=opts.map(s=>'<div class="chip'+(s===taskSubjectSel?' on':'')+'" data-s="'+s+'">'+s+'</div>').join('');
+  box.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+    taskSubjectSel=c.dataset.s;$('taskSubject').value=taskSubjectSel;
+    box.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));
+  }));
+  $('taskSubject').value=taskSubjectSel;
+}
+function renderPaths(){
+  const t=todayKey();const sel=db.subjectSel[t]||[];
+  $('subjChips').innerHTML=SUBJECTS.map(s=>'<div class="chip'+(sel.includes(s)?' on':'')+'" data-s="'+s+'">'+s+'</div>').join('');
+  $('subjChips').querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+    const s=c.dataset.s;const cur=db.subjectSel[todayKey()]||[];const i=cur.indexOf(s);
+    if(i>=0)cur.splice(i,1);else cur.push(s);db.subjectSel[todayKey()]=cur;saveDB();renderPaths();
+  }));
+  const area=$('pathArea');
+  if(!sel.length){area.innerHTML='<div class="card"><div class="empty">还没有选择学科，先在上方点选今天要攻克的科目吧。</div></div>';}
+  else{
+    area.innerHTML=sel.map(s=>{
+      const flat=PATH_FLAT[s];const prog=db.pathProgress[s]||{};
+      const done=flat.filter((_,i)=>prog[i]).length;
+      let html='<div class="card path-subj"><div class="ps-name">📘 '+s+' <span style="font-size:12px;color:var(--muted);font-weight:500">'+done+'/'+flat.length+' 已完成</span></div><div class="pbar"><i style="width:'+(done/flat.length*100)+'%"></i></div>';
+      let stage='';
+      flat.forEach((p,i)=>{if(p.stage!==stage){stage=p.stage;html+='<div class="path-stage">'+stage+'</div>';}
+        const on=prog[i];html+='<div class="path-topic'+(on?' done':'')+'" data-s="'+s+'" data-i="'+i+'"><span class="pc">'+(on?'<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>':'')+'</span><span class="pt">'+p.topic+'</span></div>';});
+      html+='</div>';return html;
+    }).join('');
+    area.querySelectorAll('.path-topic').forEach(el=>el.addEventListener('click',()=>{
+      const s=el.dataset.s,i=+el.dataset.i;db.pathProgress[s]=db.pathProgress[s]||{};db.pathProgress[s][i]=!db.pathProgress[s][i];saveDB();renderPaths();
+    }));
+  }
+  renderTasks();
+}
+function renderTasks(){
+  const isToday=taskDate===todayKey();
+  const list=db.tasks[taskDate]||[];const box=$('taskList');
+  if(!list.length)box.innerHTML='<div class="empty">'+(isToday?'还没有任务，先添加今天要完成的学习内容，或勾选上方学科路径。':'这一天还没有学习台账记录。')+'</div>';
+  else box.innerHTML=list.map(x=>'<div class="task'+(x.done?' done':'')+'" data-id="'+x.id+'"><div class="chk" data-act="toggle"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div><div class="meta"><div class="top"><span class="tag">'+(x.subject||'通用')+'</span></div><div class="txt">'+escapeHtml(x.content)+'</div></div><div class="x" data-act="del"><svg viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></div></div>').join('');
+  box.querySelectorAll('.task').forEach(el=>{el.querySelector('[data-act="toggle"]').addEventListener('click',()=>toggleTask(el.dataset.id));el.querySelector('[data-act="del"]').addEventListener('click',()=>delTask(el.dataset.id));});
+  const done=list.filter(x=>x.done).length;
+  $('taskProgressTxt').textContent=done+' / '+list.length+' 完成';
+  $('taskProgressPct').textContent=list.length?Math.round(done/list.length*100)+'%':'0%';
+  updateTopbar();
+}
+function toggleTask(id){const l=db.tasks[taskDate]||[];const x=l.find(t=>t.id==id);if(x){const nowDone=!x.done;x.done=nowDone;saveDB();renderTasks();if(nowDone)showPraise('任务完成，离目标更近一步 ✅','✅');}}
+function delTask(id){db.tasks[taskDate]=(db.tasks[taskDate]||[]).filter(t=>t.id!=id);saveDB();renderTasks();}
+$('btnAddTask').addEventListener('click',addTask);
+$('taskContent').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+function addTask(){const sub=taskSubjectSel||'通用';const con=$('taskContent').value.trim();if(!con){$('taskContent').focus();return;}if(taskDate!==todayKey())taskDate=todayKey();db.tasks[taskDate]=db.tasks[taskDate]||[];db.tasks[taskDate].push({id:nowTs()+''+Math.floor(Math.random()*999),subject:sub,content:con,done:false});$('taskContent').value='';saveDB();Sound.coin();renderTasks();}
+
+/* ============ 数据面板 ============ */
+function allSessionsSec(){let s=0;Object.values(db.sessions).forEach(arr=>arr.forEach(x=>s+=x.dur));return s;}
+function last7Keys(){const arr=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);arr.push(fmt(d));}return arr;}
+function pathTotalDone(){let tot=0,done=0;SUBJECTS.forEach(s=>{const f=PATH_FLAT[s];tot+=f.length;done+=f.filter((_,i)=>db.pathProgress[s]&&db.pathProgress[s][i]).length;});return{tot,done};}
+function updateDashboard(){
+  $('aStreak').textContent=checkinStreak();
+  const wk=last7Keys();let wkSec=0;wk.forEach(k=>(db.sessions[k]||[]).forEach(x=>wkSec+=x.dur));$('aWeek').textContent=humanDur(wkSec);
+  let tot=0,done=0;Object.values(db.tasks).forEach(arr=>arr.forEach(x=>{tot++;if(x.done)done++;}));$('aRate').textContent=tot?Math.round(done/tot*100)+'%':'0%';
+  $('aSleep').textContent=avgSleep7()+'h';
+  $('aReview').textContent=reviewAvg7()?reviewAvg7().toFixed(1)+'★':'--';
+  const pt=pathTotalDone();$('aPath').textContent=pt.tot?Math.round(pt.done/pt.tot*100)+'%':'0%';
+  const pe=$('aPath').parentElement;pe.style.setProperty('--p',pt.tot?Math.round(pt.done/pt.tot*100):0);
+  // week chart
+  const chart=$('weekChart');const maxMin=Math.max(30,Math.max(...wk.map(k=>((db.sessions[k]||[]).reduce((s,x)=>s+x.dur,0))/60)));
+  chart.innerHTML=wk.map(k=>{const sec=(db.sessions[k]||[]).reduce((s,x)=>s+x.dur,0);const min=sec/60;const h=Math.max(4,Math.round(min/maxMin*120));const lab=['日','一','二','三','四','五','六'][new Date(k).getDay()];return '<div class="col'+(k===todayKey()?' today':'')+'"><span class="v">'+(min>=60?Math.round(min/60)+'h':min>=1?Math.round(min)+'m':'·')+'</span><div class="bar2" style="height:'+h+'px"></div><span class="lab">'+lab+'</span></div>';}).join('');
+  // review chart
+  const rc=$('reviewChart');const rmax=Math.max(1,Math.max(...wk.map(k=>reviewAvgOf(k))));
+  rc.innerHTML=wk.map(k=>{const v=reviewAvgOf(k);const h=Math.max(4,Math.round(v/rmax*120));const lab=['日','一','二','三','四','五','六'][new Date(k).getDay()];return '<div class="col'+(k===todayKey()?' today':'')+'"><span class="v">'+(v?v.toFixed(1):'·')+'</span><div class="bar2" style="height:'+h+'px"></div><span class="lab">'+lab+'</span></div>';}).join('');
+  // path bars
+  const sb=$('pathBars');
+  sb.innerHTML=SUBJECTS.map(s=>{const f=PATH_FLAT[s];const d=f.filter((_,i)=>db.pathProgress[s]&&db.pathProgress[s][i]).length;const r=Math.round(d/f.length*100);return '<div class="bar-row"><span class="name">'+s+'</span><div class="bar"><i style="width:'+r+'%"></i></div><span class="val">'+r+'%</span></div>';}).join('');
+  buildDiagnosis();
+}
+function reviewAvgOf(k){const r=db.review[k];if(!r)return 0;const v=((r.serious||0)+(r.efficiency||0)+(r.mood||0)+(r.exec||0))/4;return v;}
+const METHOD_POOL={
+  morning:{t:'建立稳定早起节律',d:'连续早起能显著提升白天的专注力。建议固定 6:30–7:00 起床，起床后先喝水、简单拉伸，再进入学习。',k:'作息'},
+  time:{t:'用番茄钟管理大块时间',d:'建议以 45 分钟专注 + 10 分钟休息为一个单元，每天保证 6–8 个高质量单元。把最难的数学/物理放在精力最好的上午。',k:'时间管理'},
+  weak_subj:{t:'针对薄弱科目做专题突破',d:'系统梳理该科知识框架，先做近 3 年真题找出高频考点，再对错题归因，每周集中攻克 1–2 个专题。',k:'补弱'},
+  review:{t:'一轮复习"先划网，后填空"',d:'暑假是一轮复习黄金期。先按章节画出知识树，标注已掌握与薄弱点；再用错题本和真题把"空洞"补上。',k:'一轮复习'},
+  mistake:{t:'建立可复盘的错题本',d:'错题不要只抄答案，要记：① 错误原因 ② 正确思路 ③ 同类题变式。每周回看一次，考试前它就是你的提分清单。',k:'错题本'},
+  rest:{t:'重视午休与精力管理',d:'午睡 20–30 分钟最佳，过长反而昏沉。午后安排中等难度任务，傍晚运动 30 分钟能提升晚间记忆效率。',k:'精力'},
+  mock:{t:'每周一次限时模拟',d:'暑假后期开始每周做一套真题限时训练，严格按高考时段进行，训练节奏感与抗压能力。',k:'模考'},
+  sleep:{t:'守住睡眠这条底线',d:'高三拼的不是熬最晚的夜，而是最稳的状态。保证 7–8 小时睡眠，第二天效率远高于熬夜弥补。',k:'睡眠'},
+  mood:{t:'照顾好今天的心情',d:'复盘均分偏低时，说明状态在下滑。允许自己有低谷，写写树洞、运动放松，比硬撑更高效。',k:'心态'}
+};
+function buildDiagnosis(){
+  const weak=[];const recs=[];
+  if(checkinStreak()<3){weak.push('早起打卡连续性不足（当前连续 '+checkinStreak()+' 天），作息节律尚未稳定。');recs.push(METHOD_POOL.morning);}else weak.push('早起习惯保持良好（连续 '+checkinStreak()+' 天），作息节律稳定 ✅');
+  const wkSec=last7Keys().reduce((s,k)=>s+(db.sessions[k]||[]).reduce((a,x)=>a+x.dur,0),0);const wkH=wkSec/3600;
+  if(wkH<14){weak.push('近 7 天自习约 '+wkH.toFixed(1)+' 小时，强度偏低，建议提升到每天 6–8 小时。');recs.push(METHOD_POOL.time);}else weak.push('近 7 天自习 '+wkH.toFixed(1)+' 小时，强度达标 ✅');
+  const sl=avgSleep7();if(sl&&sl<7){weak.push('近 7 天平均睡眠仅 '+sl+' 小时，偏少，注意补觉。');recs.push(METHOD_POOL.sleep);}else if(sl)weak.push('平均睡眠 '+sl+' 小时，状态在线 ✅');
+  const r7=reviewAvg7();if(r7&&r7<3){weak.push('近 7 天复盘均分仅 '+r7.toFixed(1)+'★，学习状态或心情需调节。');recs.push(METHOD_POOL.mood);}else if(r7)weak.push('复盘均分 '+r7.toFixed(1)+'★，整体在线 ✅');
+  // weak subjects by task completion
+  const subj={};Object.values(db.tasks).forEach(arr=>arr.forEach(x=>{const s=x.subject||'通用';subj[s]=subj[s]||{t:0,d:0};(subj[s].t)++;if(x.done)subj[s].d++;}));
+  const keys=Object.keys(subj);
+  if(keys.length){const sorted=keys.sort((a,b)=>(subj[a].d/subj[a].t)-(subj[b].d/subj[b].t));const low=sorted.filter(s=>subj[s].t>=2&&(subj[s].d/subj[s].t)<0.6);if(low.length){weak.push('完成率较低的科目：'+low.join('、')+'，建议优先补弱。');recs.push(METHOD_POOL.weak_subj);}if(sorted[0]&&subj[sorted[0]].t>=3)recs.push(METHOD_POOL.mistake);}
+  const pt=pathTotalDone();if(pt.tot&&pt.done/pt.tot<0.3)recs.push(METHOD_POOL.review);
+  if(wkH>=14)recs.push(METHOD_POOL.mock);
+  recs.push(METHOD_POOL.rest);
+  const seen=new Set();const finalRecs=recs.filter(r=>{if(seen.has(r.t))return false;seen.add(r.t);return true;});
+  $('weakPoints').innerHTML=weak.map(w=>'<div class="rec" style="background:var(--card);border-color:var(--line)"><div class="ric"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.79 18a2 2 0 0 0 1.71 3h17a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><div class="rbody"><p>'+w+'</p></div></div>').join('');
+  $('recList').innerHTML=finalRecs.map(r=>'<div class="rec"><div class="ric"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></div><div class="rbody"><b>'+r.t+'</b><p>'+r.d+'</p><span class="k">#'+r.k+'</span></div></div>').join('');
+}
+
+/* ============ 声音系统（Web Audio，含 Fantastic Baby 提示音） ============ */
+const Sound={
+  ctx:null,muted:false,
+  ensure(){try{if(!this.ctx||this.ctx.state==='closed'){const AC=window.AudioContext||window.webkitAudioContext;this.ctx=new AC();}}catch(e){this.ctx=null;}if(this.ctx&&this.ctx.state!=='running'){try{this.ctx.resume();}catch(e){}}return this.ctx;},
+  setMuted(m){this.muted=!!m;try{localStorage.setItem('gaokao_mute',m?'1':'');}catch(e){}},
+  tone(freq,dur,type,when,gain){const c=this.ensure();if(!c||this.muted)return;const t=c.currentTime+(when||0);const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(gain||0.16,t+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.start(t);o.stop(t+dur+0.03);},
+  kick(when){const c=this.ensure();if(!c||this.muted)return;const t=c.currentTime+(when||0);const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(48,t+0.12);g.gain.setValueAtTime(0.4,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.2);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+0.22);},
+  // 《Fantastic Baby》风电子 hook + 鼓点
+  fantastic(){if(this.muted)return;this.ensure();if(!this.ctx)return;const seq=[[523,0],[523,0.17],[659,0.30],[784,0.45],[659,0.60],[784,0.76],[988,0.92]];seq.forEach(([f,w])=>this.tone(f,0.22,'square',w,0.11));[0,0.30,0.60,0.90].forEach(w=>this.kick(w));},
+  correct(){this.ensure();if(!this.ctx||this.muted)return;[659,784,988,1319].forEach((f,i)=>this.tone(f,0.16,'triangle',i*0.08,0.15));},
+  wrong(){this.ensure();if(!this.ctx||this.muted)return;this.tone(196,0.26,'sawtooth',0,0.15);this.tone(165,0.34,'sawtooth',0.07,0.13);},
+  praise(){this.ensure();if(!this.ctx||this.muted)return;const seq=[[523,0],[659,0.1],[784,0.2],[1047,0.32]];seq.forEach(([f,w])=>this.tone(f,0.26,'triangle',w,0.15));this.kick(0);},
+  bell(){this.ensure();if(!this.ctx||this.muted)return;const t=this.ctx.currentTime;[1318.5,1760,2637].forEach((f,i)=>this.tone(f,0.8,'sine',i*0.10,0.12));this.tone(880,1.1,'sine',0,0.08);}
+};
+// 首次任意手势即解锁/恢复 AudioContext（自动播放策略要求用户手势）
+['pointerdown','touchstart','keydown','click'].forEach(function(ev){document.addEventListener(ev,function(){Sound.ensure();},{capture:true,passive:true});});
+
+/* ============ 打卡夸奖弹层（开心消消乐风） ============ */
+const PRAISES=[
+  {t:'太棒了！你又向前迈进了一步 🚀',e:'🚀'},
+  {t:'稳！这就是通往理想大学的节奏 ✨',e:'✨'},
+  {t:'坚持住，黑马就是你 🐎',e:'🐎'},
+  {t:'Fantastic Baby！你就是全场最靓的崽 💛',e:'💛'},
+  {t:'漂亮！今天的你比昨天更强 💪',e:'💪'},
+  {t:'nice！继续冲，梦想在招手 🌟',e:'🌟'},
+  {t:'哇哦，自律的人最迷人 😎',e:'😎'},
+  {t:'完成打卡，离目标又近一步 🎯',e:'🎯'}
+];
+const COMBO_TIERS=[
+  {min:1,txt:'Nice!',e:'😄'},
+  {min:2,txt:'Great!',e:'😆'},
+  {min:3,txt:'Excellent!',e:'🤩'},
+  {min:4,txt:'Perfect!',e:'🥳'},
+  {min:6,txt:'UNBELIEVABLE!',e:'🐉'}
+];
+let _praiseT=null,_combo=0,_comboReset=null;
+function comboText(){const tier=COMBO_TIERS.slice().reverse().find(x=>_combo>=x.min)||COMBO_TIERS[0];return tier;}
+function burstConfetti(){const em=['🎉','💛','⭐','✨','🐉','💫','🌟','🍅'];for(let i=0;i<18;i++){const c=document.createElement('div');c.className='confetti';c.textContent=em[Math.floor(Math.random()*em.length)];c.style.left=(Math.random()*100)+'vw';c.style.fontSize=(18+Math.random()*14)+'px';c.style.animationDuration=(2+Math.random()*1.8)+'s';c.style.animationDelay=(Math.random()*0.3)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4600);}}
+function burstSparks(cx,cy){const sym=['✦','✧','★','✨','💥','⭐'];for(let i=0;i<14;i++){const s=document.createElement('div');s.className='spark';s.textContent=sym[Math.floor(Math.random()*sym.length)];const ang=Math.random()*Math.PI*2,dist=80+Math.random()*160;s.style.left=cx+'px';s.style.top=cy+'px';s.style.setProperty('--dx',(Math.cos(ang)*dist).toFixed(0)+'px');s.style.setProperty('--dy',(Math.sin(ang)*dist).toFixed(0)+'px');s.style.animation='sparkfly '+(0.6+Math.random()*0.5)+'s ease-out forwards';document.body.appendChild(s);setTimeout(()=>s.remove(),1200);}}
+function showPraise(text,emoji,ko,voice,bg){
+  _combo++;clearTimeout(_comboReset);_comboReset=setTimeout(()=>{_combo=0;},4000);
+  const ov=$('praiseOverlay');const t=text||PRAISES[Math.floor(Math.random()*PRAISES.length)].t;
+  $('praiseText').textContent=t;$('praiseSub').textContent='坚持，就是最好的天赋 ✨';
+  const card=ov.querySelector('.praise-card');
+  if(card){if(bg){card.style.backgroundImage='linear-gradient(rgba(255,250,242,.66),rgba(255,245,225,.76)), url("'+bg+'")';card.style.backgroundSize='cover';card.style.backgroundPosition='center';}else{card.style.backgroundImage='';card.style.backgroundSize='';card.style.backgroundPosition='';}}
+  const byEl=$('praiseBy');
+  if(byEl){
+    const isGd=voice==='gd',isTop=voice==='top';
+    if(isGd||isTop){
+      const src=isGd?(local.gdPhoto||gdPortraitSVG()):(local.topPhoto||topPortraitSVG());
+      byEl.innerHTML='<img class="by-ava" src="'+src+'">'+(isGd?'G.D':isTop?'T.O.P':'');
+      byEl.className='praise-by '+(isGd?'by-gd':'by-top');
+      byEl.style.display='inline-flex';
+    }else{byEl.innerHTML='';byEl.style.display='none';}
+  }
+  const koEl=$('praiseKo'),spEl=$('praiseSpeak');
+  if(ko){koEl.textContent=ko;koEl.style.display='none';spEl.style.display='inline-block';window.__curKo=ko;window.__curVoice=voice;speakKo();}
+  else{koEl.style.display='none';spEl.style.display='none';window.__curKo='';}
+  const tier=comboText();const cb=$('praiseCombo');
+  if(_combo>=2){cb.textContent='连击 x'+_combo+' 🔥';cb.classList.add('on');}else cb.classList.remove('on');
+  ov.classList.remove('show');void ov.offsetWidth;ov.classList.add('show');
+  Sound.praise();
+  burstConfetti();
+  const r=ov.querySelector('.praise-card').getBoundingClientRect();burstSparks(r.left+r.width/2,r.top+r.height/2);
+  if(_combo>=3){setTimeout(()=>burstSparks(r.left+r.width/2,r.top+r.height/2),180);}
+  clearTimeout(_praiseT);_praiseT=setTimeout(()=>ov.classList.remove('show'),2300);
+}
+function pickKoVoice(){
+  try{const vs=(speechSynthesis.getVoices&&speechSynthesis.getVoices())||[];const ko=vs.filter(v=>(v.lang||'').toLowerCase().indexOf('ko')===0);if(!ko.length)return null;
+    return ko.find(v=>/male|남|men|boy/i.test(v.name)||(v.gender&&/male/i.test(v.gender)))||ko[0];}catch(e){return null;}
+}
+function speakKo(){if(!window.__curKo||!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(window.__curKo);u.lang='ko-KR';const voice=pickKoVoice();const isMale=voice&&/male|남|men|boy/i.test(voice.name||voice.gender||'');if(voice)u.voice=voice;const v=window.__curVoice;if(v==='top'){u.pitch=isMale?0.95:0.5;u.rate=0.92;}else if(v==='gd'){u.pitch=isMale?1.1:1.3;u.rate=1.06;}else{u.pitch=isMale?1:1;u.rate=1;}speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+
+/* ============ 院校库（搜索栏 + 图片 + 资料） ============ */
+const SCHOOLS=[
+ /* ===== 东北（黑龙江 / 吉林 / 辽宁）重点 ===== */
+ {n:'哈尔滨工业大学',c:'黑龙江·哈尔滨',t:'理工类',m:'规格严格，功夫到家',f:'C9 联盟 · 双一流',col:['#1E1E2A','#3A3A52']},
+ {n:'哈尔滨工程大学',c:'黑龙江·哈尔滨',t:'理工类',m:'大工至善，大学至真',f:'211 · 双一流',col:['#16324F','#2A5C8A']},
+ {n:'东北林业大学',c:'黑龙江·哈尔滨',t:'农林类',m:'学参天地，德合自然',f:'211 · 双一流',col:['#1E5E3A','#2E8A57']},
+ {n:'东北农业大学',c:'黑龙江·哈尔滨',t:'农林类',m:'博学 求是 奉献',f:'211 · 双一流',col:['#3A6E1E','#5A9A32']},
+ {n:'哈尔滨医科大学',c:'黑龙江·哈尔滨',t:'医药类',m:'木直中绳，博学载医',f:'省重点 · 双一流',col:['#7A1E2E','#A83242']},
+ {n:'黑龙江大学',c:'黑龙江·哈尔滨',t:'综合类',m:'博学慎思，参天尽物',f:'省重点',col:['#3A2E5E','#5A4A8A']},
+ {n:'哈尔滨理工大学',c:'黑龙江·哈尔滨',t:'理工类',m:'知行统一，博厚悠远',f:'省重点',col:['#2A3A4A','#4A5A6A']},
+ {n:'东北石油大学',c:'黑龙江·大庆',t:'理工类',m:'艰苦创业，严谨治学',f:'省重点',col:['#5E3A1E','#8A5A32']},
+ {n:'哈尔滨师范大学',c:'黑龙江·哈尔滨',t:'师范类',m:'学高为师，身正为范',f:'省重点',col:['#1E4A5E','#2E6E8A']},
+ {n:'黑龙江中医药大学',c:'黑龙江·哈尔滨',t:'医药类',m:'勤奋 求真 博采 创新',f:'省重点',col:['#2E5E2E','#4A8A4A']},
+ {n:'哈尔滨商业大学',c:'黑龙江·哈尔滨',t:'财经类',m:'求真 至善 修德 允能',f:'省重点',col:['#5E1E3A','#8A325A']},
+ {n:'吉林大学',c:'吉林·长春',t:'综合类',m:'求实创新，励志图强',f:'985 · 双一流',col:['#3A1E1E','#6A3232']},
+ {n:'东北师范大学',c:'吉林·长春',t:'师范类',m:'勤奋创新，为人师表',f:'211 · 双一流',col:['#1E3A5F','#2E5C8A']},
+ {n:'长春理工大学',c:'吉林·长春',t:'理工类',m:'明德 博学 求是 创新',f:'省重点 · 双一流',col:['#2A2E3A','#4A5260']},
+ {n:'延边大学',c:'吉林·延吉',t:'综合类',m:'求真 至善 融合',f:'211 · 双一流',col:['#1E5E4A','#2E8A6A']},
+ {n:'东北电力大学',c:'吉林·吉林',t:'理工类',m:'勤奋 严谨 求实 创新',f:'省重点',col:['#3A3A1E','#6A6A32']},
+ {n:'吉林农业大学',c:'吉林·长春',t:'农林类',m:'明德崇智，厚朴笃行',f:'省重点',col:['#3A6E1E','#5A9A32']},
+ {n:'长春工业大学',c:'吉林·长春',t:'理工类',m:'爱国 敬业 求实 创新',f:'省重点',col:['#2A3A4A','#4A5A6A']},
+ {n:'北华大学',c:'吉林·吉林',t:'综合类',m:'崇德尚学，自强力行',f:'省重点',col:['#1E4A5E','#2E6E8A']},
+ {n:'吉林财经大学',c:'吉林·长春',t:'财经类',m:'明德崇实，博学善思',f:'省重点',col:['#5E1E3A','#8A325A']},
+ {n:'东北大学',c:'辽宁·沈阳',t:'理工类',m:'自强不息，知行合一',f:'985 · 双一流',col:['#1E2A3A','#2E4A6A']},
+ {n:'大连理工大学',c:'辽宁·大连',t:'理工类',m:'团结 进取 求实 创新',f:'985 · 双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'大连海事大学',c:'辽宁·大连',t:'理工类',m:'学汇百川，德济四海',f:'211 · 双一流',col:['#0E5C7A','#1E8AB0']},
+ {n:'辽宁大学',c:'辽宁·沈阳',t:'综合类',m:'明德精学，笃行致强',f:'211 · 双一流',col:['#3A1E5E','#5A3A8A']},
+ {n:'东北财经大学',c:'辽宁·大连',t:'财经类',m:'博学济世',f:'省重点 · 双一流',col:['#0B4B3A','#1E7A5A']},
+ {n:'中国医科大学',c:'辽宁·沈阳',t:'医药类',m:'政治坚定，技术优良',f:'省重点 · 双一流',col:['#7A1E2E','#A83242']},
+ {n:'大连医科大学',c:'辽宁·大连',t:'医药类',m:'甚解 敏行 明仁 济世',f:'省重点',col:['#8A2E3E','#B83252']},
+ {n:'沈阳药科大学',c:'辽宁·沈阳',t:'医药类',m:'团结 勤奋 求实 创新',f:'省重点 · 双一流',col:['#5E2E1E','#8A4A32']},
+ {n:'大连交通大学',c:'辽宁·大连',t:'理工类',m:'明德求索，锲而不舍',f:'省重点',col:['#2A3A4A','#4A5A6A']},
+ {n:'辽宁工程技术大学',c:'辽宁·阜新',t:'理工类',m:'诚朴 求是 博学 笃行',f:'省重点',col:['#3A3A1E','#6A6A32']},
+ {n:'沈阳农业大学',c:'辽宁·沈阳',t:'农林类',m:'团结 勤奋 求实 创新',f:'省重点',col:['#3A6E1E','#5A9A32']},
+ {n:'中国刑事警察学院',c:'辽宁·沈阳',t:'政法类',m:'忠诚 求是 团结 奋进',f:'公安部直属',col:['#1E1E2A','#3A3A52']},
+ {n:'大连民族大学',c:'辽宁·大连',t:'民族类',m:'团结 自强 敬业 创新',f:'国家民委直属',col:['#1E5E4A','#2E8A6A']},
+ {n:'沈阳工业大学',c:'辽宁·沈阳',t:'理工类',m:'自强 笃行 求是 创新',f:'省重点',col:['#2A3A4A','#4A5A6A']},
+ {n:'沈阳航空航天大学',c:'辽宁·沈阳',t:'理工类',m:'德能并进，勇毅翔远',f:'省重点',col:['#1E2A3A','#2E4A6A']},
+ {n:'大连工业大学',c:'辽宁·大连',t:'理工类',m:'博学精思，笃行致新',f:'省重点',col:['#2A3A4A','#4A5A6A']},
+ {n:'沈阳建筑大学',c:'辽宁·沈阳',t:'理工类',m:'团结 求实 严谨 创新',f:'省重点',col:['#3A2E1E','#5A4A32']},
+ {n:'锦州医科大学',c:'辽宁·锦州',t:'医药类',m:'厚德修身，精术济世',f:'省重点',col:['#8A2E3E','#B83252']},
+ {n:'辽宁师范大学',c:'辽宁·大连',t:'师范类',m:'厚德博学，为人师表',f:'省重点',col:['#1E4A5E','#2E6E8A']},
+ {n:'大连外国语大学',c:'辽宁·大连',t:'语言类',m:'崇德尚文，兼收并蓄',f:'省重点',col:['#3A1E5E','#5A3A8A']},
+ /* ===== 北京 ===== */
+ {n:'清华大学',c:'北京',t:'综合类',m:'自强不息，厚德载物',f:'C9 联盟 · 双一流',col:['#7B1E1E','#A83232']},
+ {n:'北京大学',c:'北京',t:'综合类',m:'思想自由，兼容并包',f:'C9 联盟 · 双一流',col:['#1E3A5F','#2E5C8A']},
+ {n:'中国人民大学',c:'北京',t:'人文社科',m:'实事求是',f:'985 · 双一流',col:['#8A1E1E','#B83232']},
+ {n:'北京航空航天大学',c:'北京',t:'理工类',m:'德才兼备，知行合一',f:'985 · 双一流',col:['#2A2E3A','#4A5260']},
+ {n:'北京理工大学',c:'北京',t:'理工类',m:'德以明理，学以精工',f:'985 · 双一流',col:['#3A1E2E','#6A3252']},
+ {n:'北京师范大学',c:'北京',t:'师范类',m:'学为人师，行为世范',f:'985 · 双一流',col:['#1E3A5F','#2E5C8A']},
+ {n:'中国农业大学',c:'北京',t:'农林类',m:'解民生之多艰',f:'985 · 双一流',col:['#3A6E1E','#5A9A32']},
+ {n:'北京科技大学',c:'北京',t:'理工类',m:'求实鼎新',f:'211 · 双一流',col:['#2A3A4A','#4A5A6A']},
+ {n:'北京交通大学',c:'北京',t:'理工类',m:'知行',f:'211 · 双一流',col:['#16324F','#2A5C8A']},
+ {n:'北京邮电大学',c:'北京',t:'理工类',m:'厚德 博学 敬业 乐群',f:'211 · 双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'中央财经大学',c:'北京',t:'财经类',m:'忠诚 团结 求实 创新',f:'211 · 双一流',col:['#0B4B3A','#1E7A5A']},
+ {n:'对外经济贸易大学',c:'北京',t:'财经类',m:'博学 诚信 求索 笃行',f:'211 · 双一流',col:['#0B4B3A','#1E7A5A']},
+ {n:'中国传媒大学',c:'北京',t:'传媒类',m:'立德 敬业 博学 竞先',f:'211 · 双一流',col:['#5E1E1E','#8A3232']},
+ {n:'北京电影学院',c:'北京',t:'艺术类',m:'尊师重道，薪火相传',f:'艺术名校',col:['#2A1E3A','#4A3260']},
+ {n:'中央美术学院',c:'北京',t:'艺术类',m:'尽精微，致广大',f:'艺术名校',col:['#3A2E1E','#5A4A32']},
+ {n:'北京化工大学',c:'北京',t:'理工类',m:'宏德博学，化育天工',f:'211 · 双一流',col:['#1E3A3A','#2E5A5A']},
+ {n:'首都师范大学',c:'北京',t:'师范类',m:'为学为师，求实求新',f:'双一流',col:['#1E4A5E','#2E6E8A']},
+ /* ===== 上海 ===== */
+ {n:'复旦大学',c:'上海',t:'综合类',m:'博学而笃志，切问而近思',f:'C9 联盟 · 双一流',col:['#7A1F4B','#A8326B']},
+ {n:'上海交通大学',c:'上海',t:'理工类',m:'饮水思源，爱国荣校',f:'C9 联盟 · 双一流',col:['#123A5E','#1E5C8A']},
+ {n:'同济大学',c:'上海',t:'理工类',m:'同舟共济',f:'985 · 双一流',col:['#1E4A5E','#2E6E8A']},
+ {n:'华东师范大学',c:'上海',t:'师范类',m:'求实创造，为人师表',f:'985 · 双一流',col:['#1E3A5F','#2E5C8A']},
+ {n:'华东理工大学',c:'上海',t:'理工类',m:'勤奋求实，励志明德',f:'211 · 双一流',col:['#1E3A3A','#2E5A5A']},
+ {n:'上海财经大学',c:'上海',t:'财经类',m:'厚德博学，经济匡时',f:'211 · 双一流',col:['#0B4B3A','#1E7A5A']},
+ {n:'上海大学',c:'上海',t:'综合类',m:'自强不息，先天下之忧而忧',f:'211 · 双一流',col:['#3A2E5E','#5A4A8A']},
+ {n:'东华大学',c:'上海',t:'理工类',m:'崇德博学，砺志尚实',f:'211 · 双一流',col:['#1E4A5E','#2E6E8A']},
+ {n:'上海外国语大学',c:'上海',t:'语言类',m:'格高志远，学贯中外',f:'211 · 双一流',col:['#3A1E5E','#5A3A8A']},
+ /* ===== 江苏 / 浙江 / 安徽 ===== */
+ {n:'南京大学',c:'江苏·南京',t:'综合类',m:'诚朴雄伟，励学敦行',f:'C9 联盟 · 双一流',col:['#3A2E5E','#5A4A8A']},
+ {n:'东南大学',c:'江苏·南京',t:'理工类',m:'止于至善',f:'985 · 双一流',col:['#1E3A5E','#2E5C8A']},
+ {n:'南京航空航天大学',c:'江苏·南京',t:'理工类',m:'智周万物，道济天下',f:'211 · 双一流',col:['#1E2A3A','#2E4A6A']},
+ {n:'南京理工大学',c:'江苏·南京',t:'理工类',m:'进德修业，志道鼎新',f:'211 · 双一流',col:['#2A2E3A','#4A5260']},
+ {n:'苏州大学',c:'江苏·苏州',t:'综合类',m:'养天地正气，法古今完人',f:'211 · 双一流',col:['#1E5E4A','#2E8A6A']},
+ {n:'河海大学',c:'江苏·南京',t:'理工类',m:'艰苦朴素，实事求是',f:'211 · 双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'江南大学',c:'江苏·无锡',t:'综合类',m:'笃学尚行，止于至善',f:'211 · 双一流',col:['#3A6E1E','#5A9A32']},
+ {n:'南京农业大学',c:'江苏·南京',t:'农林类',m:'诚朴勤仁',f:'211 · 双一流',col:['#3A6E1E','#5A9A32']},
+ {n:'中国药科大学',c:'江苏·南京',t:'医药类',m:'精业济群',f:'211 · 双一流',col:['#5E2E1E','#8A4A32']},
+ {n:'浙江大学',c:'浙江·杭州',t:'综合类',m:'求是创新',f:'C9 联盟 · 双一流',col:['#0B5E3B','#138A57']},
+ {n:'浙江工业大学',c:'浙江·杭州',t:'理工类',m:'厚德健行',f:'省重点',col:['#1E5E4A','#2E8A6A']},
+ {n:'宁波大学',c:'浙江·宁波',t:'综合类',m:'实事求是，经世致用',f:'双一流',col:['#1E4A5E','#2E6E8A']},
+ {n:'中国科学技术大学',c:'安徽·合肥',t:'理工类',m:'红专并进，理实交融',f:'C9 联盟 · 双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'合肥工业大学',c:'安徽·合肥',t:'理工类',m:'厚德 笃学 崇实 尚新',f:'211 · 双一流',col:['#2A3A4A','#4A5A6A']},
+ {n:'安徽大学',c:'安徽·合肥',t:'综合类',m:'至诚至坚，博学笃行',f:'211 · 双一流',col:['#3A2E5E','#5A4A8A']},
+ /* ===== 天津 / 广东 / 川渝 ===== */
+ {n:'南开大学',c:'天津',t:'综合类',m:'允公允能，日新月异',f:'985 · 双一流',col:['#3A1E5E','#5A3A8A']},
+ {n:'天津大学',c:'天津',t:'理工类',m:'实事求是',f:'985 · 双一流',col:['#0B5E5E','#138A8A']},
+ {n:'天津医科大学',c:'天津',t:'医药类',m:'德高医粹，知行合一',f:'211 · 双一流',col:['#7A1E2E','#A83242']},
+ {n:'中山大学',c:'广东·广州',t:'综合类',m:'博学 审问 慎思 明辨 笃行',f:'985 · 双一流',col:['#7A2E1E','#A84832']},
+ {n:'华南理工大学',c:'广东·广州',t:'理工类',m:'博学慎思，明辨笃行',f:'985 · 双一流',col:['#1E5E3A','#2E8A57']},
+ {n:'暨南大学',c:'广东·广州',t:'综合类',m:'忠信笃敬',f:'211 · 双一流',col:['#3A5E1E','#5A8A32']},
+ {n:'华南师范大学',c:'广东·广州',t:'师范类',m:'艰苦奋斗，严谨治学',f:'211 · 双一流',col:['#1E3A5F','#2E5C8A']},
+ {n:'深圳大学',c:'广东·深圳',t:'综合类',m:'自立 自律 自强',f:'特区名校',col:['#16324F','#2A5C8A']},
+ {n:'南方科技大学',c:'广东·深圳',t:'理工类',m:'明德求是，日新自强',f:'双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'四川大学',c:'四川·成都',t:'综合类',m:'海纳百川，有容乃大',f:'985 · 双一流',col:['#5E1E3A','#8A325A']},
+ {n:'电子科技大学',c:'四川·成都',t:'理工类',m:'求实求真，大气大为',f:'985 · 双一流',col:['#1E3A5E','#2E5C8A']},
+ {n:'重庆大学',c:'重庆',t:'综合类',m:'耀祖国之光',f:'985 · 双一流',col:['#5E3A1E','#8A5A32']},
+ {n:'西南大学',c:'重庆',t:'综合类',m:'含弘光大，继往开来',f:'211 · 双一流',col:['#3A6E1E','#5A9A32']},
+ /* ===== 湖北 / 陕西 / 湖南 / 山东 / 福建 / 其它 ===== */
+ {n:'武汉大学',c:'湖北·武汉',t:'综合类',m:'自强弘毅，求是拓新',f:'985 · 双一流',col:['#0E5C57','#1E8A82']},
+ {n:'华中科技大学',c:'湖北·武汉',t:'理工类',m:'明德厚学，求是创新',f:'985 · 双一流',col:['#1E5E3A','#2E8A57']},
+ {n:'武汉理工大学',c:'湖北·武汉',t:'理工类',m:'厚德博学，追求卓越',f:'211 · 双一流',col:['#2A3A4A','#4A5A6A']},
+ {n:'华中师范大学',c:'湖北·武汉',t:'师范类',m:'求实创新，立德树人',f:'211 · 双一流',col:['#1E3A5F','#2E5C8A']},
+ {n:'华中农业大学',c:'湖北·武汉',t:'农林类',m:'勤读力耕，立己达人',f:'211 · 双一流',col:['#3A6E1E','#5A9A32']},
+ {n:'西安交通大学',c:'陕西·西安',t:'理工类',m:'精勤求学，敦笃励志',f:'C9 联盟 · 双一流',col:['#5E3A1E','#8A5A32']},
+ {n:'西北工业大学',c:'陕西·西安',t:'理工类',m:'公诚勇毅，三实一新',f:'985 · 双一流',col:['#1E2A3A','#2E4A6A']},
+ {n:'西北农林科技大学',c:'陕西·杨凌',t:'农林类',m:'诚朴勇毅',f:'985 · 双一流',col:['#3A6E1E','#5A9A32']},
+ {n:'西安电子科技大学',c:'陕西·西安',t:'理工类',m:'厚德 求真 砺学 笃行',f:'211 · 双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'中南大学',c:'湖南·长沙',t:'综合类',m:'知行合一，经世致用',f:'985 · 双一流',col:['#3A5E1E','#5A8A32']},
+ {n:'湖南大学',c:'湖南·长沙',t:'综合类',m:'实事求是，敢为人先',f:'985 · 双一流',col:['#3A1E5E','#5A3A8A']},
+ {n:'湖南师范大学',c:'湖南·长沙',t:'师范类',m:'仁 爱 精 勤',f:'211 · 双一流',col:['#1E4A5E','#2E6E8A']},
+ {n:'山东大学',c:'山东·济南',t:'综合类',m:'学无止境，气有浩然',f:'985 · 双一流',col:['#1E3A5E','#2E5C8A']},
+ {n:'中国海洋大学',c:'山东·青岛',t:'综合类',m:'海纳百川，取则行远',f:'985 · 双一流',col:['#0B4B6E','#1E7AA8']},
+ {n:'中国石油大学（华东）',c:'山东·青岛',t:'理工类',m:'惟真惟实',f:'211 · 双一流',col:['#5E3A1E','#8A5A32']},
+ {n:'厦门大学',c:'福建·厦门',t:'综合类',m:'自强不息，止于至善',f:'985 · 双一流',col:['#0E5C7A','#1E8AB0']},
+ {n:'福州大学',c:'福建·福州',t:'理工类',m:'明德至诚，博学远志',f:'211 · 双一流',col:['#1E4A5E','#2E6E8A']},
+ {n:'郑州大学',c:'河南·郑州',t:'综合类',m:'求是 担当',f:'211 · 双一流',col:['#5E1E3A','#8A325A']},
+ {n:'兰州大学',c:'甘肃·兰州',t:'综合类',m:'自强不息，独树一帜',f:'985 · 双一流',col:['#3A3A1E','#6A6A32']}
+];
+function schoolThumb(s){
+  const ab=(s.n||'?').slice(0,2);
+  const svg="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='"+s.col[0]+"'/><stop offset='1' stop-color='"+s.col[1]+"'/></linearGradient></defs><rect width='100' height='100' rx='14' fill='url(#g)'/><text x='50' y='50' dy='.35em' text-anchor='middle' font-family='PingFang SC,Microsoft YaHei,sans-serif' font-size='34' font-weight='700' fill='#fff'>"+ab+"</text></svg>";
+  return 'data:image/svg+xml,'+encodeURIComponent(svg);
+}
+function findSchool(name){return SCHOOLS.find(x=>x.n===name);}
+function schoolRegion(s){const c=s.c||'';if(/黑龙江|吉林|辽宁|大连|沈阳|长春|哈尔滨/.test(c))return '东北';if(c.indexOf('北京')>=0)return '北京';if(c.indexOf('上海')>=0)return '上海';if(c.indexOf('江苏')>=0||c.indexOf('南京')>=0)return '江苏';if(c.indexOf('浙江')>=0||c.indexOf('杭州')>=0)return '浙江';if(c.indexOf('天津')>=0)return '天津';if(c.indexOf('广东')>=0||c.indexOf('广州')>=0||c.indexOf('深圳')>=0)return '广东';if(c.indexOf('四川')>=0||c.indexOf('重庆')>=0)return '川渝';if(c.indexOf('湖北')>=0||c.indexOf('武汉')>=0)return '湖北';if(c.indexOf('陕西')>=0||c.indexOf('西安')>=0)return '陕西';if(c.indexOf('湖南')>=0||c.indexOf('长沙')>=0)return '湖南';if(c.indexOf('山东')>=0)return '山东';if(c.indexOf('福建')>=0)return '福建';if(c.indexOf('安徽')>=0)return '安徽';if(c.indexOf('河南')>=0)return '河南';if(c.indexOf('甘肃')>=0)return '甘肃';return '其它';}
+function searchSchools(q){q=(q||'').trim().toLowerCase();if(!q)return [];return SCHOOLS.filter(x=>x.n.toLowerCase().includes(q)||x.c.toLowerCase().includes(q)||x.t.toLowerCase().includes(q)||schoolRegion(x).toLowerCase()===q).slice(0,8);}
+function gdPortraitSVG(){
+  const svg="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800'>"
+   +"<defs><radialGradient id='bg' cx='50%' cy='36%' r='72%'><stop offset='0%' stop-color='#C9A06A'/><stop offset='55%' stop-color='#A9794F'/><stop offset='100%' stop-color='#403A30'/></radialGradient>"
+   +"<linearGradient id='fig' x1='0' y1='0' x2='0' y2='1'><stop offset='0%' stop-color='#2B2620'/><stop offset='100%' stop-color='#110E0B'/></linearGradient></defs>"
+   +"<rect width='600' height='800' fill='url(#bg)'/>"
+   +"<g fill='url(#fig)'><circle cx='300' cy='290' r='150'/><path d='M120 800 C120 560 200 470 300 470 C400 470 480 560 480 800 Z'/></g>"
+   +"<rect x='0' y='0' width='600' height='800' fill='#000' opacity='0.12'/>"
+   +"<text x='300' y='700' text-anchor='middle' font-size='60'>🕊</text>"
+   +"<text x='300' y='760' text-anchor='middle' font-family='Georgia, serif' font-size='52' font-weight='700' fill='#FFF' opacity='0.92' letter-spacing='4'>G-DRAGON</text>"
+   +"</svg>";
+  return 'data:image/svg+xml,'+encodeURIComponent(svg);
+}
+function topPortraitSVG(){
+  const svg="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800'>"
+   +"<defs><radialGradient id='bg2' cx='50%' cy='34%' r='74%'><stop offset='0%' stop-color='#6E5B8A'/><stop offset='55%' stop-color='#473A63'/><stop offset='100%' stop-color='#241E33'/></radialGradient>"
+   +"<linearGradient id='fig2' x1='0' y1='0' x2='0' y2='1'><stop offset='0%' stop-color='#1A1726'/><stop offset='100%' stop-color='#0C0A12'/></linearGradient></defs>"
+   +"<rect width='600' height='800' fill='url(#bg2)'/>"
+   +"<g fill='url(#fig2)'><circle cx='300' cy='285' r='150'/><path d='M120 800 C120 555 200 465 300 465 C400 465 480 555 480 800 Z'/></g>"
+   +"<rect x='0' y='0' width='600' height='800' fill='#000' opacity='0.14'/>"
+   +"<path d='M210 210 h180 v34 a90 90 0 0 1 -180 0 Z' fill='#0C0A12' opacity='0.55'/>"
+   +"<text x='300' y='700' text-anchor='middle' font-family='Georgia, serif' font-size='52' font-weight='700' fill='#FFF' opacity='0.92' letter-spacing='3'>T.O.P</text>"
+   +"</svg>";
+  return 'data:image/svg+xml,'+encodeURIComponent(svg);
+}
+
+/* ============ 目标院校 ============ */
+function renderSchoolResults(q){
+  const box=$('schoolResults');const arr=searchSchools(q);
+  if(!arr.length){box.classList.remove('on');box.innerHTML='';return;}
+  box.innerHTML=arr.map(s=>'<div class="school-result" data-name="'+escapeHtml(s.n)+'"><img src="'+schoolThumb(s)+'" alt=""><b>'+escapeHtml(s.n)+'</b><span>'+escapeHtml(s.c)+' · '+escapeHtml(s.t)+'</span></div>').join('');
+  box.classList.add('on');
+  box.querySelectorAll('.school-result').forEach(r=>r.addEventListener('click',()=>{addSchool(r.dataset.name);$('schoolSearch').value='';box.classList.remove('on');box.innerHTML='';}));
+}
+function renderSchools(){
+  const list=db.targetSchools||[];const box=$('schoolList');
+  if(!list.length){box.innerHTML='<div class="empty">搜一搜你的梦校，点一下加入目标 ✨</div>';return;}
+  box.innerHTML=list.map((s,i)=>{
+    const name=(s&&s.name)||s;const info=findSchool(name)||{c:'—',t:'—',m:'',f:''};
+    const fb=info.n?schoolThumb(info):schoolThumb({n:name,col:['#B07D56','#9E8A6C']});
+    return '<div class="school-card"><img class="school-thumb" src="'+fb+'" alt=""><div class="school-info"><b>'+escapeHtml(name)+'</b><span class="meta">'+escapeHtml(info.c)+' · '+escapeHtml(info.t)+(i===0?' · ★ 冲刺目标':'')+'</span>'+(info.m?'<span class="school-tag">“'+escapeHtml(info.m)+'”</span>':'')+(info.f?'<span class="school-fact">'+escapeHtml(info.f)+'</span>':'')+'</div><span class="x" data-i="'+i+'">✕</span></div>';
+  }).join('');
+  box.querySelectorAll('.x').forEach(b=>b.addEventListener('click',()=>{db.targetSchools.splice(+b.dataset.i,1);saveDB();renderSchools();}));
+}
+function addSchool(name){
+  if(!name)return;db.targetSchools=db.targetSchools||[];
+  if(db.targetSchools.some(x=>((x&&x.name)||x)===name))return;
+  const info=findSchool(name)||{name:name};
+  db.targetSchools.push({name:name,c:info.c,t:info.t,m:info.m,f:info.f});saveDB();Sound.coin();renderSchools();
+}
+$('schoolSearch').addEventListener('input',e=>renderSchoolResults(e.target.value));
+$('schoolSearch').addEventListener('focus',()=>{const cb=$('regionChips');if(cb)cb.classList.add('show');});
+$('schoolSearch').addEventListener('blur',()=>{setTimeout(()=>{const cb=$('regionChips'),s=$('schoolSearch');if(cb&&s&&!s.value.trim()&&!cb.querySelector('.region-chip.on'))cb.classList.remove('show');},180);});
+$('schoolSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){const arr=searchSchools(e.target.value);if(arr.length){addSchool(arr[0].n);e.target.value='';$('schoolResults').classList.remove('on');$('schoolResults').innerHTML='';}}});
+document.addEventListener('click',e=>{if(!e.target.closest('.school-results')&&!e.target.closest('#schoolSearch')&&!e.target.closest('#regionChips'))$('schoolResults').classList.remove('on');});
+
+/* ============ 照片墙（本地存储，不同步以避免传输过大） ============ */
+function compressImg(file,max,cb){const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');const s=Math.min(1,max/Math.max(img.width,img.height));c.width=img.width*s;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);try{cb(c.toDataURL('image/jpeg',0.62));}catch(e){cb(null);}};img.onerror=()=>cb(null);img.src=r.result;};r.onerror=()=>cb(null);r.readAsDataURL(file);}
+
+/* ============ 午间午饭拍照 ============ */
+function renderLunchPhoto(){const box=$('lunchPhotoBox');const t=todayKey();const data=local.lunchPhoto&&local.lunchPhoto[t];if(!data){box.innerHTML='';return;}box.innerHTML='<div class="lunch-photo"><img src="'+data+'" alt=""><span class="x">✕</span></div>';box.querySelector('.x').addEventListener('click',()=>{if(local.lunchPhoto)delete local.lunchPhoto[t];saveLocal();renderLunchPhoto();});}
+$('btnLunchPhoto').addEventListener('click',()=>$('lunchPhotoInput').click());
+$('lunchPhotoInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;compressImg(f,720,d=>{if(d){const t=todayKey();local.lunchPhoto=local.lunchPhoto||{};local.lunchPhoto[t]=d;saveLocal();renderLunchPhoto();showPraise('午餐记录好啦，干饭人加油 🍱','🍱');}});e.target.value='';});
+
+/* ============ 背景（权志龙 + 签名换图） ============ */
+function applyBackgrounds(){
+  const bg=$('bgGD');
+  if(local.pageBg){
+    if(local.pageBg.indexOf('grad:')===0)bg.style.background=local.pageBg.slice(5);
+    else bg.style.backgroundImage='url("'+local.pageBg+'")';
+  }
+  else bg.style.backgroundImage='url("'+gdPortraitSVG()+'")';
+  // 签名背景功能已移除
+}
+$('bgBtn').addEventListener('click',()=>$('pageBgInput').click());
+$('pageBgInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;openCrop(f,d=>{if(d){local.pageBg=d;saveLocal();applyBackgrounds();}});e.target.value='';});
+// 签名背景按钮已移除
+
+/* ============ 倒计时模块背景（从相册选 / 上传，可裁剪） ============ */
+function dataURLtoBlob(d){const m=d.match(/:(.*?);/);const mime=m?m[1]:'image/png';const bin=atob(d.split(',')[1]);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
+function applyHeroBg(){
+  const hero=$('hero');
+  if(local.heroBg){
+    hero.style.backgroundImage='linear-gradient(rgba(60,40,28,.42),rgba(60,40,28,.55)), url("'+local.heroBg+'")';
+    hero.style.backgroundSize='cover';
+    hero.style.backgroundPosition='center';
+  }else{
+    hero.style.backgroundImage='';hero.style.backgroundSize='';hero.style.backgroundPosition='';
+  }
+}
+function renderHeroBgAlbum(){
+  const box=$('heroBgAlbum');if(!box)return;
+  const ps=local.photos||[];
+  if(!ps.length){box.innerHTML='<div class="hbp-empty">相册还没有照片，先点「上传新照片」吧</div>';return;}
+  box.innerHTML=ps.map((p,i)=>'<img class="hba-thumb" data-i="'+i+'" src="'+p.data+'">').join('');
+  box.querySelectorAll('.hba-thumb').forEach(el=>el.addEventListener('click',()=>{
+    openCrop(dataURLtoBlob(ps[+el.dataset.i].data),d=>{if(d){local.heroBg=d;saveLocal();applyHeroBg();hideHeroBg();}});
+  }));
+}
+function showHeroBg(){$('heroBgMask').style.display='flex';renderHeroBgAlbum();}
+function hideHeroBg(){$('heroBgMask').style.display='none';}
+if($('heroBgBtn'))$('heroBgBtn').addEventListener('click',showHeroBg);
+if($('heroBgClose'))$('heroBgClose').addEventListener('click',hideHeroBg);
+if($('heroBgMask'))$('heroBgMask').addEventListener('click',e=>{if(e.target===$('heroBgMask'))hideHeroBg();});
+if($('heroBgUpload'))$('heroBgUpload').addEventListener('click',()=>$('heroBgFile').click());
+if($('heroBgFile'))$('heroBgFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;openCrop(f,d=>{if(d){local.heroBg=d;addToAlbum(d);saveLocal();applyHeroBg();hideHeroBg();}});e.target.value='';});
+if($('heroBgClear'))$('heroBgClear').addEventListener('click',()=>{local.heroBg='';saveLocal();applyHeroBg();});
+
+/* ============ 打卡夸奖卡片背景（起床/睡觉 各自独立，从相册选 / 上传，可裁剪） ============ */
+let praiseBgTarget='wake';
+function applyPraiseBg(){
+  const w=document.querySelector('.wake-card'),s=document.querySelector('.sleep-card');
+  if(w){if(local.wakeBg){w.style.backgroundImage='linear-gradient(rgba(255,250,242,.72),rgba(255,245,225,.82)), url("'+local.wakeBg+'")';w.style.backgroundSize='cover';w.style.backgroundPosition='center';}else{w.style.backgroundImage='';w.style.backgroundSize='';w.style.backgroundPosition='';}}
+  if(s){if(local.sleepBg){s.style.backgroundImage='linear-gradient(rgba(255,250,242,.72),rgba(255,245,225,.82)), url("'+local.sleepBg+'")';s.style.backgroundSize='cover';s.style.backgroundPosition='center';}else{s.style.backgroundImage='';s.style.backgroundSize='';s.style.backgroundPosition='';}}
+}
+function addToAlbum(data){try{if(!data)return;local.photos=local.photos||[];if(local.photos.indexOf(data)<0)local.photos.push(data);saveLocal();}catch(e){}}
+function renderPraiseBgAlbum(){
+  const box=$('praiseBgAlbum');if(!box)return;
+  const ps=local.photos||[];
+  if(!ps.length){box.innerHTML='<div class="hbp-empty">相册还没有照片，先点「上传新照片」吧</div>';return;}
+  box.innerHTML=ps.map((p,i)=>'<img class="hba-thumb" data-i="'+i+'" src="'+p.data+'">').join('');
+  box.querySelectorAll('.hba-thumb').forEach(el=>el.addEventListener('click',()=>{
+    openCrop(dataURLtoBlob(ps[+el.dataset.i].data),d=>{if(d){local[praiseBgTarget+'Bg']=d;addToAlbum(d);saveLocal();applyPraiseBg();hidePraiseBg();}});
+  }));
+}
+function showPraiseBg(target){praiseBgTarget=(target==='sleep')?'sleep':'wake';const ti=document.querySelector('#praiseBgPanel .hbp-title');if(ti)ti.textContent='🎴 '+(praiseBgTarget==='sleep'?'睡觉打卡背景':'起床打卡背景');$('praiseBgMask').style.display='flex';renderPraiseBgAlbum();}
+function hidePraiseBg(){$('praiseBgMask').style.display='none';}
+document.querySelectorAll('.praise-bg-btn').forEach(b=>{if(b)b.addEventListener('click',()=>showPraiseBg(b.dataset.bg));});
+if($('praiseBgClose'))$('praiseBgClose').addEventListener('click',hidePraiseBg);
+if($('praiseBgMask'))$('praiseBgMask').addEventListener('click',e=>{if(e.target===$('praiseBgMask'))hidePraiseBg();});
+if($('praiseBgUpload'))$('praiseBgUpload').addEventListener('click',()=>$('praiseBgFile').click());
+if($('praiseBgFile'))$('praiseBgFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;openCrop(f,d=>{if(d){local[praiseBgTarget+'Bg']=d;addToAlbum(d);saveLocal();applyPraiseBg();hidePraiseBg();}});e.target.value='';});
+if($('praiseBgClear'))$('praiseBgClear').addEventListener('click',()=>{local[praiseBgTarget+'Bg']='';saveLocal();applyPraiseBg();});
+
+/* ============ 壁纸预设 ============ */
+const WALL_GRADS=[
+  {name:'陶土棕',css:'linear-gradient(135deg,#2b2118,#4a3724)'},
+  {name:'鼠尾草绿',css:'linear-gradient(135deg,#5e7052,#9aab86)'},
+  {name:'夜紫',css:'linear-gradient(135deg,#1f1b2e,#3a2f57)'},
+  {name:'玫瑰茶',css:'linear-gradient(135deg,#3a2a2a,#6e4b4b)'},
+  {name:'青瓷',css:'linear-gradient(135deg,#22303a,#3f5a66)'},
+  {name:'暖金',css:'linear-gradient(135deg,#2a2320,#5a4a2e)'},
+  {name:'暮蓝',css:'linear-gradient(135deg,#202a3a,#36486a)'},
+  {name:'米杏',css:'linear-gradient(135deg,#3a3328,#7a6b4e)'}
+];
+function renderWall(){
+  const box=$('wallSwatches');if(!box)return;
+  box.innerHTML=WALL_GRADS.map((g,i)=>'<div class="sw'+(local.pageBg==='grad:'+g.css?' on':'')+'" data-i="'+i+'" style="background:'+g.css+'" title="'+g.name+'"></div>').join('');
+  box.querySelectorAll('.sw').forEach(el=>el.addEventListener('click',()=>{const g=WALL_GRADS[+el.dataset.i];local.pageBg='grad:'+g.css;saveLocal();applyBackgrounds();renderWall();}));
+}
+if($('wallUpload'))$('wallUpload').addEventListener('click',()=>$('pageBgInput').click());
+if($('wallClear'))$('wallClear').addEventListener('click',()=>{local.pageBg='';saveLocal();applyBackgrounds();renderWall();});
+
+/* ============ 番茄钟 ============ */
+const POMO_FOCUS=25*60,POMO_BREAK=5*60;
+let pomo={mode:'focus',remain:POMO_FOCUS,running:false,timer:null,endTs:0};
+function pomoArc(){const c=2*Math.PI*78;const total=pomo.mode==='focus'?POMO_FOCUS:POMO_BREAK;const frac=Math.max(0,Math.min(1,pomo.remain/total));$('pomoArc').style.strokeDashoffset=(c*(1-frac)).toFixed(1);}
+function pomoRender(){const m=Math.floor(pomo.remain/60),s=pomo.remain%60;$('pomoTime').textContent=pad(m)+':'+pad(s);$('pomoMode').textContent=pomo.mode==='focus'?'专注':'休息';const t=todayKey();$('pomoDone').textContent=(db.pomo&&db.pomo.date===t)?(db.pomo.completed||0):0;$('btnPomoToggle').textContent=pomo.running?'⏸ 暂停':'▶ 开始';$('btnPomoToggle').className=pomo.running?'btn soft sm':'btn primary sm';pomoArc();}
+function pomoPause(){pomo.running=false;if(pomo.timer){clearInterval(pomo.timer);pomo.timer=null;}pomoRender();}
+function pomoStart(){if(pomo.running)return;pomo.running=true;pomo.endTs=nowTs()+pomo.remain*1000;pomo.timer=setInterval(()=>{pomo.remain=Math.max(0,Math.round((pomo.endTs-nowTs())/1000));pomoRender();if(pomo.remain<=0){clearInterval(pomo.timer);pomo.timer=null;pomoComplete();}},250);pomoRender();}
+function pomoComplete(){if(pomo.mode==='focus'){const t=todayKey();db.pomo=db.pomo||{};if(db.pomo.date!==t){db.pomo.date=t;db.pomo.completed=0;}db.pomo.completed=(db.pomo.completed||0)+1;saveDB();showPraise('一个番茄钟完成！专注力+1 🍅','🍅');Sound.bell();pomo.mode='break';pomo.remain=POMO_BREAK;}else{showPraise('休息结束，继续冲 💪','💪');Sound.bell();pomo.mode='focus';pomo.remain=POMO_FOCUS;}pomo.running=false;pomoRender();}
+$('btnPomoToggle').addEventListener('click',()=>{Sound.ensure();if(pomo.running)pomoPause();else pomoStart();});
+$('btnPomoReset').addEventListener('click',()=>{pomo.mode='focus';pomo.remain=POMO_FOCUS;pomo.running=false;if(pomo.timer){clearInterval(pomo.timer);pomo.timer=null;}pomoRender();});
+
+/* ============ 单词闯关（高考词汇选择题） ============ */
+const VOCAB=[
+ {en:'abandon',zh:'v. 放弃；抛弃'},{en:'ability',zh:'n. 能力；才能'},{en:'abroad',zh:'adv. 到国外；在国外'},
+ {en:'absolute',zh:'adj. 绝对的；完全的'},{en:'absorb',zh:'v. 吸收；使专心'},{en:'abundant',zh:'adj. 丰富的；充裕的'},
+ {en:'academic',zh:'adj. 学术的；学院的'},{en:'accelerate',zh:'v. 加速；促进'},{en:'accompany',zh:'v. 陪伴；伴随'},
+ {en:'accomplish',zh:'v. 完成；实现'},{en:'accurate',zh:'adj. 准确的；精确的'},{en:'accumulate',zh:'v. 积累；积聚'},
+ {en:'acquire',zh:'v. 获得；习得'},{en:'adequate',zh:'adj. 足够的；适当的'},{en:'adjust',zh:'v. 调整；适应'},
+ {en:'admire',zh:'v. 钦佩；欣赏'},{en:'advocate',zh:'v./n. 提倡；拥护'},{en:'aggressive',zh:'adj. 好斗的；积极进取的'},
+ {en:'ambiguous',zh:'adj. 模糊的；含糊的'},{en:'ambition',zh:'n. 雄心；抱负'},{en:'analyze',zh:'v. 分析'},
+ {en:'ancient',zh:'adj. 古代的；古老的'},{en:'anxious',zh:'adj. 焦虑的；渴望的'},{en:'apparent',zh:'adj. 明显的；表面的'},
+ {en:'appeal',zh:'v./n. 呼吁；吸引；上诉'},{en:'appreciate',zh:'v. 欣赏；感激'},{en:'appropriate',zh:'adj. 适当的；合适的'},
+ {en:'assess',zh:'v. 评估；评定'},{en:'assume',zh:'v. 假设；承担'},{en:'astonish',zh:'v. 使惊讶'},
+ {en:'attract',zh:'v. 吸引；引起'},{en:'available',zh:'adj. 可用的；可得到的'},{en:'awkward',zh:'adj. 尴尬的；笨拙的'},
+ {en:'barrier',zh:'n. 障碍；屏障'},{en:'benefit',zh:'n./v. 益处；受益'},{en:'brilliant',zh:'adj. 杰出的；明亮的'}
+];
+let vocabState={cur:null,answered:false,dir:'en'};
+function vocabStats(){const t=todayKey();const v=db.vocab||{correct:0,total:0,streak:0,best:0,date:''};if(v.date!==t){v.date=t;v.streak=0;db.vocab=v;saveDB();}return v;}
+function renderVocabStats(){const v=vocabStats();$('vocabCorrect').textContent=v.correct;$('vocabStreak').textContent=v.streak;$('vocabRate').textContent=v.total?(Math.round(v.correct/v.total*100)+'%'):'--';$('vocabStats2').innerHTML=stat('今日答对',v.correct)+stat('累计答对',v.correct)+stat('最长连对',v.best)+stat('正确率',v.total?(Math.round(v.correct/v.total*100)+'%'):'--');$('vocabTip').textContent=v.best>=5?'连续答对 '+v.best+' 题，状态火热！🔥':(v.total?'已作答 '+v.total+' 题，继续积累～':'先来一题热热身吧！');}
+function nextVocab(){vocabState.answered=false;const w=VOCAB[Math.floor(Math.random()*VOCAB.length)];vocabState.cur=w;vocabState.dir=Math.random()<0.5?'en':'zh';const isEn=vocabState.dir==='en';const q=isEn?w.en:w.zh;$('vocabQ').textContent=q;$('vocabHint').textContent=isEn?'选出正确的中文释义：':'选出正确的英文单词：';$('vocabFb').textContent='';$('vocabFb').className='vocab-fb';const correct=isEn?w.zh:w.en;const others=VOCAB.filter(x=>x!==w).map(x=>isEn?x.zh:x.en);for(let i=others.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=others[i];others[i]=others[j];others[j]=tmp;}const opts=[correct,...others.slice(0,3)];for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=opts[i];opts[i]=opts[j];opts[j]=tmp;}const box=$('vocabOpts');box.innerHTML=opts.map(o=>'<div class="vocab-opt" data-o="'+escapeHtml(o)+'">'+escapeHtml(o)+'</div>').join('');box.querySelectorAll('.vocab-opt').forEach(el=>el.addEventListener('click',()=>vocabAnswer(el.dataset.o,el)));}
+function vocabAnswer(choice,el){if(vocabState.answered)return;vocabState.answered=true;const w=vocabState.cur;const isEn=vocabState.dir==='en';const correct=isEn?w.zh:w.en;const v=vocabStats();v.total=(v.total||0)+1;const fb=$('vocabFb');document.querySelectorAll('.vocab-opt').forEach(o=>o.classList.add('dim'));if(choice===correct){el.classList.remove('dim');el.classList.add('correct');v.correct=(v.correct||0)+1;v.streak=(v.streak||0)+1;if(v.streak>v.best)v.best=v.streak;fb.textContent='答对啦！🎉 太牛了';fb.className='vocab-fb ok';Sound.correct();}else{el.classList.remove('dim');el.classList.add('wrong');v.streak=0;fb.textContent='正确答案：'+correct+' 💡';fb.className='vocab-fb no';Sound.wrong();document.querySelectorAll('.vocab-opt').forEach(o=>{if(o.dataset.o===correct)o.classList.remove('dim');});}db.vocab=v;saveDB();renderVocabStats();}
+$('btnVocabNext').addEventListener('click',nextVocab);
+
+/* ============ 声音开关 ============ */
+Sound.muted=(localStorage.getItem('gaokao_mute')==='1');
+$('soundBtn').classList.toggle('off',Sound.muted);
+$('soundBtn').addEventListener('click',()=>{const m=!Sound.muted;Sound.setMuted(m);$('soundBtn').classList.toggle('off',m);if(!m)Sound.ensure();});
+
+/* ============ 可爱猫脸图标（Hello Kitty 主题） ============ */
+function catInner(){return "<path d='M4.5 10 L3 4 L9 7.5 Z' fill='#F9C5D2' stroke='#E98AA0' stroke-width='0.6'/><path d='M19.5 10 L21 4 L15 7.5 Z' fill='#F9C5D2' stroke='#E98AA0' stroke-width='0.6'/><path d='M12 22 C4.5 22 3 16 3 12.5 C3 8.5 7 6.5 12 6.5 C17 6.5 21 8.5 21 12.5 C21 16 19.5 22 12 22 Z' fill='#F9C5D2' stroke='#E98AA0' stroke-width='0.6'/><circle cx='9' cy='12.5' r='1.25' fill='#3B352D'/><circle cx='15' cy='12.5' r='1.25' fill='#3B352D'/><path d='M11 15 L13 15 L12 16.6 Z' fill='#E98AA0'/><path d='M3.4 3.2 L6 5.6 L4.9 6.6 Z' fill='#fff'/><path d='M5.4 4 L7.3 6 L6 6.8 Z' fill='#F48FB1'/>";}
+function injectIcons(){
+  const ci=catInner();
+  const brand=$('brandLogo');if(brand)brand.innerHTML="<svg viewBox='0 0 24 24' style='stroke:none'>"+ci+"</svg>";
+  document.querySelectorAll('.nav-item > svg, .mnav > svg').forEach(s=>{s.setAttribute('style','stroke:none');s.innerHTML=ci;});
+}
+injectIcons();
+
+/* ============ 额外提示音 + 全局点击音 ============ */
+Sound.click=function(){this.ensure();if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=720;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.05,t+0.006);g.gain.exponentialRampToValueAtTime(0.0001,t+0.05);o.start(t);o.stop(t+0.06);};
+Sound.tap=function(){this.ensure();if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(880,t);o.frequency.exponentialRampToValueAtTime(1320,t+0.06);o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.08,t+0.008);g.gain.exponentialRampToValueAtTime(0.0001,t+0.09);o.start(t);o.stop(t+0.1);};
+Sound.sparkle=function(){this.ensure();if(!this.ctx||this.muted)return;[1047,1319,1568].forEach((f,i)=>this.tone(f,0.12,'sine',i*0.05,0.08));};
+Sound.coin=function(){this.ensure();if(!this.ctx||this.muted)return;[988,1319].forEach((f,i)=>this.tone(f,0.16,'square',i*0.07,0.1));};
+document.addEventListener('click',e=>{const t=e.target;if(!t||!t.closest)return;if(t.closest('input,textarea,select,a,label'))return;if(t.closest("button,.btn,.chip,.nav-item,.mnav,.path-topic,.star,.photo-add,.school-result,.mood-pick span,.x,.row,.task,.sound-btn,.bg-btn,.cloud-btn,.region-chip,.track-chip,.fan-portrait,.player-btn"))Sound.click();});
+
+/* ============ 裁剪弹层 ============ */
+let cropState=null;
+function openCrop(file,cb){
+  const r=new FileReader();
+  r.onload=()=>{const img=$('cropImg');img.onload=()=>{cropState={cb:cb,natW:img.naturalWidth,natH:img.naturalHeight,scale:1,offX:0,offY:0};$('cropModal').classList.add('show');requestAnimationFrame(()=>{const iw=img.clientWidth,ih=img.clientHeight;cropState.iw=iw;cropState.ih=ih;cropState.base=Math.min(iw,ih)*0.62;applyWin();});};img.src=r.result;};
+  r.onerror=()=>cb(null);
+  r.readAsDataURL(file);
+}
+function applyWin(){
+  const s=cropState;if(!s)return;
+  let win=s.base*s.scale;const maxWin=Math.min(s.iw,s.ih);
+  if(win>maxWin){win=maxWin;s.scale=win/s.base;}
+  s.win=win;const half=win/2,maxX=s.iw/2-half,maxY=s.ih/2-half;
+  s.offX=Math.max(-maxX,Math.min(maxX,s.offX));s.offY=Math.max(-maxY,Math.min(maxY,s.offY));
+  const w=$('cropWin');w.style.width=win+'px';w.style.height=win+'px';w.style.transform='translate(calc(-50% + '+s.offX+'px), calc(-50% + '+s.offY+'px))';
+}
+(function(){
+  const win=$('cropWin');let drag=false,sx=0,sy=0,ox=0,oy=0;
+  win.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX;sy=e.clientY;ox=cropState?cropState.offX:0;oy=cropState?cropState.offY:0;try{win.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+  window.addEventListener('pointermove',e=>{if(!drag||!cropState)return;cropState.offX=ox+(e.clientX-sx);cropState.offY=oy+(e.clientY-sy);applyWin();});
+  window.addEventListener('pointerup',()=>{drag=false;});
+  $('cropZoom').addEventListener('input',e=>{if(cropState){cropState.scale=+e.target.value;applyWin();}});
+  $('cropCancel').addEventListener('click',()=>{$('cropModal').classList.remove('show');cropState=null;});
+  $('cropOk').addEventListener('click',()=>{
+    const s=cropState;if(!s){$('cropModal').classList.remove('show');return;}
+    const ir=$('cropImg').getBoundingClientRect(),wr=$('cropWin').getBoundingClientRect();
+    const nw=s.natW,nh=s.natH;
+    let side=wr.width*(nw/ir.width);let sx0=(wr.left-ir.left)*(nw/ir.width),sy0=(wr.top-ir.top)*(nh/ir.height);
+    side=Math.max(1,Math.min(nw,side));sx0=Math.max(0,Math.min(nw-side,sx0));sy0=Math.max(0,Math.min(nh-side,sy0));
+    const cv=document.createElement('canvas');cv.width=Math.round(side);cv.height=Math.round(side);
+    try{cv.getContext('2d').drawImage($('cropImg'),sx0,sy0,side,side,0,0,cv.width,cv.height);}catch(_){}
+    let out=null;try{out=cv.toDataURL('image/jpeg',0.85);}catch(_){out=null;}
+    $('cropModal').classList.remove('show');const cb=s.cb;cropState=null;
+    if(out&&cb)cb(out);
+  });
+})();
+
+/* ============ 院校地区快捷筛选 ============ */
+const REGIONS=['东北','北京','上海','江苏','浙江','天津','广东','川渝','湖北','陕西','湖南','山东','福建','安徽','其它'];
+function renderRegions(){
+  const box=$('regionChips');if(!box)return;
+  box.innerHTML=REGIONS.map(r=>'<span class="region-chip" data-r="'+r+'">'+r+'</span>').join('');
+  box.querySelectorAll('.region-chip').forEach(ch=>ch.addEventListener('click',()=>{
+    const r=ch.dataset.r,on=ch.classList.contains('on');
+    box.querySelectorAll('.region-chip').forEach(x=>x.classList.remove('on'));
+    const q=on?'':r;$('schoolSearch').value=q;if(!on)ch.classList.add('on');
+    renderSchoolResults(q);box.classList.remove('show');
+  }));
+}
+$('schoolSearch').addEventListener('input',e=>{const box=$('regionChips');if(box)box.querySelectorAll('.region-chip').forEach(x=>x.classList.remove('on'));renderSchoolResults(e.target.value);});
+renderRegions();
+
+/* ============ 应援站：权志龙 × 崔胜铉 ============ */
+function setPortrait(id,data,fallback){
+  const el=$(id);if(!el)return;let img=el.querySelector('img');
+  if(!img){img=document.createElement('img');el.insertBefore(img,el.firstChild);}
+  img.src=data||fallback;
+}
+function renderFandom(){
+  setPortrait('gdFrame',local.gdPhoto,gdPortraitSVG());
+  setPortrait('topFrame',local.topPhoto,topPortraitSVG());
+}
+const GDPlayer={
+  playing:false,timer:null,step:0,track:'fantastic',usingUpload:false,audio:null,
+  tracks:{fantastic:[523,523,659,784,659,784,988,784,659,523,587,523,440,523,0,0],mellow:[392,440,494,587,494,440,392,330,392,440,494,392,349,392,0,0]},
+  play(track){if(track)this.track=track;this.usingUpload=false;if(this.audio)this.audio.pause();if(this.playing)return;this.playing=true;this.step=0;$('gdPlay').textContent='⏸';this._loop();},
+  _loop(){if(!this.playing)return;const seq=this.tracks[this.track];const f=seq[this.step%seq.length];if(f)this._note(f,this.step%4===0);this.step++;this.timer=setTimeout(()=>this._loop(),300);},
+  _note(freq,beat){const c=Sound.ensure();if(!c||Sound.muted)return;const t=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.11,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.28);o.start(t);o.stop(t+0.3);if(beat){const o2=c.createOscillator(),g2=c.createGain();o2.type='sine';o2.frequency.setValueAtTime(140,t);o2.frequency.exponentialRampToValueAtTime(48,t+0.12);g2.gain.setValueAtTime(0.22,t);g2.gain.exponentialRampToValueAtTime(0.001,t+0.2);o2.connect(g2);g2.connect(c.destination);o2.start(t);o2.stop(t+0.22);}},
+  stop(){this.playing=false;if(this.timer)clearTimeout(this.timer);this.timer=null;const b=$('gdPlay');if(b)b.textContent='▶';},
+  toggle(){if(this.usingUpload&&this.audio){if(this.playing){this.audio.pause();this.playing=false;$('gdPlay').textContent='▶';}else{this.audio.play().catch(()=>{});this.playing=true;$('gdPlay').textContent='⏸';}return;}if(this.playing)this.stop();else this.play();}
+};
+$('gdPlay').addEventListener('click',()=>{Sound.ensure();GDPlayer.toggle();});
+$('trackChips').querySelectorAll('.track-chip').forEach(ch=>ch.addEventListener('click',()=>{
+  $('trackChips').querySelectorAll('.track-chip').forEach(x=>x.classList.toggle('on',x===ch));
+  const tr=ch.dataset.track;$('gdTrackName').textContent=(tr==='fantastic'?'轻快 · Fantastic':'舒缓 · Mellow');
+  GDPlayer.play(tr);
+}));
+$('gdUploadBtn').addEventListener('click',()=>$('gdAudioInput').click());
+$('gdAudioInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;GDPlayer.stop();if(!GDPlayer.audio)GDPlayer.audio=new Audio();GDPlayer.audio.src=URL.createObjectURL(f);GDPlayer.audio.loop=true;GDPlayer.audio.play().catch(()=>{});GDPlayer.usingUpload=true;GDPlayer.playing=true;$('gdPlay').textContent='⏸';e.target.value='';});
+$('gdCam').addEventListener('click',e=>{e.stopPropagation();$('gdPhotoInput').click();});
+$('gdFrame').addEventListener('click',()=>$('gdPhotoInput').click());
+$('topCam').addEventListener('click',e=>{e.stopPropagation();$('topPhotoInput').click();});
+$('topFrame').addEventListener('click',()=>$('topPhotoInput').click());
+$('gdPhotoInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;compressImg(f,500,d=>{if(d){local.gdPhoto=d;saveLocal();renderFandom();}});e.target.value='';});
+$('topPhotoInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;compressImg(f,500,d=>{if(d){local.topPhoto=d;saveLocal();renderFandom();}});e.target.value='';});
+renderFandom();
+
+function loadNetease(){
+  const raw=$('neId').value.trim();const fb=$('neFrame');
+  if(!raw){fb.innerHTML='<div class="hint">先粘贴网易云歌曲 / 歌单链接或 ID 吧～</div>';return;}
+  const m=raw.match(/(\d{4,})/);
+  if(!m){fb.innerHTML='<div class="hint">没识别到歌曲 ID，请检查链接～</div>';return;}
+  const id=m[1];
+  const kind=/playlist|album|toplist|artist/.test(raw)?'playlist':'song';
+  local.neList=local.neList||[];
+  local.neList=local.neList.filter(x=>x.id!==id);
+  local.neList.unshift({kind:kind,id:id,raw:raw});
+  if(local.neList.length>20)local.neList=local.neList.slice(0,20);
+  saveLocal();$('neId').value='';fb.innerHTML='';
+  renderNeteaseList();
+}
+function renderNeteaseList(){
+  const box=$('neList');if(!box)return;const list=local.neList||[];
+  if(!list.length){box.innerHTML='<div class="ne-empty">还没有导入记录，粘贴网易云链接点「导入」即可收藏到这里。</div>';return;}
+  box.innerHTML=list.map((x,i)=>{
+    const label=x.kind==='playlist'?'歌单':'歌曲';
+    const url='https://music.163.com/'+x.kind+'?id='+x.id;
+    return '<div class="ne-item" data-url="'+url+'" data-i="'+i+'"><span class="ne-ico">'+(x.kind==='playlist'?'📃':'🎵')+'</span>'
+      +'<span class="ne-meta"><b>'+label+' #'+x.id+'</b><span>点击在网易云续播</span></span>'
+      +'<span class="ne-x" data-del="'+i+'">✕</span></div>';
+  }).join('');
+  box.querySelectorAll('.ne-item').forEach(el=>el.addEventListener('click',e=>{
+    if(e.target.dataset.del!==undefined)return;
+    const u=el.dataset.url;if(u)window.open(u,'_blank','noopener');
+  }));
+  box.querySelectorAll('.ne-x').forEach(el=>el.addEventListener('click',e=>{
+    e.stopPropagation();const i=+el.dataset.del;local.neList.splice(i,1);saveLocal();renderNeteaseList();
+  }));
+}
+function wxAdvice(t,dsc){
+  const d=typeof dsc==='string'?dsc:'';
+  if(/雨|rain|雷|thunder/.test(d))return '今天有雨，出门带伞、鞋子选防水的 ☔';
+  if(/雪|snow/.test(d))return '有雪，注意保暖防滑，路途慢行 🌨';
+  if(/雾|fog|霾|haze/.test(d))return '有雾/霾，减少户外、注意呼吸健康 🌫';
+  const n=Number(t);
+  if(n<=5)return '气温很低，厚外套+围巾安排上，别冻着 🧥';
+  if(n<=12)return '偏冷，加件外套，手脚暖和才学得进 🧥';
+  if(n<=18)return '早晚凉，备件薄外套，别贪凉 🧥';
+  if(n>=33)return '酷热，多喝水、避开正午暴晒 🥤';
+  if(n>=28)return '较热，注意防暑补水，空调别太低 💧';
+  return '天气舒爽，正是高效学习的好日子 ☀️';
+}
+function splitYiji(s){
+  const m=/今日宜：(.*?)；忌：(.*?)。?$/.exec(s);
+  if(m)return ['宜：'+m[1],'忌：'+m[2]];
+  return [s];
+}
+function bIcon(s){
+  if(s.indexOf('学习')===0)return '📚';
+  if(s.indexOf('健康')===0)return '💪';
+  if(s.indexOf('节奏')===0)return '⏱';
+  if(s.indexOf('心态')===0)return '🧘';
+  if(s.indexOf('人际')===0)return '💬';
+  if(s.indexOf('小确幸')===0)return '✨';
+  return '💡';
+}
+function renderWeather(){
+  const wxD=$('wxDesc'); if(wxD)wxD.textContent='刷新中…';
+  const tipEl=$('wxTip'); if(tipEl)tipEl.textContent='';
+  fetch('https://wttr.in/?format=j1').then(r=>r.json()).then(j=>{
+    const cur=j.current_condition[0];const t=cur.temp_C;const dsc=(typeof cur.lang_zh==='string')?cur.lang_zh:cur.weatherDesc[0].value;
+    const el=$('wxTemp'),ds=$('wxDesc');if(!el)return;
+    el.textContent=t+'°C';ds.textContent=dsc;
+    if(tipEl)tipEl.textContent=wxAdvice(t,dsc);
+  }).catch(()=>{
+    const d=new Date();const season=['春捂秋冻，注意保暖','盛夏炎炎，多喝水','秋高气爽，宜专注','冬日寒冷，保重身体'][Math.floor(d.getMonth()/3)];
+    $('wxTemp').textContent='本地';$('wxDesc').textContent=season;
+    if(tipEl)tipEl.textContent='天气接口暂不可用，已给通用建议，按季节照顾好自己～';
+  });
+  const doy=Math.floor((Date.now()-new Date(new Date().getFullYear()+'-01-01'))/86400000);
+  const horoA=['今日整体运势平稳向上，天秤座的你特别擅长在混乱中找平衡。','贵人运在线，遇到卡壳的题很可能有人点拨一句就通。','思维清晰的一天，最适合啃数学、物理这类硬骨头。','情绪稳定，复盘和吸收知识的效率会比平时高。','社交运不错，但记得把正事排在闲聊前面。','直觉灵敏，做错题本、查漏补缺正合适。'];
+  const horoB=['学习建议：把最难的任务放在上午精力峰值，下午留给整理和记忆。','健康提醒：久坐记得起身拉伸，眼睛看看远处，效率反而更高。','节奏把控：用番茄钟锁住大块时间，别让手机偷走专注。','心态贴士：允许自己偶尔走神，拉回来就好，不必自责。','人际提示：和同学讨论能撞出火花，但别拖太久。','小确幸：一杯温水、一首喜欢的歌，就能把状态拉回来。'];
+  const horoC=['今日宜：列清单、稳推进；忌：临时改计划、熬夜硬撑。','今日宜：错题复盘、早睡；忌：刷手机到深夜、空焦虑。','今日宜：专注单科突破；忌：多线程切换、假努力。','今日宜：适量运动放松；忌：憋在座位上一整天。'];
+  const a=horoA[doy%horoA.length],b=horoB[(doy*7)%horoB.length];
+  const lines=[{i:'🌟',t:a},{i:bIcon(b),t:b}];
+  if(doy%3===0){
+    const yj=splitYiji(horoC[(doy*3)%horoC.length]);
+    lines.push({i:'✅',t:yj[0]});
+    lines.push({i:'⛔',t:yj[1],ji:true});
+  }
+  const ht=$('horoText'),hl=$('horoLuck');
+  if(ht)ht.innerHTML=lines.map(o=>'<div class="horo-line'+(o.ji?' horo-ji':'')+'"><span class="horo-ico">'+o.i+'</span>'+o.t+'</div>').join('');
+  if(hl)hl.textContent=(78+doy%20)+' 分';
+}
+$('btnNe').addEventListener('click',loadNetease);
+
+/* ============ 启动 ============ */
+initTop();
+renderHome();updateRoutine();updateTimer();updateNoon();renderPaths();renderTaskSubjects();updateDashboard();
+renderSchools();pomoRender();renderLunchPhoto();applyBackgrounds();applyHeroBg();applyPraiseBg();renderVocabStats();nextVocab();renderWeather();renderWall();setInterval(renderWeather,1800000);
+renderNeteaseList();
+Cloud.init();
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){console.warn('SW 注册失败（需通过 http(s) 服务访问）');});});}
+</script>
+</body>
+</html>
