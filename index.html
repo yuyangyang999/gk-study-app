@@ -386,6 +386,22 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 .vocab-fb{margin-top:14px;text-align:center;font-size:15px;font-weight:800;min-height:22px}
 .vocab-fb.ok{color:var(--green)}.vocab-fb.no{color:var(--rose)}
 @media (max-width:560px){.vocab-opts{grid-template-columns:1fr}}
+.ch-mask{position:fixed;inset:0;background:rgba(40,30,22,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:90;padding:18px}
+.ch-mask.show{display:flex}
+.ch-box{width:100%;max-width:440px;background:var(--bg);border-radius:22px;padding:22px 18px;box-shadow:0 20px 50px rgba(0,0,0,.3);max-height:90vh;overflow:auto}
+.ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ch-prog{font-size:14px;font-weight:800;color:var(--muted)}
+.ch-combo{font-size:15px;font-weight:800;color:var(--accent)}
+.ch-close{border:none;background:var(--accent-soft);color:var(--accent);width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer}
+.ch-q{font-size:30px;font-weight:900;text-align:center;font-family:var(--serif);margin:8px 0 2px;word-break:break-word}
+.ch-hint{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.ch-opts{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media (max-width:560px){.ch-opts{grid-template-columns:1fr}}
+.ch-fb{margin-top:16px;text-align:center;min-height:30px;font-weight:900}
+.ch-fb .pz{display:inline-block;animation:chpop .35s ease}
+@keyframes chpop{0%{transform:scale(.5) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.ch-end{text-align:center;padding:10px 0}
+.ch-end .big{font-size:34px;font-weight:900;color:var(--accent);margin:6px 0}
 
 /* ===== 可爱 / Hello Kitty 主题点缀 ===== */
 :root{--kitty:#F7A8B8;--kitty-soft:#FCE7EC;--kitty-deep:#E98AA0;--kitty-line:#F3C6D2}
@@ -856,8 +872,9 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
           <div class="vocab-hint" id="vocabHint">点击下方选项作答</div>
           <div class="vocab-opts" id="vocabOpts"></div>
           <div class="vocab-fb" id="vocabFb"></div>
-          <div style="text-align:center;margin-top:14px">
+          <div style="text-align:center;margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
             <button class="btn soft sm" id="btnVocabNext">换一题 ↻</button>
+            <button class="btn ghost sm" id="btnChallenge">🎯 30题闯关</button>
           </div>
         </div>
         <div class="card">
@@ -881,6 +898,29 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
     <div class="crop-actions">
       <button class="btn ghost" id="cropCancel">取消</button>
       <button class="btn primary" id="cropOk">用这张</button>
+    </div>
+  </div>
+</div>
+
+<!-- 单词闯关 · 消消乐式 -->
+<div class="ch-mask" id="chMask">
+  <div class="ch-box">
+    <div class="ch-top">
+      <div class="ch-prog" id="chProg">第 1 / 30 题</div>
+      <button class="ch-close" id="chClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="ch-combo" id="chCombo" style="text-align:center;margin-bottom:6px"></div>
+    <div id="chPlay">
+      <div class="ch-q" id="chQ">—</div>
+      <div class="ch-hint" id="chHint">选出正确的释义</div>
+      <div class="ch-opts" id="chOpts"></div>
+      <div class="ch-fb" id="chFb"></div>
+    </div>
+    <div class="ch-end" id="chEnd" style="display:none">
+      <div style="font-size:15px;color:var(--muted)">🎯 闯关结束</div>
+      <div class="big" id="chScore">0 / 30</div>
+      <div id="chPraise" style="font-size:22px;font-weight:900;color:var(--accent);margin:4px 0 14px"></div>
+      <button class="btn primary" id="chAgain">再来一局 ↻</button>
     </div>
   </div>
 </div>
@@ -1726,6 +1766,80 @@ function renderVocabStats(){const v=vocabStats();$('vocabCorrect').textContent=v
 function nextVocab(){vocabState.answered=false;const w=VOCAB[Math.floor(Math.random()*VOCAB.length)];vocabState.cur=w;vocabState.dir=Math.random()<0.5?'en':'zh';const isEn=vocabState.dir==='en';const q=isEn?w.en:w.zh;$('vocabQ').textContent=q;$('vocabHint').textContent=isEn?'选出正确的中文释义：':'选出正确的英文单词：';$('vocabFb').textContent='';$('vocabFb').className='vocab-fb';const correct=isEn?w.zh:w.en;const others=VOCAB.filter(x=>x!==w).map(x=>isEn?x.zh:x.en);for(let i=others.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=others[i];others[i]=others[j];others[j]=tmp;}const opts=[correct,...others.slice(0,3)];for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=opts[i];opts[i]=opts[j];opts[j]=tmp;}const box=$('vocabOpts');box.innerHTML=opts.map(o=>'<div class="vocab-opt" data-o="'+escapeHtml(o)+'">'+escapeHtml(o)+'</div>').join('');box.querySelectorAll('.vocab-opt').forEach(el=>el.addEventListener('click',()=>vocabAnswer(el.dataset.o,el)));}
 function vocabAnswer(choice,el){if(vocabState.answered)return;vocabState.answered=true;const w=vocabState.cur;const isEn=vocabState.dir==='en';const correct=isEn?w.zh:w.en;const v=vocabStats();v.total=(v.total||0)+1;const fb=$('vocabFb');document.querySelectorAll('.vocab-opt').forEach(o=>o.classList.add('dim'));if(choice===correct){el.classList.remove('dim');el.classList.add('correct');v.correct=(v.correct||0)+1;v.streak=(v.streak||0)+1;if(v.streak>v.best)v.best=v.streak;fb.textContent='答对啦！🎉 太牛了';fb.className='vocab-fb ok';Sound.correct();}else{el.classList.remove('dim');el.classList.add('wrong');v.streak=0;fb.textContent='正确答案：'+correct+' 💡';fb.className='vocab-fb no';Sound.wrong();document.querySelectorAll('.vocab-opt').forEach(o=>{if(o.dataset.o===correct)o.classList.remove('dim');});}db.vocab=v;saveDB();renderVocabStats();}
 $('btnVocabNext').addEventListener('click',nextVocab);
+
+// ===== 单词闯关（消消乐式：答得越多、连对越长，夸奖越激动，最多30题）=====
+const CH_PRAISE=['Fascinating','Amazing','Outstanding','Remarkable','Phenomenal','Brilliant','Superb'];
+function chIntensity(combo){
+  if(combo<=1)return 0; if(combo<=3)return 1; if(combo<=5)return 2;
+  if(combo<=8)return 3; if(combo<=11)return 4; if(combo<=15)return 5; return 6;
+}
+function chShuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+let chState={active:false,idx:0,total:30,correct:0,combo:0,best:0,cur:null,answered:false,dir:'en'};
+function startChallenge(){
+  chState={active:true,idx:0,total:30,correct:0,combo:0,best:0,cur:null,answered:false,dir:'en'};
+  $('chEnd').style.display='none';$('chPlay').style.display='';
+  $('chMask').classList.add('show');
+  Sound.ensure();
+  chNext();
+}
+function chNext(){
+  if(!chState.active)return;
+  chState.answered=false;chState.idx++;
+  if(chState.idx>chState.total){chFinish();return;}
+  const w=VOCAB[Math.floor(Math.random()*VOCAB.length)];
+  chState.cur=w;chState.dir=Math.random()<0.5?'en':'zh';
+  const isEn=chState.dir==='en';
+  $('chQ').textContent=isEn?w.en:w.zh;
+  $('chHint').textContent=isEn?'选出正确的中文释义：':'选出正确的英文单词：';
+  $('chProg').textContent='第 '+chState.idx+' / '+chState.total+' 题';
+  $('chFb').innerHTML='';$('chFb').style.color='';
+  $('chCombo').textContent=chState.combo>0?('🔥 连对 '+chState.combo):'';
+  const correct=isEn?w.zh:w.en;
+  const others=chShuffle(VOCAB.filter(x=>x!==w).map(x=>isEn?x.zh:x.en));
+  const opts=chShuffle([correct,...others.slice(0,3)]);
+  const box=$('chOpts');
+  box.innerHTML=opts.map(o=>'<div class="vocab-opt" data-o="'+escapeHtml(o)+'">'+escapeHtml(o)+'</div>').join('');
+  box.querySelectorAll('.vocab-opt').forEach(el=>el.addEventListener('click',()=>chAnswer(el.dataset.o,el)));
+}
+function chAnswer(choice,el){
+  if(chState.answered||!chState.active)return;
+  chState.answered=true;
+  const w=chState.cur,isEn=chState.dir==='en',correct=isEn?w.zh:w.en;
+  document.querySelectorAll('#chOpts .vocab-opt').forEach(o=>o.classList.add('dim'));
+  if(choice===correct){
+    el.classList.remove('dim');el.classList.add('correct');
+    chState.correct++;chState.combo++;if(chState.combo>chState.best)chState.best=chState.combo;
+    const word=CH_PRAISE[chIntensity(chState.combo)];
+    $('chFb').innerHTML='<span class="pz">'+word+'!</span> 🎉';
+    $('chFb').style.color='var(--accent)';
+    $('chCombo').textContent='🔥 连对 '+chState.combo;
+    Sound.correct();
+  }else{
+    el.classList.remove('dim');el.classList.add('wrong');
+    chState.combo=0;
+    $('chFb').innerHTML='<span style="color:var(--muted)">正确答案：'+escapeHtml(correct)+'</span>';
+    $('chCombo').textContent='';
+    Sound.wrong();
+    document.querySelectorAll('#chOpts .vocab-opt').forEach(o=>{if(o.dataset.o===correct)o.classList.remove('dim');});
+  }
+  const v=vocabStats();v.total=(v.total||0)+1;
+  if(choice===correct){v.correct=(v.correct||0)+1;v.streak=(v.streak||0)+1;if(v.streak>v.best)v.best=v.streak;}else{v.streak=0;}
+  db.vocab=v;saveDB();renderVocabStats();
+  setTimeout(chNext,chState.combo?820:1100);
+}
+function chFinish(){
+  chState.active=false;
+  $('chPlay').style.display='none';$('chEnd').style.display='';
+  $('chScore').textContent=chState.correct+' / '+chState.total;
+  const r=chState.correct/chState.total;
+  const pz=r>=1?'Superb!':r>=0.8?'Brilliant!':r>=0.6?'Phenomenal!':r>=0.4?'Remarkable!':r>=0.2?'Amazing!':'Keep Going!';
+  $('chPraise').textContent=pz;
+  if(r>=0.8)Sound.praise();else Sound.sparkle();
+}
+$('btnChallenge').addEventListener('click',startChallenge);
+$('chClose').addEventListener('click',()=>{$('chMask').classList.remove('show');chState.active=false;});
+$('chAgain').addEventListener('click',startChallenge);
+$('chMask').addEventListener('click',e=>{if(e.target===$('chMask')){$('chMask').classList.remove('show');chState.active=false;}});
 
 /* ============ 声音开关 ============ */
 Sound.muted=(localStorage.getItem('gaokao_mute')==='1');
