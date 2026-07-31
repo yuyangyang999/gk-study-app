@@ -1505,12 +1505,12 @@ function pickVoice(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;f
 const CUTE={pitch:1.55,rate:1.08};
 // 健壮性：iOS 嗓音异步加载，首调可能为空 → 轮询重试，最终兜底用默认嗓音(童音)保证不静音
 function speakText(text,lang,voice,opt){if(!text||!('speechSynthesis' in window))return;try{try{speechSynthesis.cancel();}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang=lang;if(opt){if(opt.pitch)u.pitch=opt.pitch;if(opt.rate)u.rate=opt.rate;}if(voice)u.voice=voice;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
-const KO_MALE_NAMES=/minsu|민수|injoon|인준|hyunsu|현수|gookmin|국민|bongjin|봉진|jinho|진호|seojun|서준|junho|준호|dohyun|도현|sangwoo|상우/i;
+const KO_MALE_NAMES=/\bmins?u(?:\s*\(.*?\))?\b|민수|injoon|인준|hyunsu|현수|gookmin|국민|bongjin|봉진|jinho|진호|seojun|서준|junho|준호|dohyun|도현|sangwoo|상우/i;
 function _isMale(v){if(!v)return false;const s=((v.name||'')+' '+(v.gender||'')).toLowerCase();if(/female|여성|女/.test(s))return false;if(KO_MALE_NAMES.test(s))return true;return /male|남성|남자|남|men|boy|♂/.test(s);}
 function pickMale(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const m=vs.find(v=>_isMale(v)&&new RegExp('^'+L,'i').test(v.lang||''));if(m)return m;}return null;}
 function speakCnMale(text){if(!text)return;const v=pickMale(['zh-CN','zh','cmn','ko','en']);speakText(text,'zh-CN',v,{pitch:(v&&_isMale(v))?0.9:1.0,rate:1.02});}
 // 作息/打卡：优先用你选定的韩文嗓音，否则男声韩文优先，再回退中文男声
-function _pickKoFallback(){const kos=_voicesCache.filter(v=>/^ko/i.test(v.lang||''));if(!kos.length)return null;return kos.find(_isMale)||kos[0];}
+function _pickKoFallback(){const vs=_voicesCache;const byName=vs.find(v=>KO_MALE_NAMES.test((v.name||'').toLowerCase()));if(byName)return byName;const kos=vs.filter(v=>/^ko/i.test(v.lang||''));if(!kos.length)return null;return kos.find(_isMale)||kos[0];}
 function speakKo(){if(!('speechSynthesis' in window))return;if(!window.__curKo){if(window.__curCn)speakCnMale(window.__curCn);return;}const sel=findVoiceByKey(local.koVoice);if(sel){speakText(window.__curKo,'ko-KR',sel,{pitch:1.0,rate:0.98});return;}const ko=_pickKoFallback();if(ko){speakText(window.__curKo,'ko-KR',ko,{pitch:_isMale(ko)?1.0:0.62,rate:0.98});return;}const mCn=pickMale(['zh-CN','zh','cmn']);if(window.__curCn)speakText(window.__curCn,'zh-CN',mCn,{pitch:mCn?0.9:0.62,rate:1.0});}
 // 单词闯关英文夸奖：优先用你选定的英文嗓音，否则童音自动选 + 随连击升调
 const EN_FUN=/good news|superstar|bubbles|jester|organ|cellos|bells|bad news|zarvox|trinoids|boing|junior|kathy|flo\b|grandma|grandpa|eddy|reed|rocko|sandy|shelley|wobble/i;
@@ -1519,7 +1519,31 @@ function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try
 // === 语音偏好：让用户从已下载嗓音中自选 ===
 function encURI(s){return encodeURIComponent(s||'');}
 function findVoiceByKey(key){if(!key)return null;try{const uri=decodeURIComponent(key);return _voicesCache.find(v=>v.voiceURI===uri)||null;}catch(e){return null;}}
-function populateVoiceSelects(){const koSel=document.getElementById('koVoice'),enSel=document.getElementById('enVoice');if(!koSel||!enSel)return;const esc=x=>String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');const opt=v=>`<option value="${encURI(v.voiceURI)}">${_isMale(v)?'♂ ':''}${esc(v.name)} · ${esc(v.lang)}</option>`;const vs=_voicesCache.slice();if(!vs.length)return;const group=(sel,pri,priLabel,defLabel)=>{const p=vs.filter(pri).sort((a,b)=>(_isMale(b)?1:0)-(_isMale(a)?1:0));const rest=vs.filter(v=>!pri(v));let h='<option value="">'+defLabel+'</option>';if(p.length)h+='<optgroup label="'+priLabel+'">'+p.map(opt).join('')+'</optgroup>';if(rest.length)h+='<optgroup label="其他全部嗓音（下载的男声可能在这里）">'+rest.map(opt).join('')+'</optgroup>';sel.innerHTML=h;};group(koSel,v=>/^ko/i.test(v.lang||''),'韩语嗓音','默认（自动优先男声韩语）');group(enSel,v=>/^en/i.test(v.lang||''),'英语嗓音','默认（自动挑活泼角色音）');const setIf=(sel,key)=>{if(!local[key])return;try{const uri=decodeURIComponent(local[key]);if(vs.find(v=>v.voiceURI===uri))sel.value=local[key];}catch(e){}};setIf(koSel,'koVoice');setIf(enSel,'enVoice');}
+function populateVoiceSelects(){
+const koSel=document.getElementById('koVoice'),enSel=document.getElementById('enVoice');
+if(!koSel||!enSel)return;
+const esc=x=>String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const opt=v=>`<option value="${encURI(v.voiceURI)}">${_isMale(v)?'♂ ':''}${esc(v.name)} · ${esc(v.lang)}</option>`;
+const vs=_voicesCache.slice();if(!vs.length)return;
+// Korean: show ALL voices (iOS may mislabel lang), smart group
+const isKoLike=v=>/^ko/i.test(v.lang||'')||KO_MALE_NAMES.test((v.name||'').toLowerCase());
+const koRec=vs.filter(isKoLike).sort((a,b)=>(_isMale(b)?1:0)-(_isMale(a)?1:0));
+const koRest=vs.filter(v=>!isKoLike(v));
+let kh='<option value="">默认（自动优先 Minsu / 男声韩语）</option>';
+if(koRec.length)kh+='<optgroup label="🎯 推荐（韩语 / Minsu / 男声）">'+koRec.map(opt).join('')+'</optgroup>';
+if(koRest.length)kh+='<optgroup label="全部系统嗓音（在这里找 Minsu）">'+koRest.map(opt).join('')+'</optgroup>';
+koSel.innerHTML=kh;
+// English: also show all
+const isEnLike=v=>/^en/i.test(v.lang||'')||EN_FUN.test((v.name||'').toLowerCase());
+const enRec=vs.filter(isEnLike);
+const enRest=vs.filter(v=>!isEnLike(v));
+let eh='<option value="">默认（自动挑活泼角色音）</option>';
+if(enRec.length)eh+='<optgroup label="英语嗓音">'+enRec.map(opt).join('')+'</optgroup>';
+if(enRest.length)eh+='<optgroup label="其他全部嗓音">'+enRest.map(opt).join('')+'</optgroup>';
+enSel.innerHTML=eh;
+const setIf=(sel,key)=>{if(!local[key])return;try{const uri=decodeURIComponent(local[key]);if(vs.find(v=>v.voiceURI===uri))sel.value=local[key];}catch(e){}};
+setIf(koSel,'koVoice');setIf(enSel,'enVoice');
+}
 (function(){const gb=document.getElementById('voiceGearBtn');if(gb)gb.onclick=()=>{populateVoiceSelects();document.getElementById('voiceMask').classList.add('show');};const vc=document.getElementById('voiceClose');if(vc)vc.onclick=()=>document.getElementById('voiceMask').classList.remove('show');const vm=document.getElementById('voiceMask');if(vm)vm.addEventListener('click',e=>{if(e.target===vm)vm.classList.remove('show');});const ko=document.getElementById('koVoice');if(ko)ko.onchange=e=>{local.koVoice=e.target.value||'';try{saveLocal();}catch(x){}window.__curKo='개강!';window.__curCn='就你这起床速度，也只配追我了';speakKo();};const en=document.getElementById('enVoice');if(en)en.onchange=e=>{local.enVoice=e.target.value||'';try{saveLocal();}catch(x){}speakEn('Wow! Amazing!',4);};const kt=document.getElementById('koTry');if(kt)kt.onclick=()=>{window.__curKo='개강!';window.__curCn='就你这起床速度，也只配追我了';speakKo();};const et=document.getElementById('enTry');if(et)et.onclick=()=>speakEn('Wow! Fascinating!',6);})();
 
 /* ============ 院校库（搜索栏 + 图片 + 资料） ============ */
