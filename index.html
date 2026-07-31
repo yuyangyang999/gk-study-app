@@ -281,6 +281,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
 .voice-mask.show{display:flex}
 .voice-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;width:min(430px,92vw);box-shadow:0 22px 60px rgba(86,62,38,.25)}
 .voice-card h3{margin:0 0 14px;font-size:17px}
+.voice-diag{margin:10px 0 4px;padding:8px 10px;background:rgba(176,125,86,.08);border-radius:9px;font-size:12px;color:var(--muted);line-height:1.6}
 .voice-try{margin-top:6px;padding:5px 14px;border:1px solid rgba(176,125,86,.35);background:rgba(176,125,86,.1);border-radius:10px;font-size:13px;cursor:pointer;color:var(--accent)}
 .voice-try:active{transform:scale(.95)}
 .voice-row{margin:12px 0}
@@ -932,7 +933,8 @@ svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-l
       <select id="enVoice"></select>
       <button class="voice-try" id="enTry" type="button">▶ 试听</button>
     </div>
-    <div class="voice-tip">📌 你下载的男声如果不在「韩语嗓音」分组里，去「其他全部嗓音」里找它的名字。选完点「试听」立即听效果，下次打开自动记住。</div>
+    <div class="voice-diag" id="voiceDiag"></div>
+    <div class="voice-tip">📌 选完点「▶ 试听」，下面会显示实际发声的嗓音名。如果显示的不是你选的，说明系统不支持该嗓音念韩文，换一个试试。</div>
     <div class="voice-actions">
       <button class="gear-btn" id="voiceClose" style="background:rgba(176,125,86,.18)">关闭</button>
     </div>
@@ -1504,7 +1506,7 @@ if('speechSynthesis' in window){_refreshVoices();try{speechSynthesis.onvoicescha
 function pickVoice(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const v=vs.find(x=>new RegExp('^'+L,'i').test(x.lang||''));if(v)return v;}return null;}
 const CUTE={pitch:1.55,rate:1.08};
 // 健壮性：iOS 嗓音异步加载，首调可能为空 → 轮询重试，最终兜底用默认嗓音(童音)保证不静音
-function speakText(text,lang,voice,opt){if(!text||!('speechSynthesis' in window))return;try{try{speechSynthesis.cancel();}catch(e){}const u=new SpeechSynthesisUtterance(text);u.lang=lang;if(opt){if(opt.pitch)u.pitch=opt.pitch;if(opt.rate)u.rate=opt.rate;}if(voice)u.voice=voice;const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
+function speakText(text,lang,voice,opt){if(!text||!('speechSynthesis' in window))return;try{try{speechSynthesis.cancel();}catch(e){}const u=new SpeechSynthesisUtterance(text);if(voice){u.voice=voice;u.lang=voice.lang||lang;}else{u.lang=lang;}try{window.__lastVoiceUsed=(u.voice?(u.voice.name+' · '+u.voice.lang):('系统默认 · '+u.lang));if(typeof updateVoiceDiag==='function')updateVoiceDiag();}catch(e){}if(opt){if(opt.pitch)u.pitch=opt.pitch;if(opt.rate)u.rate=opt.rate;}const fire=()=>{try{speechSynthesis.speak(u);}catch(e){}};if(typeof speechSynthesis.speaking!=='undefined'&&speechSynthesis.speaking)setTimeout(fire,90);else fire();}catch(e){}}
 const KO_MALE_NAMES=/\bmins?u(?:\s*\(.*?\))?\b|민수|injoon|인준|hyunsu|현수|gookmin|국민|bongjin|봉진|jinho|진호|seojun|서준|junho|준호|dohyun|도현|sangwoo|상우/i;
 function _isMale(v){if(!v)return false;const s=((v.name||'')+' '+(v.gender||'')).toLowerCase();if(/female|여성|女/.test(s))return false;if(KO_MALE_NAMES.test(s))return true;return /male|남성|남자|남|men|boy|♂/.test(s);}
 function pickMale(langs){const vs=_voicesCache;if(!vs||!vs.length)return null;for(const L of (langs||[])){const m=vs.find(v=>_isMale(v)&&new RegExp('^'+L,'i').test(v.lang||''));if(m)return m;}return null;}
@@ -1515,7 +1517,7 @@ function speakKo(){if(!('speechSynthesis' in window))return;if(!window.__curKo){
 // 单词闯关英文夸奖：优先用你选定的英文嗓音，否则童音自动选 + 随连击升调
 const EN_FUN=/good news|superstar|bubbles|jester|organ|cellos|bells|bad news|zarvox|trinoids|boing|junior|kathy|flo\b|grandma|grandpa|eddy|reed|rocko|sandy|shelley|wobble/i;
 function _pickEnVoice(){const sel=findVoiceByKey(local.enVoice);if(sel)return sel;const ens=_voicesCache.filter(v=>/^en/i.test(v.lang||''));if(!ens.length)return null;return ens.find(v=>EN_FUN.test(v.name||''))||ens.find(v=>/en[-_]?US/i.test(v.lang||''))||ens[0];}
-function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));const v=_pickEnVoice();const mk=(p,wow)=>{const u=new SpeechSynthesisUtterance(p);u.lang='en-US';if(v)u.voice=v;if(wow){u.rate=1.15;u.pitch=2.0;}else{u.rate=1.02+lvl*0.02;u.pitch=1.4+lvl*0.1;}u.volume=1;return u;};const us=[];const m=/^wow!?\s*(.*)$/i.exec(text);if(m&&m[1]){us.push(mk('Wow!',true));us.push(mk(m[1],false));}else us.push(mk(text,false));setTimeout(()=>{us.forEach(u=>{try{speechSynthesis.speak(u);}catch(e){}});},60);}catch(e){}}
+function speakEn(text,combo){if(!text||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const lvl=Math.max(0,Math.min(6,chIntensity(combo||1)));const v=_pickEnVoice();const mk=(p,wow)=>{const u=new SpeechSynthesisUtterance(p);if(v){u.voice=v;u.lang=v.lang||'en-US';}else{u.lang='en-US';}if(wow){u.rate=1.15;u.pitch=2.0;}else{u.rate=1.02+lvl*0.02;u.pitch=1.4+lvl*0.1;}u.volume=1;return u;};const us=[];const m=/^wow!?\s*(.*)$/i.exec(text);if(m&&m[1]){us.push(mk('Wow!',true));us.push(mk(m[1],false));}else us.push(mk(text,false));setTimeout(()=>{us.forEach(u=>{try{speechSynthesis.speak(u);}catch(e){}});},60);}catch(e){}}
 // === 语音偏好：让用户从已下载嗓音中自选 ===
 function encURI(s){return encodeURIComponent(s||'');}
 function findVoiceByKey(key){if(!key)return null;try{const uri=decodeURIComponent(key);return _voicesCache.find(v=>v.voiceURI===uri)||null;}catch(e){return null;}}
@@ -1543,7 +1545,9 @@ if(enRest.length)eh+='<optgroup label="其他全部嗓音">'+enRest.map(opt).joi
 enSel.innerHTML=eh;
 const setIf=(sel,key)=>{if(!local[key])return;try{const uri=decodeURIComponent(local[key]);if(vs.find(v=>v.voiceURI===uri))sel.value=local[key];}catch(e){}};
 setIf(koSel,'koVoice');setIf(enSel,'enVoice');
+updateVoiceDiag();
 }
+function updateVoiceDiag(){const d=document.getElementById('voiceDiag');if(!d)return;const n=_voicesCache.length;const last=window.__lastVoiceUsed?('<br>上次实际发声：<b>'+String(window.__lastVoiceUsed).replace(/</g,'&lt;')+'</b>'):'';d.innerHTML='系统共检测到 '+n+' 个嗓音'+last;}
 (function(){const gb=document.getElementById('voiceGearBtn');if(gb)gb.onclick=()=>{populateVoiceSelects();document.getElementById('voiceMask').classList.add('show');};const vc=document.getElementById('voiceClose');if(vc)vc.onclick=()=>document.getElementById('voiceMask').classList.remove('show');const vm=document.getElementById('voiceMask');if(vm)vm.addEventListener('click',e=>{if(e.target===vm)vm.classList.remove('show');});const ko=document.getElementById('koVoice');if(ko)ko.onchange=e=>{local.koVoice=e.target.value||'';try{saveLocal();}catch(x){}window.__curKo='개강!';window.__curCn='就你这起床速度，也只配追我了';speakKo();};const en=document.getElementById('enVoice');if(en)en.onchange=e=>{local.enVoice=e.target.value||'';try{saveLocal();}catch(x){}speakEn('Wow! Amazing!',4);};const kt=document.getElementById('koTry');if(kt)kt.onclick=()=>{window.__curKo='개강!';window.__curCn='就你这起床速度，也只配追我了';speakKo();};const et=document.getElementById('enTry');if(et)et.onclick=()=>speakEn('Wow! Fascinating!',6);})();
 
 /* ============ 院校库（搜索栏 + 图片 + 资料） ============ */
