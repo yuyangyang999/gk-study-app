@@ -1283,7 +1283,7 @@ const SLEEP_PRAISES=[
  {t:'沉住气，崔胜铉的咖啡明天再约 ☕',e:'☕',ko:'묵직',v:'top'},
  {t:'睡吧，明天又是追我的一天 💫',e:'💫',ko:'굿나잇',v:'gd'}
 ];
-$('btnWake').addEventListener('click',()=>{const t=todayKey();const was=db.checkins[t]&&db.checkins[t].done;if(was)delete db.checkins[t];else db.checkins[t]={done:true,time:nowTs()};saveDB();updateRoutine();if(!was){const w=WAKE_PRAISES[Math.floor(Math.random()*WAKE_PRAISES.length)];showPraise(w.t,w.e,w.ko,w.v,local.wakeBg);}const sl=db.sleep[t],c=db.checkins[t];if(sl&&sl.bed&&c&&c.done){const dur=(c.time-sl.bed)/3600000;if(dur>0&&dur<6)showPraise('请手机自我检讨一下，为什么总拉着你熬夜 🌙','😴');}});
+$('btnWake').addEventListener('click',()=>{const t=todayKey();const was=db.checkins[t]&&db.checkins[t].done;if(was)delete db.checkins[t];else db.checkins[t]={done:true,time:nowTs()};saveDB();updateRoutine();if(!was){const sl=db.sleep[t],c=db.checkins[t];let dur=0;if(sl&&sl.bed&&c&&c.done)dur=(c.time-sl.bed)/3600000;if(dur>0&&dur<6){const LATE=[{t:'崔胜铉：再不睡，我的低音炮要报警了 🌙',e:'🌙',ko:'바리톤',v:'top'},{t:'权志龙：my world 里没有熬夜冠军这个位置 🐉',e:'🐉',ko:'하루하루',v:'gd'},{t:'4차원 人类表示：凡间该补觉了 😴',e:'😴',ko:'4차원',v:'top'},{t:'本少爷的颜值都扛不住你的黑眼圈了 💅',e:'💅',ko:'피곤',v:'gd'},{t:'画家说：睡饱了才画得好，别硬撑 🎨',e:'🎨',ko:'탑',v:'top'}];const l=LATE[Math.floor(Math.random()*LATE.length)];showPraise(l.t,l.e,l.ko,l.v,local.wakeBg);}else{const w=WAKE_PRAISES[Math.floor(Math.random()*WAKE_PRAISES.length)];showPraise(w.t,w.e,w.ko,w.v,local.wakeBg);}}});
 $('btnSleep').addEventListener('click',()=>{const t=todayKey();const had=db.sleep[t]&&db.sleep[t].bed;db.sleep[t]=db.sleep[t]||{};db.sleep[t].bed=nowTs();saveDB();updateRoutine();const p=SLEEP_PRAISES[Math.floor(Math.random()*SLEEP_PRAISES.length)];showPraise(p.t,p.e,p.ko,p.v,local.sleepBg);});
 
 /* ============ 自习室计时 ============ */
